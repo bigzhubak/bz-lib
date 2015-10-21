@@ -1,0 +1,11 @@
+<td v-show="stat!='check'" class="check-column"><input type="checkbox" v-model="r.checked" v-on="click:checkBox"/></td>
+{% for field in fields %}
+{% if field.c_type == 'timestamp' %}
+<td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+{% elif field.c_type == 'input-file'%}
+<td v-datagrid-file-list="{{ table_name }}.{{ field.name }}: r.id"></td>
+{% else %}
+<td v-ellipsis="20:r.{{ field.name }}"></td>
+{% end %}
+{% end %}
+<td><button type="button" class="btn btn-xs btn-primary" v-on="click:look(r)">查看</button></td>

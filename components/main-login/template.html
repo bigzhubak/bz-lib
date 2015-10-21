@@ -1,0 +1,7 @@
+<component is="(%current_view%)" oauths="(%oauths%)"></component>
+<div class="btn-group">
+    <button v-show="current_view !='signup'" v-on="click:change('signup')" type="button" class="btn btn-default">注册用户</button>
+    <button v-show="current_view !='forget'" v-on="click:change('forget')" type="button" class="btn btn-default">找回密码</button>
+    <button v-show="current_view !='login'" v-on="click:change('login')" type="button" class="btn btn-default">登录</button>
+</div>
+

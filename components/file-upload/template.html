@@ -1,0 +1,27 @@
+<div class="file_upload_m_control">
+    <table class="table" v-show="files.length > 0">
+        <tr v-repeat="f : files">
+            <td>
+                <i v-file-icon="f.suffix"></i>
+                <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+            </td>
+            <td v-if="!disabled_b">
+                <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+            </td>
+        </tr>
+    </table>
+    <table class="table" v-show="append_files.length > 0">
+        <tr v-repeat="f : append_files">
+            <td>
+                <i v-file-icon="f.suffix"></i>
+                <a v-href="f.file_path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+            </td>
+            <td v-if="!disabled_b">
+                <i class="fa fa-times btn-remove-file" v-on="click: removeFile(f)"></i>
+            </td>
+        </tr>
+    </table>
+    <span class="file-input btn btn-sm btn-success btn-file" v-if="!disabled_b">
+        选择文件<input class="input_file" v-on="change: appendFile($event)" type="file" multiple/>
+    </span>
+</div>

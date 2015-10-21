@@ -1,0 +1,12 @@
+<table class="table" v-show="files.length > 0">
+    <tr v-repeat="f : files">
+        <td>
+            <a v-attr="href:f.path" target="_blank" v-class="remove-mark: f.remove==true">(% f.file_name %)</a>
+        </td>
+        <td>
+            <i v-on="click: removeFile(f)" v-if="is_edit" class="fa fa-times btn-remove-file" ></i>
+        </td>
+    </tr>
+</table>
+<input class="hide" v-el="file" v-on="change:upload" class="input_file" type="file" />
+<a v-btn-loading="loading" v-if="is_edit" v-on="click:clickButton" class="btn btn-sm btn-success">选择文件</a>

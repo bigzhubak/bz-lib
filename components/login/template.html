@@ -1,0 +1,49 @@
+<div class="btn-group btn-group-justified">
+    <oauth2-button v-show="oauths" v-repeat="oauth in oauths"></oauth2-button>
+</div>
+<div class="box box-solid">
+    <div class="box-header with-border">
+        <h3 class="text-center">用户登录</h3>
+    </div>
+    <div class="box-body">
+        <div class="form-group">
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon">
+                    <i class="fa fa-envelope"></i>
+                </span>
+                <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入邮箱/用户名" v-on="focus:cleanError">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon">
+                    <i class="fa fa-key"></i>
+                </span>
+                <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: login | key 'enter',focus:cleanError">
+            </div>
+        </div>
+        <div class="form-group">
+            <a v-on="click: login" class="btn btn-default btn-lg btn-block bz-login-btn">登录</a>
+        </div>
+    </div>
+</div>
+<div v-show="error_info" class="alert alert-warning alert-dismissable">
+    <h4><i class="icon fa fa-warning"></i>(%error_info%)</h4>
+</div>
+<div class="modal fade" id="confirm-ask-create" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">建立一个吧!</h4>
+            </div>
+            <div class="modal-body">
+                <p>系统还没有用户(%user_name%),是否建立?</p>
+            </div>
+            <div class="modal-footer">
+                <button v-on="click:signup" type="button" class="btn btn-default pull-left" data-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-default " data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

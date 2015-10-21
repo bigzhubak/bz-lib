@@ -1,0 +1,20 @@
+<div class="box box-solid">
+    <div class="box-header with-border">
+        <h3 class="text-center">找回密码</h3>
+        <div class="box-tools pull-right">
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="form-group">
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon">
+                    <i class="fa fa-envelope"></i>
+                </span>
+                <input type="text" v-model="email" v-regexp="'^([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$': email" class="form-control" placeholder="请输入邮箱地址" v-on="keyup: forget| key 'enter', focus:cleanError">
+            </div>
+        </div>
+        <div class="form-group">
+            <button v-on="click: forget" class="btn btn-default btn-lg btn-block bz-login-btn" type="button" v-btn-loading="loading">发送邮件</button>
+        </div>
+    </div>
+</div>

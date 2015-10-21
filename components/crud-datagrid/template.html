@@ -1,0 +1,124 @@
+<div v-loading="loading; this" class="box box-primary safe-datagrid">
+    <div class="box-header with-border">
+        <h3 class="box-title">{{ table_desc }}</h3>
+        <div class="box-tools pull-left">
+            <div class="btn-group" role="group" v-show="stat!='check' && select=='null' ">
+                <button type="button" class="btn btn-sm btn-primary" v-on="click:new">新增</button>
+            </div>
+            <div class="btn-group" role="group" v-show="select=='select_one'">
+                <button type="button" class="btn btn-sm btn-default" v-on="click:edit">编辑</button>
+                <button type="button" class="btn btn-sm btn-danger" v-on="click:confirm">删除</button>
+            </div>
+            <div class="btn-group" role="group" v-show="select=='select_more'">
+                <button type="button" class="btn btn-sm btn-danger" v-on="click:confirm">删除</button>
+            </div>        
+        </div>
+    </div>
+    <div style="min-height: 100px;">
+        <table class="table table-hover">
+            <tr>
+                <th v-show="user_id_edit || !user_id"></th>
+                {% for field in fields %}
+                <th>{{field.description}}</th>
+                {% end %}
+                <th></th>
+            </tr>
+            <tr  v-repeat="r : list">
+                <td v-show="stat!='check'" class="check-column"><input type="checkbox" v-model="r.checked" v-on="click:checkBox"/></td>
+                {% for field in fields %}
+                {% if field.c_type == 'timestamp' %}
+                <td v-dateformat="'yyyy-MM-dd':r.{{ field.name }}"></td>
+                {% elif field.c_type == 'input-file'%}
+                <td v-datagrid-file-list="{{ table_name }}.{{ field.name }}: r.id"></td>
+                {% else %}
+                <td v-ellipsis="20:r.{{ field.name }}"></td>
+                {% end %}
+                {% end %}
+                <td><button type="button" class="btn btn-xs btn-primary" v-on="click:look(r)">查看</button></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal-{{table_name}}" tabindex="-1" role="dialog" aria-labelledby="modal-{{table_name}}-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modal-{{table_name}}-label">{{ table_desc }}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        {% for field in all_fields %}
+                        {% if field.name != 'created_date' %}
+                        <div class="form-group">
+                            <label class="col-sm-4 col-md-3 col-lg-2 control-label">{{field.description}}</label>
+                            <div class="col-sm-8 col-md-9 col-lg-10">
+                                {% if field.get("c_type") == "select" and field.get("options")%}
+                                <select class="form-control" v-disable="stat=='look' || stat=='check'" v-model="record.{{field.name}}">
+                                    {% for option in field.options%}
+                                    <option value="{{option.get('value')}}">{{option.get('text')}}</option>
+                                    {% end %}
+                                </select>
+                                {%elif field.get("c_type") == "timestamp"%}
+                                <div class='input-group date' id='{{field.name}}'>
+                                    <span v-show="user_id_edit || !user_id" class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                    <input v-disable="stat=='look' || stat=='check'" type='text' class="form-control" v-datepicker="record.{{field.name}}"/>
+                                </div>
+                                {%elif field.get("c_type") == "input-file"%}
+                                <div style="padding: 7px 0px;">
+                                    <file-upload-m table-name="{{table_name}}" field-name="{{field.name}}" record-id="(%record.id%)" v-ref="{{field.name}}_c"></file-upload-m>
+                                </div>
+                                {%elif field.get("c_type") == "imgupload"%}
+                                {%elif field.get("c_type") == "radio" and field.get("options")%}
+                                {% for option in field.options%}
+                                <label class="radio-inline">
+                                    <input v-disable="stat=='look' || stat=='check'" type="radio" value="{{option.get('value')}}" v-model="record.{{field.name}}" />{{option.get('text')}}
+                                </label>
+                                {% end %}
+                                {%elif field.get("c_type") == "checkbox" and field.get("options")%}
+                                {% set index=1 %}
+                                {% for option in field.options%}
+                                <label class="checkbox-inline">
+                                    <input v-disable="stat=='look' || stat=='check'" type="checkbox" value="{{option.get('value')}}" v-model-checkbox="record.{{field.name}}" />{{option.get('text')}}
+                                </label>
+                                {% set index=index+1 %}
+                                {% end %}
+                                {%elif field.get("c_type") == "rich-text"%}
+                                <textarea v-disable="stat=='look' || stat=='check'" class="form-control" v-model="record.{{field.name}}" rows=3></textarea>
+                                {%else%}
+                                <input v-disable="stat=='look' || stat=='check'" class="form-control" v-model="record.{{field.name}}">
+                                {%end%}
+                            </div>
+                        </div>
+                        {% end %}
+                        {% end %}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-sm btn-primary" v-disable="loading" v-btn-loading="loading" v-show="stat!='check' && stat!='look'" v-on="click:save">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirm-{{table_name}}" tabindex="-1" role="dialog" aria-labelledby="confirm-{{table_name}}-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">请谨慎操作!</h4>
+                </div>
+                <div class="modal-body">
+                    <p>请确认是否删除选中的(%checked_list.length%)条记录!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">取消</button>
+                    <button v-on="click:del" type="button" class="btn btn-primary" data-dismiss="modal">确定删除</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</div>
