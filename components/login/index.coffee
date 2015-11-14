@@ -1,4 +1,6 @@
 ###
+login
+
 登录页
 oauths:参见oauth2-button
 ###
@@ -10,7 +12,7 @@ module.exports =
     password:''
   template: require('./template.html')
   created:->
-    bz.setOnErrorVm(@)
+    #bz.setOnErrorVm(@)
   components:
     'oauth2-button': require '../oauth2-button'
   methods:

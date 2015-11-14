@@ -9,7 +9,6 @@ module.exports =
   methods:
     change:(view)->
       @current_view = view
-
   template: require('./template.html')
   components:
     "login": require '../login'
