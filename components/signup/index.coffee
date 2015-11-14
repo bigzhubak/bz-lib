@@ -2,6 +2,7 @@
 注册页面
 ###
 require './style.less'
+error = require '../../functions/error.coffee'
 module.exports =
   template: require './template.html'
   components:
@@ -10,6 +11,8 @@ module.exports =
     "regexp": require 'lib/directives/regexp'
     "disable": require 'lib/directives/disable'
     "btn-loading": require 'lib/directives/btn-loading'
+  created:->
+    error.setOnErrorVm(@)
   methods:
     signup:->
       if not @user_name

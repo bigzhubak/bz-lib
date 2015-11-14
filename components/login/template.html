@@ -27,9 +27,7 @@
         </div>
     </div>
 </div>
-<div v-show="error_info" class="alert alert-warning alert-dismissable">
-    <h4><i class="icon fa fa-warning"></i>(%error_info%)</h4>
-</div>
+<error-info-panel :error_info="error_info"></error-info-panel>
 <div class="modal fade" id="confirm-ask-create" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

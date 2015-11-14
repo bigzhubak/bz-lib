@@ -10,7 +10,7 @@
                 <span class="input-group-addon">
                     <i class="fa fa-user"></i>
                 </span>
-                <input type="text" v-model="user_name"  class="form-control" placeholder="请输入用户名" v-on="focus:cleanError">
+                <input type="text" v-model="user_name"  class="form-control" placeholder="请输入用户名" @focus="cleanError">
             </div>
         </div>
         <div class="form-group">
@@ -18,7 +18,7 @@
                 <span class="input-group-addon">
                     <i class="fa fa-envelope"></i>
                 </span>
-                <input type="text" v-model="email" v-regexp="'^([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$': email" class="form-control" placeholder="请输入邮箱地址，便于密码找回" v-on="focus:cleanError">
+                <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址，便于密码找回" @focus = "cleanError">
             </div>
         </div>
         <div class="form-group">
@@ -26,7 +26,7 @@
                 <span class="input-group-addon">
                     <i class="fa fa-key"></i>
                 </span>
-                <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" v-on="keyup: signup | key 'enter',focus:cleanError">
+                <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" @keyup.enter = "signup" @focus="cleanError">
             </div>
         </div>
         <div class="form-group">
@@ -34,12 +34,12 @@
                 <span class="input-group-addon">
                     <i class="fa fa-key"></i>
                 </span>
-                <input type="password" v-model="repassword" class="form-control" id="password" placeholder="再次输入密码" v-on="keyup: signup | key 'enter',focus:cleanError">
+                <input type="password" v-model="repassword" class="form-control" id="password" placeholder="再次输入密码" @keyup.enter = "signup" @focus="cleanError">
             </div>
         </div>
         <div class="form-group">
-            <button v-btn-loading="loading" v-on="click: signup" class="btn  btn-default btn-lg btn-block bz-signup-btn" v-disable="loading">注册 </button>
+            <button v-btn-loading="loading" @click="signup" class="btn  btn-default btn-lg btn-block bz-signup-btn" v-disable="loading">注册 </button>
         </div>
     </div>
+    <error-info-panel :error_info="error_info"></error-info-panel>
 </div>
-<error-info-panel error-info="(%error_info%)"></error-info-panel>

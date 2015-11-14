@@ -5,16 +5,19 @@ login
 oauths:参见oauth2-button
 ###
 require './style.less'
+error = require '../../functions/error.coffee'
 module.exports =
   props:['oauths']
   data:->
     user_name:''
     password:''
+    error_info:''
   template: require('./template.html')
-  created:->
-    #bz.setOnErrorVm(@)
   components:
     'oauth2-button': require '../oauth2-button'
+    "error-info-panel": require '../error-info-panel'
+  created:->
+    error.setOnErrorVm(@)
   methods:
     signup:->
       window.location.href = '/signup?user_name=' + @user_name

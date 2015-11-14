@@ -46,7 +46,7 @@ window.bz =
     window.onerror = (errorMsg, url, lineNumber)->
       error = errorMsg.replace('Uncaught Error: ', '')
       vm.$set('error_info', error)
-      bz.showError5(error)
+      #bz.showError5(error)
   isEmpty : (obj) -> #是不是空对象
     if obj == null
       return true

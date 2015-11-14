@@ -1,4 +1,5 @@
 ###
+error-info-panel
 
 ###
 require './style.less'
