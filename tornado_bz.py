@@ -5,11 +5,15 @@ tornado 相关的公用代码
 '''
 
 import tornado
+import types
 import os
+import sys
 import public_bz
 import functools
 import json
 import urllib
+import user_bz
+import db_bz
 from tornado.web import RequestHandler
 
 
@@ -33,11 +37,34 @@ class BaseHandler(RequestHandler):
     '''
 
     def initialize(self):
-        #self.pg = self.settings['pg']
+        self.pg = self.settings['pg']
         self.template = getTName(self)
 
     def get_current_user(self):
         return self.get_secure_cookie("user_id")
+
+class UserInfoHandler(BaseHandler):
+
+    '''
+    create by bigzhu at 15/01/30 10:32:00 默认返回 user_info 的类单独拆离出来, 某些不需要返回 user_info 的可以继续用 base
+    '''
+
+    def get_user_info(self):
+        if self.current_user:
+            user_info = user_bz.UserOper(self.pg).getUserInfoById(self.current_user)
+            if user_info:
+                self.user_info = user_info[0]
+                return self.user_info
+            else:
+                self.redirect("/logout")
+
+    def get_template_namespace(self):
+        ns = super(UserInfoHandler, self).get_template_namespace()
+        ns.update({
+            'user_info': self.get_user_info(),
+        })
+
+        return ns
 
 
 def getURLMap(the_globals):
@@ -112,7 +139,7 @@ def handleError(method):
         try:
             method(self, *args, **kwargs)
         except Exception:
-            print(public_bz.getExpInfoAll())
+            print public_bz.getExpInfoAll()
             self.write(json.dumps({'error': public_bz.getExpInfo()}))
     return wrapper
 
@@ -194,7 +221,7 @@ def mustSubscribe(method):
             try:
                 wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
             except OfficialAPIError as e:
-                print(public_bz.getExpInfoAll())
+                print public_bz.getExpInfoAll()
                 self.clear_cookie(name='openid')
                 error = public_bz.getExpInfo()
                 if error.find('40001') != -1:
@@ -236,5 +263,181 @@ def getUserId(request):
     return user_id
 
 
+class oper(BaseHandler):
+
+    '''
+    create by bigzhu at 15/04/23 16:49:57 用来操作,做一些通用的增删改
+    协议说明:
+        put: update
+        post: insert
+        get: select
+        delete: delete
+
+    参数解释:
+        t: table_name
+        w: where
+        s: sql(完整的原始sql,太危险暂时取消)
+        v: update 或者 insert 的值
+        c: 记录数,要删除的记录数
+    '''
+    @handleError
+    def get(self):
+        self.set_header("Content-Type", "application/json")
+        t = self.get_argument('t')
+        w = self.get_argument('w', '1=1')
+        order = self.get_argument('order', None)
+        if order:
+            data = list(self.pg.db.select(t, where=w, order=order))
+        else:
+            data = list(self.pg.db.select(t, where=w))
+
+        self.write(json.dumps({'error': '0', 'data': data}, cls=public_bz.ExtEncoder))
+
+    @handleError
+    def post(self):
+        '''
+        create by bigzhu at 15/04/23 17:33:09 insert 返回 id
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            user_id = self.current_user
+        else:
+            raise Exception('必须登录才能操作')
+
+        data = json.loads(self.request.body)
+        t = data.get('t')  # table
+        v = data.get('v')  # value
+
+        v = db_bz.transTimeValueByTable(self.pg, t, v)
+        # 插入的值有id就update,只能udpate一条,没有就 insert
+        id = v.get('id')
+        if id is not None:
+            w = "id=%s" % id
+            trans = self.pg.db.transaction()
+            count = self.pg.db.update(t, w, **v)
+            if count == 1:
+                trans.commit()
+                self.write(json.dumps({'error': '0'}))
+                return
+            else:
+                trans.rollback()
+
+        seq = t + '_id_seq'
+        v['user_id'] = user_id
+        id = self.pg.db.insert(t, seqname=seq, **v)
+        self.write(json.dumps({'error': '0', 'id': id}))
+
+    @handleError
+    def put(self):
+        '''
+        create by bigzhu at 15/04/23 17:33:33 udpate数据,只要value有id, 可以不写where
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            pass
+        else:
+            raise Exception('必须登录才能操作')
+        data = json.loads(self.request.body)
+        t = data.get('t')  # table
+        w = data.get('w')  # where
+        v = data.get('v')  # value
+
+        v = db_bz.transTimeValueByTable(self.pg, t, v)
+        if w is None:
+            id = v.get('id')
+            if id is None:
+                raise Exception('没有足够的信息来进行update操作')
+            w = "id=%s" % id
+
+        trans = self.pg.db.transaction()
+        count = self.pg.db.update(t, w, **v)
+        if count == 1:
+            trans.commit()
+        else:
+            trans.rollback()
+            raise Exception('不允许update %s 条记录,请检查条件' % count)
+
+        self.write(json.dumps({'error': '0'}))
+
+    @handleError
+    def delete(self):
+        '''
+        create by bigzhu at 15/04/23 17:37:36 其实只是做update
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            pass
+        else:
+            raise Exception('必须登录才能操作')
+        t = self.get_argument('t')
+        w = self.get_argument('w')
+        c = self.get_argument('c')
+
+        trans = self.pg.db.transaction()
+        count = self.pg.db.update(t, w, is_delete=1)
+        if count == int(c):
+            trans.commit()
+        else:
+            trans.rollback()
+        self.write(json.dumps({'error': '0'}))
+
+
+class oper_post(BaseHandler):
+
+    '''
+    通用操作,http 协议太难用了,全用 post搞定
+    create by bigzhu at 15/06/07 12:38:39
+    '''
+    @handleError
+    def post(self):
+        '''
+        type: insert delete query select
+        create by bigzhu at 15/06/07 12:40:20
+        '''
+        self.set_header("Content-Type", "application/json")
+        if self.current_user:
+            user_id = self.current_user
+        else:
+            raise Exception('必须登录才能操作')
+
+        data = json.loads(self.request.body)
+        oper_type = data.get('type')
+        if oper_type == 'insert':
+            v = data.get('v')
+            t = data.get('t')
+            v = db_bz.transTimeValueByTable(self.pg, t, v)
+            # 插入的值有id就update,只能udpate一条,没有就 insert
+            id = v.get('id')
+            if id is not None:
+                w = "id=%s" % id
+                trans = self.pg.db.transaction()
+                count = self.pg.db.update(t, w, **v)
+                if count == 1:
+                    trans.commit()
+                    self.write(json.dumps({'error': OK}))
+                    return
+                else:
+                    trans.rollback()
+
+            seq = t + '_id_seq'
+            v['user_id'] = user_id
+            id = self.pg.db.insert(t, seqname=seq, **v)
+            self.write(json.dumps({'error': OK, 'id': id}))
+            return
+        elif oper_type == 'delete':
+            t = data.get('t')
+            ids = data.get('ids')
+            w = 'id in (%s) ' % ids
+            c = data.get('c')
+            trans = self.pg.db.transaction()
+            count = self.pg.db.update(t, w, is_delete=1)
+            if count == int(c):
+                trans.commit()
+            else:
+                trans.rollback()
+                raise Exception("按条件找到%s条,指定要删除%s条,取消删除" % (count, c))
+            self.write(json.dumps({'error': '0'}))
+
+
 if __name__ == '__main__':
-    pass
+    getAllUIModuleRequestHandlers()
