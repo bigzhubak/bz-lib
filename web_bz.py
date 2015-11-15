@@ -141,19 +141,7 @@ class login(UserInfoHandler):
         login_info = json.loads(self.request.body)
         user_name = login_info.get("user_name")
         password = login_info.get("password")
-        form_type = login_info.get("type")
-        print form_type
-        if form_type == "login":
-            user_info = self.user_oper.login(user_name, password)
-        if form_type == "signup":
-            email = login_info.get("email")
-            # 判断用户是否存在
-            user_info = self.user_oper.getUserInfo(user_name=user_name)
-            if user_info:
-                raise Exception('用户已经存在,请换一个用户名')
-            user_type = login_info.get("user_type", 'my')
-            self.user_oper.signup(user_name, password, email, user_type)
-            user_info = self.user_oper.login(user_name, password, "'%s'" % user_type)
+        user_info = self.user_oper.login(user_name, password)
         self.set_secure_cookie("user_id", str(user_info.id))
         self.write(json.dumps({'error': '0'}))
 
