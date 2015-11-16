@@ -27,7 +27,7 @@ module.exports =
       if not @user_name
         throw new Error("请输入用户名")
       if not @password
-        throw new Error("请输入用密码")
+        throw new Error("请输入用户密码")
       @error_info = false
       @loading=true
       parm = JSON.stringify
