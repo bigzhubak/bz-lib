@@ -36,3 +36,6 @@ module.exports =
             localStorage.user_info = JSON.stringify(data.user_info)
             @user_info=data.user_info
         error: ->
+    delAndLogout:->
+      localStorage.removeItem('user_info')
+      window.location.href="/logout"
