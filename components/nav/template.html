@@ -1,0 +1,28 @@
+<nav class="navbar navbar-static-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a :href="navbar_header.href" class="navbar-brand"><b>(%navbar_header.name%)</b></a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li v-for="link in nav_links">
+                    <a :href="link.href" :target="link.target">(%link.name%)</a>
+                </li>
+            </ul>
+            <form @submit="search"class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input v-model="search_value" type="text" class="form-control" id="navbar-search-input" placeholder="Search">
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <nav-user-info>
+                </nav-user-info>
+            </ul>
+        </div>
+    </div>
+</nav>
