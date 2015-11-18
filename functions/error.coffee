@@ -11,6 +11,7 @@ error =
       top_toast.error(error,'出错了!')
       console.log error
       console.log top_toast
-      vm.$set('error_info', error)
+      if _.has(vm, 'error_info')
+        vm.$set('error_info', error)
 
 module.exports = error
