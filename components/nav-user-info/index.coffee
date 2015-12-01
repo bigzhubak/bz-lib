@@ -5,7 +5,9 @@ require './style.less'
 module.exports =
   template: require('./template.html')
   data:->
-    user_info:null
+    user_info:
+      user_name:''
+      email:''
   created:->
     if localStorage.user_info
       JSON.parse(localStorage.user_info)
@@ -35,7 +37,10 @@ module.exports =
           else
             localStorage.user_info = JSON.stringify(data.user_info)
             @user_info=data.user_info
-        error: ->
+        error:(data, status, response)->
+          console.log data
+          console.log status
+          console.log response
     delAndLogout:->
       localStorage.removeItem('user_info')
       window.location.href="/logout"
