@@ -8,8 +8,6 @@ module.exports =
   props:['navbar_header', 'nav_links']
   template: require('./template.html')
   methods:
-    clickLink:->
-      @loading = true
     search:(e)->
       # 如果定义了 header_search 方法, 就不用默认的 google search 了
       e.preventDefault()

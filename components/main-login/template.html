@@ -1,7 +1,7 @@
 <component :is="current_view" :oauths="oauths"></component>
 <div class="btn-group">
-    <button v-show="current_view !='signup'" @click="change('signup')" type="button" class="btn btn-default">注册用户</button>
-    <button v-show="current_view !='forget'" @click="change('forget')" type="button" class="btn btn-default">找回密码</button>
-    <button v-show="current_view !='login'" @click="change('login')" type="button" class="btn btn-default">登录</button>
+    <button v-show="current_view !='signup'" :click="change('signup')" type="button" class="btn btn-default">注册用户</button>
+    <button v-show="current_view !='forget'" :click="change('forget')" type="button" class="btn btn-default">找回密码</button>
+    <button v-show="current_view !='login'" :click="change('login')" type="button" class="btn btn-default">登录</button>
 </div>
 

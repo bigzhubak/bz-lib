@@ -59,4 +59,3 @@ module.exports =
         success: (data, status, response) =>
           @loading = false
           @files = data.files
-

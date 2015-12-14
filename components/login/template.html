@@ -11,7 +11,7 @@
                 <span class="input-group-addon">
                     <i class="fa fa-envelope"></i>
                 </span>
-                <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入邮箱/用户名" @focus="cleanError">
+                <input type="text" v-model="user_name" class="form-control" id="user" placeholder="请输入邮箱/用户名" :focus="cleanError">
             </div>
         </div>
         <div class="form-group">
@@ -19,11 +19,11 @@
                 <span class="input-group-addon">
                     <i class="fa fa-key"></i>
                 </span>
-                <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" @keyup.enter="login" @focus="cleanError">
+                <input type="password" v-model="password" class="form-control" id="password" placeholder="请输入密码" :keyup.enter="login" :focus="cleanError">
             </div>
         </div>
         <div class="form-group">
-            <a @click="login" class="btn btn-default btn-lg btn-block bz-login-btn">登录</a>
+            <a :click="login" class="btn btn-default btn-lg btn-block bz-login-btn">登录</a>
         </div>
     </div>
 </div>
@@ -39,7 +39,7 @@
                 <p>系统还没有用户(%user_name%),是否建立?</p>
             </div>
             <div class="modal-footer">
-                <button @click="signup" type="button" class="btn btn-default pull-left" data-dismiss="modal">确定</button>
+                <button :click="signup" type="button" class="btn btn-default pull-left" data-dismiss="modal">确定</button>
                 <button type="button" class="btn btn-default " data-dismiss="modal">取消</button>
             </div>
         </div>

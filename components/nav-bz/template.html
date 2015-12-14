@@ -14,7 +14,7 @@
                     <a :href="link.href" :target="link.target">(%link.name%)</a>
                 </li>
             </ul>
-            <form @submit="search"class="navbar-form navbar-left" role="search">
+            <form :submit="search"class="navbar-form navbar-left" role="search">
                 <div class="form-group">
                     <input v-model="search_value" type="text" class="form-control" id="navbar-search-input" placeholder="Search">
                 </div>
