@@ -6,8 +6,6 @@ module.exports =
   directives:
     "btn-loading": require 'lib/directives/btn-loading'
   template: require('./template.html')
-  components:
-    "error-info-panel": require '../error-info-panel'
   created:->
     error = require '../../functions/error.coffee'
     error.setOnErrorVm(@)

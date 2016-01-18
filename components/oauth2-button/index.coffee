@@ -21,7 +21,7 @@ module.exports =
       if _.has(@oauth, 'icon_class')
         return @oauth.icon_class
       else
-        return "fa-#{@oauth.name}"
+        return @oauth.name
     the_show_name:->
       if _.has(@oauth, 'show_name')
         return @oauth.show_name

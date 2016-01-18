@@ -56,6 +56,7 @@
 	  },
 	  data: function() {
 	    return {
+	      items: [1, 2, 3, 4, 5],
 	      oauths: [
 	        {
 	          'name': 'twitter',
@@ -89,8 +90,9 @@
 	  el: '#v_test',
 	  components: {
 	    'main-login': __webpack_require__(7),
-	    'simditor': __webpack_require__(42),
-	    'vnav': __webpack_require__(51)
+	    'simditor': __webpack_require__(38),
+	    'vnav': __webpack_require__(43),
+	    'bz-str': __webpack_require__(51)
 	  }
 	});
 
@@ -9879,8 +9881,8 @@
 	  template: __webpack_require__(12),
 	  components: {
 	    "login": __webpack_require__(13),
-	    "signup": __webpack_require__(25),
-	    "forget": __webpack_require__(38)
+	    "signup": __webpack_require__(21),
+	    "forget": __webpack_require__(34)
 	  }
 	};
 
@@ -10210,7 +10212,7 @@
 /* 12 */
 /***/ function(module, exports) {
 
-	module.exports = "<component :is=\"current_view\" :oauths=\"oauths\"></component>\n<div class=\"btn-group\">\n    <button v-show=\"current_view !='signup'\" @click=\"change('signup')\" type=\"button\" class=\"btn btn-default\">注册用户</button>\n    <button v-show=\"current_view !='forget'\" @click=\"change('forget')\" type=\"button\" class=\"btn btn-default\">找回密码</button>\n    <button v-show=\"current_view !='login'\" @click=\"change('login')\" type=\"button\" class=\"btn btn-default\">登录</button>\n</div>\n\n";
+	module.exports = "\n<div class=\"ui segments\">\n<component :is=\"current_view\" :oauths=\"oauths\"></component>\n<div class=\"ui buttons\">\n    <button v-show=\"current_view !='signup'\" @click=\"change('signup')\" type=\"button\" class=\"ui basic button\">注册用户</button>\n    <button v-show=\"current_view !='forget'\" @click=\"change('forget')\" type=\"button\" class=\"ui basic button\">找回密码</button>\n    <button v-show=\"current_view !='login'\" @click=\"change('login')\" type=\"button\" class=\"ui basic button\">登录</button>\n</div>\n</div>\n\n";
 
 /***/ },
 /* 13 */
@@ -10240,8 +10242,7 @@
 	  },
 	  template: __webpack_require__(16),
 	  components: {
-	    'oauth2-button': __webpack_require__(17),
-	    "error-info-panel": __webpack_require__(21)
+	    'oauth2-button': __webpack_require__(17)
 	  },
 	  created: function() {
 	    return error.setOnErrorVm(this);
@@ -10255,6 +10256,7 @@
 	    },
 	    login: function() {
 	      var parm;
+	      console.log('login');
 	      if (!this.user_name) {
 	        throw new Error("请输入用户名");
 	      }
@@ -10340,7 +10342,7 @@
 /* 16 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"btn-group btn-group-justified\">\n    <oauth2-button  v-for=\"oauth in oauths\" :oauth=\"oauth\"></oauth2-button>\n</div>\n<div class=\"box box-solid\">\n    <div class=\"box-header with-border\">\n        <h3 class=\"text-center\">用户登录</h3>\n    </div>\n    <div class=\"box-body\">\n        <div class=\"form-group\">\n            <div class=\"input-group input-group-lg\">\n                <span class=\"input-group-addon\">\n                    <i class=\"fa fa-envelope\"></i>\n                </span>\n                <input type=\"text\" v-model=\"user_name\" class=\"form-control\" id=\"user\" placeholder=\"请输入邮箱/用户名\" @focus=\"cleanError\">\n            </div>\n        </div>\n        <div class=\"form-group\">\n            <div class=\"input-group input-group-lg\">\n                <span class=\"input-group-addon\">\n                    <i class=\"fa fa-key\"></i>\n                </span>\n                <input type=\"password\" v-model=\"password\" class=\"form-control\" id=\"password\" placeholder=\"请输入密码\" @keyup.enter=\"login\" @focus=\"cleanError\">\n            </div>\n        </div>\n        <div class=\"form-group\">\n            <a @click=\"login\" class=\"btn btn-default btn-lg btn-block bz-login-btn\">登录</a>\n        </div>\n    </div>\n</div>\n<error-info-panel :error_info=\"error_info\"></error-info-panel>\n<div class=\"modal fade\" id=\"confirm-ask-create\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n    <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">×</span></button>\n                <h4 class=\"modal-title\">建立一个吧!</h4>\n            </div>\n            <div class=\"modal-body\">\n                <p>系统还没有用户(%user_name%),是否建立?</p>\n            </div>\n            <div class=\"modal-footer\">\n                <button @click=\"signup\" type=\"button\" class=\"btn btn-default pull-left\" data-dismiss=\"modal\">确定</button>\n                <button type=\"button\" class=\"btn btn-default \" data-dismiss=\"modal\">取消</button>\n            </div>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "<div class=\"ui center aligned secondary segment\">\n    <b>用户登录</b>\n</div>\n<div class=\"ui segment\">\n    <div class=\"ui two column middle aligned very relaxed stackable grid\">\n        <div class=\"center aligned column\">\n            <div class=\"ui large\">\n                <oauth2-button  v-for=\"oauth in oauths\" :oauth=\"oauth\"></oauth2-button>\n            </div>\n        </div>\n        <div class=\"ui vertical divider\">Or </div>\n        <div class=\"center aligned column\">\n            <form class=\"ui form fluid \">\n                <div class=\"field\">\n                    <label>用户名</label>\n                    <input @focus=\"cleanError\" v-model=\"user_name\" placeholder=\"请输入邮箱/用户名\" type=\"text\">\n                </div>\n                <div class=\"field\">\n                    <label>密码</label>\n                    <input v-model=\"password\" @keyup.enter=\"login\" @focus=\"cleanError\" placeholder=\"请输入密码\"  type=\"password\">\n                </div>\n                <a @click=\"login\" class=\"ui blue submit button\">登录</a>\n            </form>\n            <div v-show=\"error_info\" class=\"ui bottom attached warning message\">\n                <i class=\"icon help\"></i>\n                (%error_info%)\n            </div>\n        </div>\n    </div>\n</div>\n\n\n<div class=\"ui small test modal\">\n    <div class=\"header\">\n        不存在用户 \n    </div>\n    <div class=\"content\">\n        <p>还没有用户(%user_name%),是否建立?</p>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui negative button\">\n            不用\n        </div>\n        <div @click=\"signup\" class=\"ui positive right labeled icon button\">\n            好的\n            <i class=\"checkmark icon\"></i>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 17 */
@@ -10373,7 +10375,7 @@
 	      if (_.has(this.oauth, 'icon_class')) {
 	        return this.oauth.icon_class;
 	      } else {
-	        return "fa-" + this.oauth.name;
+	        return this.oauth.name;
 	      }
 	    },
 	    the_show_name: function() {
@@ -10431,32 +10433,10 @@
 /* 20 */
 /***/ function(module, exports) {
 
-	module.exports = "<a :href=\"the_href\" class=\"btn btn-default btn-oauth2-(%oauth.name%)\">\n    <i class=\"fa (%the_icon_class%)\"></i>\n    <span class=\"visible-md-inline-block visible-lg-inline-block\">(%the_show_name%)</span>\n</a>\n";
+	module.exports = "<a :href=\"the_href\" class=\"ui (%oauth.name%) button\">\n    <i class=\"(%the_icon_class%) icon\"></i>\n    (%the_show_name%)\n</a>\n";
 
 /***/ },
 /* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/*
-	error-info-panel
-	 */
-	module.exports = {
-	  template: __webpack_require__(24),
-	  props: ['error_info']
-	};
-
-
-/***/ },
-/* 22 */,
-/* 23 */,
-/* 24 */
-/***/ function(module, exports) {
-
-	module.exports = "<div v-show=\"error_info\" class=\"alert alert-warning alert-dismissable\">\n    <h4><i class=\"icon fa fa-warning\"></i>(%error_info%)</h4>\n</div>\n";
-
-/***/ },
-/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -10465,19 +10445,23 @@
 	 */
 	var error;
 	
-	__webpack_require__(26);
+	__webpack_require__(22);
 	
 	error = __webpack_require__(2);
 	
 	module.exports = {
-	  template: __webpack_require__(28),
-	  components: {
-	    "error-info-panel": __webpack_require__(21)
+	  data: function() {
+	    return {
+	      user_name_error: false,
+	      email_error: false,
+	      password_error: false
+	    };
 	  },
+	  template: __webpack_require__(24),
 	  directives: {
-	    "regexp": __webpack_require__(29),
-	    "disable": __webpack_require__(32),
-	    "btn-loading": __webpack_require__(35)
+	    "regexp": __webpack_require__(25),
+	    "disable": __webpack_require__(28),
+	    "btn-loading": __webpack_require__(31)
 	  },
 	  created: function() {
 	    return error.setOnErrorVm(this);
@@ -10486,15 +10470,15 @@
 	    signup: function() {
 	      var key, parm, value;
 	      if (!this.user_name) {
+	        this.user_name_error = true;
 	        throw new Error("请输入用户名");
 	      }
 	      if (!this.password) {
+	        this.password_error = true;
 	        throw new Error("请输入用密码");
 	      }
-	      if (this.password !== this.repassword) {
-	        throw new Error("两次密码不一致");
-	      }
 	      if (!this.email) {
+	        this.email_error = true;
 	        throw new Error("请输入邮箱");
 	      }
 	      for (key in regexp) {
@@ -10531,9 +10515,88 @@
 	      });
 	    },
 	    cleanError: function() {
+	      this.user_name_error = false;
+	      this.email_error = false;
+	      this.password_error = false;
 	      return this.$data.error_info = false;
 	    }
 	  }
+	};
+
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(23);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(11)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(10)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"ui center aligned secondary segment\">\n    <b>用户注册</b>\n</div>\n<div class=\"ui segment\">\n    <form class=\"ui form fluid \">\n        <div class=\"field\" v-bind:class=\"{ 'error': user_name_error }\">\n            <label>用户名</label>\n            <input @focus=\"cleanError\" v-model=\"user_name\"  placeholder=\"请输入用户名\" type=\"text\">\n        </div>\n        <div class=\"field\">\n            <label>邮箱</label>\n            <input @focus=\"cleanError\" v-model=\"email\" placeholder=\"请输入邮箱地址，便于密码找回\" type=\"text\">\n        </div>\n        <div class=\"field\">\n            <label>密码</label>\n            <input v-model=\"password\" @keyup.enter=\"signup\" @focus=\"cleanError\" placeholder=\"请输入密码\"  type=\"password\">\n        </div>\n        <a @click=\"signup\" class=\"ui blue submit button\">注册</a>\n    </form>\n    <div v-show=\"error_info\" class=\"ui bottom attached warning message\">\n        <i class=\"icon help\"></i>\n        (%error_info%)\n    </div>\n</div>\n";
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(26);
+	
+	module.exports = {
+	  bind: function() {},
+	  update: function(value, old_value) {
+	    var r, reg;
+	    if (!window.regexp) {
+	      window.regexp = {};
+	    }
+	    if (value) {
+	      reg = new RegExp(this.arg);
+	      r = reg.test(value);
+	      if (r) {
+	        $(this.el).css('border-color', '#d2d6de');
+	        return window.regexp[this.expression] = r;
+	      } else {
+	        return $(this.el).css('border-color', '#ff0000');
+	      }
+	    } else {
+	      return window.regexp[this.expression] = false;
+	    }
+	  },
+	  unbind: function() {}
 	};
 
 
@@ -10579,85 +10642,9 @@
 
 /***/ },
 /* 28 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"box box-solid\">\n    <div class=\"box-header with-border\">\n        <h3 class=\"text-center\">用户注册</h3>\n        <div class=\"box-tools pull-right\">\n        </div>\n    </div>\n    <div class=\"box-body\">\n        <div class=\"form-group\">\n            <div class=\"input-group input-group-lg\">\n                <span class=\"input-group-addon\">\n                    <i class=\"fa fa-user\"></i>\n                </span>\n                <input type=\"text\" v-model=\"user_name\"  class=\"form-control\" placeholder=\"请输入用户名\" @focus=\"cleanError\">\n            </div>\n        </div>\n        <div class=\"form-group\">\n            <div class=\"input-group input-group-lg\">\n                <span class=\"input-group-addon\">\n                    <i class=\"fa fa-envelope\"></i>\n                </span>\n                <input type=\"text\" v-model=\"email\" class=\"form-control\" placeholder=\"请输入邮箱地址，便于密码找回\" @focus = \"cleanError\">\n            </div>\n        </div>\n        <div class=\"form-group\">\n            <div class=\"input-group input-group-lg\">\n                <span class=\"input-group-addon\">\n                    <i class=\"fa fa-key\"></i>\n                </span>\n                <input type=\"password\" v-model=\"password\" class=\"form-control\" id=\"password\" placeholder=\"请输入密码\" @keyup.enter = \"signup\" @focus=\"cleanError\">\n            </div>\n        </div>\n        <div class=\"form-group\">\n            <div class=\"input-group input-group-lg\">\n                <span class=\"input-group-addon\">\n                    <i class=\"fa fa-key\"></i>\n                </span>\n                <input type=\"password\" v-model=\"repassword\" class=\"form-control\" id=\"password\" placeholder=\"再次输入密码\" @keyup.enter = \"signup\" @focus=\"cleanError\">\n            </div>\n        </div>\n        <div class=\"form-group\">\n            <button v-btn-loading=\"loading\" @click=\"signup\" class=\"btn  btn-default btn-lg btn-block bz-signup-btn\" v-disable=\"loading\">注册 </button>\n        </div>\n    </div>\n    <error-info-panel :error_info=\"error_info\"></error-info-panel>\n</div>\n";
-
-/***/ },
-/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(30);
-	
-	module.exports = {
-	  bind: function() {},
-	  update: function(value, old_value) {
-	    var r, reg;
-	    if (!window.regexp) {
-	      window.regexp = {};
-	    }
-	    if (value) {
-	      reg = new RegExp(this.arg);
-	      r = reg.test(value);
-	      if (r) {
-	        $(this.el).css('border-color', '#d2d6de');
-	        return window.regexp[this.expression] = r;
-	      } else {
-	        return $(this.el).css('border-color', '#ff0000');
-	      }
-	    } else {
-	      return window.regexp[this.expression] = false;
-	    }
-	  },
-	  unbind: function() {}
-	};
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(31);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(33);
+	__webpack_require__(29);
 	
 	module.exports = {
 	  bind: function() {},
@@ -10669,13 +10656,13 @@
 
 
 /***/ },
-/* 33 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(34);
+	var content = __webpack_require__(30);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(11)(content, {});
@@ -10695,7 +10682,7 @@
 	}
 
 /***/ },
-/* 34 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(10)();
@@ -10709,10 +10696,10 @@
 
 
 /***/ },
-/* 35 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(36);
+	__webpack_require__(32);
 	
 	module.exports = {
 	  bind: function() {},
@@ -10732,13 +10719,13 @@
 
 
 /***/ },
-/* 36 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(37);
+	var content = __webpack_require__(33);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(11)(content, {});
@@ -10758,7 +10745,7 @@
 	}
 
 /***/ },
-/* 37 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(10)();
@@ -10772,23 +10759,20 @@
 
 
 /***/ },
-/* 38 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	/*
 	忘记密码
 	 */
-	__webpack_require__(39);
+	__webpack_require__(35);
 	
 	module.exports = {
 	  directives: {
-	    "btn-loading": __webpack_require__(35)
+	    "btn-loading": __webpack_require__(31)
 	  },
-	  template: __webpack_require__(41),
-	  components: {
-	    "error-info-panel": __webpack_require__(21)
-	  },
+	  template: __webpack_require__(37),
 	  created: function() {
 	    var error;
 	    error = __webpack_require__(2);
@@ -10836,13 +10820,13 @@
 
 
 /***/ },
-/* 39 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(40);
+	var content = __webpack_require__(36);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(11)(content, {});
@@ -10862,7 +10846,7 @@
 	}
 
 /***/ },
-/* 40 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(10)();
@@ -10876,23 +10860,23 @@
 
 
 /***/ },
-/* 41 */
+/* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"box box-solid\">\n    <div class=\"box-header with-border\">\n        <h3 class=\"text-center\">找回密码</h3>\n        <div class=\"box-tools pull-right\">\n        </div>\n    </div>\n    <div class=\"box-body\">\n        <div class=\"form-group\">\n            <div class=\"input-group input-group-lg\">\n                <span class=\"input-group-addon\">\n                    <i class=\"fa fa-envelope\"></i>\n                </span>\n                <input type=\"text\" v-model=\"email\" class=\"form-control\" placeholder=\"请输入邮箱地址\" @keyup.enter=\"forget\" @focus=\"cleanError\">\n            </div>\n        </div>\n        <div class=\"form-group\">\n            <button @click=\"forget\" class=\"btn btn-default btn-lg btn-block bz-login-btn\" type=\"button\" v-btn-loading=\"loading\">发送邮件</button>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "    <div class=\"ui center aligned secondary segment\">\n        <b>找回密码</b>\n    </div>\n    <div class=\"ui segment\">\n        <form class=\"ui form fluid \">\n            <div class=\"field\">\n                <label>邮箱</label>\n                <input type=\"text\" v-model=\"email\" class=\"form-control\" placeholder=\"请输入邮箱地址\" @keyup.enter=\"forget\" @focus=\"cleanError\">\n            </div>\n            <a @click=\"forget\" class=\"ui blue submit button\">发送邮件</a>\n        </form>\n        <div v-show=\"error_info\" class=\"ui bottom attached warning message\">\n            <i class=\"icon help\"></i>\n            (%error_info%)\n        </div>\n    </div>\n";
 
 /***/ },
-/* 42 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var check;
 	
-	__webpack_require__(43);
+	__webpack_require__(39);
 	
-	check = __webpack_require__(45);
+	check = __webpack_require__(41);
 	
 	module.exports = {
-	  template: __webpack_require__(46),
+	  template: __webpack_require__(42),
 	  props: ['content'],
 	  ready: function() {
 	    this.initSimditor();
@@ -10937,13 +10921,13 @@
 
 
 /***/ },
-/* 43 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(44);
+	var content = __webpack_require__(40);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(11)(content, {});
@@ -10963,7 +10947,7 @@
 	}
 
 /***/ },
-/* 44 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(10)();
@@ -10977,7 +10961,7 @@
 
 
 /***/ },
-/* 45 */
+/* 41 */
 /***/ function(module, exports) {
 
 	
@@ -11001,22 +10985,93 @@
 
 
 /***/ },
-/* 46 */
+/* 42 */
 /***/ function(module, exports) {
 
 	module.exports = "<textarea placeholder=\"\"></textarea>\n";
 
 /***/ },
-/* 47 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	/*
 	 */
-	__webpack_require__(48);
+	__webpack_require__(44);
 	
 	module.exports = {
+	  components: {
+	    'nav-user-info': __webpack_require__(46)
+	  },
+	  props: ['navbar_header', 'nav_links'],
 	  template: __webpack_require__(50),
+	  methods: {
+	    search: function(e) {
+	      var host, url;
+	      e.preventDefault();
+	      if (window.header_search) {
+	        window.header_search(this.search_value);
+	        return;
+	      }
+	      host = window.location.hostname;
+	      url = "https://www.google.com/search?q=site:" + host + " " + this.search_value + "&gws_rd=ssl";
+	      return window.open(url);
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(45);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(11)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(10)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".main.container {\n  margin-top: 3em;\n}\n@media only screen and (max-width: 767px) {\n  .mobile.hidden,\n  .tablet.only,\n  .small.monitor.only,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 768px) and (max-width: 991px) {\n  .mobile.only,\n  .tablet.hidden,\n  .small.monitor.only,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 992px) and (max-width: 1199px) {\n  .mobile.only,\n  .tablet.only,\n  .small.monitor.hidden,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 1200px) {\n  .mobile.only,\n  .tablet.only,\n  .small.monitor.only,\n  .large.monitor.hidden {\n    display: none !important;\n  }\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	 */
+	__webpack_require__(47);
+	
+	module.exports = {
+	  template: __webpack_require__(49),
 	  data: function() {
 	    return {
 	      user_info: {
@@ -11080,13 +11135,13 @@
 
 
 /***/ },
-/* 48 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(49);
+	var content = __webpack_require__(48);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(11)(content, {});
@@ -11106,7 +11161,7 @@
 	}
 
 /***/ },
-/* 49 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(10)();
@@ -11120,10 +11175,16 @@
 
 
 /***/ },
+/* 49 */
+/***/ function(module, exports) {
+
+	module.exports = "<li v-show=\"user_info\" class=\"dropdown user user-menu\">\n    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n        <i class=\"glyphicon glyphicon-user\"></i>\n        <span>(%user_info.user_name%)<i class=\"caret\"></i></span>\n    </a>\n    <ul class=\"dropdown-menu\">\n        <!-- User images -->\n        <li class=\"user-header bg-light-blue\">\n            <img :src=\"avatar\" class=\"img-circle\">\n            <p>\n            (%user_info.user_name%) <br />\n            (%user_info.email%)\n\n            <small>(%desc%)</small>\n            </p>\n        </li>\n        <!-- Menu Footer-->\n        <li class=\"user-footer\">\n            <div class=\"btn-group btn-group-justified\">\n                <div class=\"btn-group\">\n                    <a href=\"/profile\" class=\"btn btn-default btn-flat\">个人资料</a>\n                </div>\n                <div class=\"btn-group\">\n                    <a :click=\"delAndLogout\" class=\"btn btn-default btn-flat\">安全退出</a>\n                </div>\n            </div>\n        </li>\n    </ul>\n</li>\n<li v-show=\"!user_info\" ><a href=\"/login\"><i class=\"fa fa-sign-in\"></i> 登录</a></li>\n";
+
+/***/ },
 /* 50 */
 /***/ function(module, exports) {
 
-	module.exports = "<li v-show=\"user_info\" class=\"dropdown user user-menu\">\n    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n        <i class=\"glyphicon glyphicon-user\"></i>\n        <span>(%user_info.user_name%)<i class=\"caret\"></i></span>\n    </a>\n    <ul class=\"dropdown-menu\">\n        <!-- User images -->\n        <li class=\"user-header bg-light-blue\">\n            <img :src=\"avatar\" class=\"img-circle\">\n            <p>\n            (%user_info.user_name%) <br />\n            (%user_info.email%)\n\n            <small>(%desc%)</small>\n            </p>\n        </li>\n        <!-- Menu Footer-->\n        <li class=\"user-footer\">\n            <div class=\"btn-group btn-group-justified\">\n                <div class=\"btn-group\">\n                    <a href=\"/profile\" class=\"btn btn-default btn-flat\">个人资料</a>\n                </div>\n                <div class=\"btn-group\">\n                    <a @click=\"delAndLogout\" class=\"btn btn-default btn-flat\">安全退出</a>\n                </div>\n            </div>\n        </li>\n    </ul>\n</li>\n<li v-show=\"!user_info\" ><a href=\"/login\"><i class=\"fa fa-sign-in\"></i> 登录</a></li>\n";
+	module.exports = "<nav class=\"ui top fixed pointing menu\">\n    <a class=\"header item\" :href=\"navbar_header.href\"><b>(%navbar_header.name%)</b></a>\n    <a class=\"item\" v-for=\"link in nav_links\" :href=\"link.href\" :target=\"link.target\">(%link.name%)</a>\n    <div class=\"right menu \">\n        <div class=\"computer only item\">\n            <form :submit=\"search\" class=\"ui  transparent icon input\">\n                <input v-model=\"search_value\" type=\"text\" placeholder=\"Search...\">\n                <i class=\"search link icon\"></i>\n            </form>\n        </div>\n    </div>\n</nav>\n";
 
 /***/ },
 /* 51 */
@@ -11135,27 +11196,8 @@
 	__webpack_require__(52);
 	
 	module.exports = {
-	  components: {
-	    'nav-user-info': __webpack_require__(47)
-	  },
-	  props: ['navbar_header', 'nav_links'],
 	  template: __webpack_require__(54),
-	  methods: {
-	    clickLink: function() {
-	      return this.loading = true;
-	    },
-	    search: function(e) {
-	      var host, url;
-	      e.preventDefault();
-	      if (window.header_search) {
-	        window.header_search(this.search_value);
-	        return;
-	      }
-	      host = window.location.hostname;
-	      url = "https://www.google.com/search?q=site:" + host + " " + this.search_value + "&gws_rd=ssl";
-	      return window.open(url);
-	    }
-	  }
+	  props: ['bigzhu', 'index']
 	};
 
 
@@ -11203,7 +11245,7 @@
 /* 54 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav class=\"navbar navbar-static-top\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <a :href=\"navbar_header.href\" class=\"navbar-brand\"><b>(%navbar_header.name%)</b></a>\n            <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar-collapse\">\n                <i class=\"fa fa-bars\"></i>\n            </button>\n        </div>\n\n        <!-- Collect the nav links, forms, and other content for toggling -->\n        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse\">\n            <ul class=\"nav navbar-nav\">\n                <li v-for=\"link in nav_links\">\n                    <a :href=\"link.href\" :target=\"link.target\">(%link.name%)</a>\n                </li>\n            </ul>\n            <form @submit=\"search\"class=\"navbar-form navbar-left\" role=\"search\">\n                <div class=\"form-group\">\n                    <input v-model=\"search_value\" type=\"text\" class=\"form-control\" id=\"navbar-search-input\" placeholder=\"Search\">\n                </div>\n            </form>\n            <ul class=\"nav navbar-nav navbar-right\">\n                <nav-user-info>\n                </nav-user-info>\n            </ul>\n        </div>\n    </div>\n</nav>\n";
+	module.exports = "";
 
 /***/ }
 /******/ ]);
