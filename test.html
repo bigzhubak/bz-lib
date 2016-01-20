@@ -28,6 +28,10 @@
             <hr>
             <simditor :content.sync="simditor_content"></simditor>
             <hr>
+            <div>格式化时间戳1447835496000  
+                输出<span v-text="1447835496000 | dateformat 'yyyy-MM-dd'">
+                </span>
+            </div>
         </div>
         <script src="/static/node_modules/vue/dist/vue.js"></script>
         <script src="/static/node_modules/vue-router/dist/vue-router.js"></script>

@@ -4,6 +4,7 @@ v_test = new Vue
   created:->
     error.setOnErrorVm(@)
   data:->
+    datetime:1447835496000
     items: [
       1
       2
@@ -48,5 +49,7 @@ v_test = new Vue
     'main-login': require('lib/components/main-login'),
     'simditor': require('lib/components/simditor'),
     'vnav': require('lib/components/nav-bz'),
-    'bz-str': require('lib/components/bz-str'),
+  filters:
+    'dateformat': require('lib/filters/dateformat')
+
 

@@ -2,6 +2,14 @@
 错误处理相关
 ###
 time =
+  preZero:(num, len)->
+    numStr = num.toString()
+    if len < numStr.length
+      return numStr
+    else
+      a = new Array(len + 1).join("0") + numStr
+      return a.substr(a.length - len, a.length - 1)
+
   timeLen : (that_time)-> #计算距今的时间间隔
     second = 1000
     minute = second * 60
