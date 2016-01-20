@@ -4,9 +4,11 @@
 require './style.less'
 error = require '../../functions/error.coffee'
 module.exports =
+  data:->
+    user_name_error:false
+    email_error:false
+    password_error:false
   template: require './template.html'
-  components:
-    "error-info-panel": require '../error-info-panel'
   directives:
     "regexp": require 'lib/directives/regexp'
     "disable": require 'lib/directives/disable'
@@ -16,12 +18,15 @@ module.exports =
   methods:
     signup:->
       if not @user_name
+        @user_name_error=true
         throw new Error("请输入用户名")
       if not @password
+        @password_error=true
         throw new Error("请输入用密码")
-      if @password != @repassword
-        throw new Error("两次密码不一致")
+      #if @password != @repassword
+      #  throw new Error("两次密码不一致")
       if not @email
+        @email_error=true
         throw new Error("请输入邮箱")
       #if @user_type is ''
       #  throw new Error("请选择用户类型")
@@ -49,4 +54,7 @@ module.exports =
           @loading=false
         error: ->
     cleanError:->
+      @user_name_error=false
+      @email_error=false
+      @password_error=false
       @$data.error_info = false

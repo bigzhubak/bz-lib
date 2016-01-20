@@ -15,7 +15,6 @@ module.exports =
   template: require('./template.html')
   components:
     'oauth2-button': require '../oauth2-button'
-    "error-info-panel": require '../error-info-panel'
   created:->
     error.setOnErrorVm(@)
   methods:
@@ -24,6 +23,7 @@ module.exports =
     cleanError:->
       @$data.error_info = false
     login:->
+      console.log 'login'
       if not @user_name
         throw new Error("请输入用户名")
       if not @password

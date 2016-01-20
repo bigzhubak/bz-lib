@@ -24,5 +24,17 @@ compute =
       max_width = message_width-img_border
       real_height = compute.calculateHeight(img_height, img_width, max_width)
       return real_height
+    getFitSizeForSemantic: (img_height, img_width)->
+      window_width = $(window).width()
+      container_border = 14*2 #边框总是有14，两边28
+      grid_border = -14*2 #边框总是有-14，两边-28
+      if window_width <768
+        message_width = window_width-container_border
+      if 768<=window_width<=991
+        message_width = 723
+      if 992<=window_width<=1200
+        message_width = 933
+      if window_width>1200
+        message_width = 1127
 
 module.exports = compute

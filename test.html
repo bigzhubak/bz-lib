@@ -8,11 +8,7 @@
         <meta name="keywords" content="{% block keywords %}test{% end %}" />
         <link rel='shortcut icon' href='/static/images/login-logo.png' />
 
-        <link href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
-        <link href="/static/node_modules/font-awesome/css/font-awesome.min.css" type="text/css" rel="stylesheet"/>
-
-        <link href="/static/node_modules/admin-lte/dist/css/AdminLTE.min.css" type="text/css" rel="stylesheet"/>
-        <link href="/static/node_modules/admin-lte/dist/css/skins/skin-black.min.css" rel="stylesheet" type="text/css" />
+        <link href="//oss.maxcdn.com/semantic-ui/2.1.7/semantic.min.css" type="text/css" rel="stylesheet"/>
 
         <link href="/static/node_modules/simditor/styles/simditor.css" type="text/css" rel="stylesheet"/>
 
@@ -27,20 +23,17 @@
     </head>
     <body class="skin-black layout-top-nav">
         <div id="v_test" class="container">
+            <vnav :navbar_header="navbar_header" :nav_links="nav_links"></vnav>
             <main-login :oauths="oauths"></main-login>
             <hr>
             <simditor :content.sync="simditor_content"></simditor>
             <hr>
-            <header id="v_header" class="main-header">               
-                <vnav :navbar_header="navbar_header" :nav_links="nav_links"></vnav>
-            </header>
-            <file-upload-bz key="test1" is_edit="true"></file-upload-bz>
         </div>
         <script src="/static/node_modules/vue/dist/vue.js"></script>
         <script src="/static/node_modules/vue-router/dist/vue-router.js"></script>
 
         <script src="/static/node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="/static/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="//oss.maxcdn.com/semantic-ui/2.1.7/semantic.min.js"></script>
         <script src="/static/node_modules/underscore/underscore-min.js"></script>
         <script src="/static/node_modules/qtip2/jquery.qtip.min.js"></script>
 

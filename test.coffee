@@ -4,6 +4,13 @@ v_test = new Vue
   created:->
     error.setOnErrorVm(@)
   data:->
+    items: [
+      1
+      2
+      3
+      4
+      5
+    ]
     oauths:[
       {
         'name':'twitter'
@@ -40,5 +47,6 @@ v_test = new Vue
   components:
     'main-login': require('lib/components/main-login'),
     'simditor': require('lib/components/simditor'),
-    'vnav': require('lib/components/nav'),
+    'vnav': require('lib/components/nav-bz'),
+    'bz-str': require('lib/components/bz-str'),
 
