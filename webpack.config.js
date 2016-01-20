@@ -20,7 +20,7 @@ module.exports = {
   resolve: {
     extensions: ["", ".web.coffee", ".web.js", ".coffee", ".js"],
     alias: {
-        'lib': '/lib_bz'
+        'lib': process.env.LIB_BZ_PATH
       }
   },
   externals: {
