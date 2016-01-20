@@ -1,8 +1,7 @@
 require './style.less'
-bz = require '../../lib_old.coffee'
-module.exports =
-  fn: (value, mask)->
-    date_str = bz.dateFormat(value, mask)
+time = require '../../functions/time.coffee'
+module.exports = (value, mask)->
+  date_str = time.dateFormat(value, mask)
 
 
 
