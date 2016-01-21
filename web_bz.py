@@ -159,6 +159,39 @@ class login(UserInfoHandler):
         self.write(json.dumps({'error': error_msg}, cls=public_bz.ExtEncoder))
 
 
+class signup(UserInfoHandler):
+
+    def initialize(self):
+        UserInfoHandler.initialize(self)
+        self.user_oper = user_bz.UserOper(self.pg)
+
+    def get(self):
+        self.render(tornado_bz.getTName(self))
+
+    @tornado_bz.handleError
+    def post(self):
+        self.set_header("Content-Type", "application/json")
+        login_info = json.loads(self.request.body)
+
+        user_name = login_info.get("user_name")
+        password = login_info.get("password")
+        email = login_info.get("email")
+        # 用户是否存在应该注册提交前判断,这里再次判断
+        user_info = self.user_oper.getUserInfo(user_name=user_name)
+        if user_info:
+            raise Exception('用户已经存在, 请换一个用户名')
+        user_info = self.user_oper.getUserInfo(email=email)
+        if user_info:
+            raise Exception('邮箱已经被使用, 请更换一个邮箱')
+
+        user_type = login_info.get("user_type", 'my')
+
+        self.user_oper.signup(user_name, password, email, user_type)
+        user_info = self.user_oper.login(user_name, password, "'%s'" % user_type)
+        self.set_secure_cookie("user_id", str(user_info.id))
+        self.write(json.dumps({'error': '0'}))
+
+
 class logout(BaseHandler):
 
     @tornado_bz.handleError
@@ -179,7 +212,7 @@ class get_user_info(BaseHandler):
             user_oper = user_bz.UserOper(self.pg)
             user_info = user_oper.getUserInfo(user_id=user_id)
             if not user_info:
-                raise Exception('没有用户'+user_id)
+                raise Exception('没有用户' + user_id)
             user_info = user_info[0]
             del user_info.password
             self.write(json.dumps({'error': '0', 'user_info': user_info}, cls=public_bz.ExtEncoder))

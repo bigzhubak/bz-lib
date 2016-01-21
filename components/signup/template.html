@@ -3,21 +3,21 @@
 </div>
 <div class="ui segment">
     <form class="ui form fluid ">
-        <div class="field" v-bind:class="{ 'error': user_name_error }">
+        <div v-bind:class="{ 'error': user_name_error }" class="field" >
             <label>用户名</label>
             <input @focus="cleanError" v-model="user_name"  placeholder="请输入用户名" type="text">
         </div>
-        <div class="field">
+        <div v-bind:class="{ 'error': email_error }" class="field" >
             <label>邮箱</label>
             <input @focus="cleanError" v-model="email" placeholder="请输入邮箱地址，便于密码找回" type="text">
         </div>
-        <div class="field">
+        <div v-bind:class="{ 'error': password_error }" class="field">
             <label>密码</label>
             <input v-model="password" @keyup.enter="signup" @focus="cleanError" placeholder="请输入密码"  type="password">
         </div>
         <a @click="signup" class="ui blue submit button">注册</a>
     </form>
-    <div v-show="error_info" class="ui bottom attached warning message">
+    <div v-show="error_info" class="ui bottom  warning message">
         <i class="icon help"></i>
         (%error_info%)
     </div>

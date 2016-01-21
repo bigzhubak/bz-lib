@@ -8,6 +8,7 @@ module.exports =
     user_name_error:false
     email_error:false
     password_error:false
+    error_info:null
   template: require './template.html'
   directives:
     "regexp": require 'lib/directives/regexp'
@@ -20,20 +21,21 @@ module.exports =
       if not @user_name
         @user_name_error=true
         throw new Error("请输入用户名")
+      if not @email
+        @email_error=true
+        throw new Error("请输入邮箱")
       if not @password
         @password_error=true
         throw new Error("请输入用密码")
       #if @password != @repassword
       #  throw new Error("两次密码不一致")
-      if not @email
-        @email_error=true
-        throw new Error("请输入邮箱")
+
       #if @user_type is ''
       #  throw new Error("请选择用户类型")
-      for key of regexp
-        value = regexp[key]
-        if value == false
-          throw new Error("您的邮箱无法验证, 请填写正确的邮箱")
+      #for key of regexp
+      #  value = regexp[key]
+      #  if value == false
+      #    throw new Error("您的邮箱无法验证, 请填写正确的邮箱")
       parm = JSON.stringify
         user_name:@user_name
         user_type:@user_type
