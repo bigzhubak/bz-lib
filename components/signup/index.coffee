@@ -3,6 +3,9 @@
 ###
 require './style.less'
 error = require '../../functions/error.coffee'
+toast = require 'lib/functions/toast.coffee'
+top_toast = toast.getTopRightToast()
+
 module.exports =
   data:->
     user_name_error:false
@@ -20,13 +23,16 @@ module.exports =
     signup:->
       if not @user_name
         @user_name_error=true
-        throw new Error("请输入用户名")
+        return
+        #throw new Error("请输入用户名")
       if not @email
         @email_error=true
-        throw new Error("请输入邮箱")
+        return
+        #throw new Error("请输入邮箱")
       if not @password
         @password_error=true
-        throw new Error("请输入用密码")
+        return
+        #throw new Error("请输入用密码")
       #if @password != @repassword
       #  throw new Error("两次密码不一致")
 
@@ -50,9 +56,10 @@ module.exports =
           if data.error != '0'
             throw new Error(data.error)
           else
-            bz.showSuccess5('注册成功, 正在自动登录')
-            bz.delay 1500, =>
+            top_toast["info"] "注册成功, 正在自动登录"
+            _.delay(=>
               location.pathname = '/'
+            , 1500)
           @loading=false
         error: ->
     cleanError:->
