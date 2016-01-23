@@ -36,7 +36,7 @@ compute =
       message_width = 933
     if window_width>1200
       message_width = 1127
-    max_width-=card_content_padding
+    max_width=message_width-card_content_padding
     real_height = compute.calculateHeight(img_height, img_width, max_width)
     return real_height
 module.exports = compute
