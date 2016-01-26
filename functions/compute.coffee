@@ -28,6 +28,7 @@ compute =
     window_width = $(window).width()
     container_border = 14*2 #边框总是有14，两边28
     card_content_padding = 14*2 #有14，两边28
+    grid_margin = -14*2
     if window_width <768
       message_width = window_width-container_border
     if 768<=window_width<=991
@@ -36,6 +37,8 @@ compute =
       message_width = 933
     if window_width>1200
       message_width = 1127
+      message_width -= grid_margin #1155
+      message_width = message_width*7/12
     max_width=message_width-card_content_padding
     real_height = compute.calculateHeight(img_height, img_width, max_width)
     return real_height

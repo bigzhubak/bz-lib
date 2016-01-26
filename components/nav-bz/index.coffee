@@ -2,6 +2,7 @@
 
 ###
 require './style.less'
+require '../../style/mobile.less'
 module.exports =
   components:
     'nav-user-info': require '../nav-user-info'
