@@ -2,6 +2,7 @@
 
 ###
 require './style.less'
+cookie = require '../../functions/cookie'
 module.exports =
   template: require('./template.html')
   data:->
@@ -9,11 +10,12 @@ module.exports =
       user_name:''
       email:''
   created:->
-    if localStorage.user_info
+    if cookie.getCookieValue('user_id') == localStorage.cookie_user_id and localStorage.user_info
       JSON.parse(localStorage.user_info)
       @user_info=JSON.parse(localStorage.user_info)
     else
       @getUserInfo()
+      localStorage.cookie_user_id = cookie.getCookieValue('user_id')
   computed:
     avatar:->
       if @user_info.picture
