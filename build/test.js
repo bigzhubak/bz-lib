@@ -33,20 +33,1114 @@
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// on error function for async loading
+/******/ 	__webpack_require__.oe = function(err) { throw err; };
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0;
+	
+	module.exports = function(list, options) {
+		if(typeof DEBUG !== "undefined" && DEBUG) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function createStyleElement() {
+		var styleElement = document.createElement("style");
+		var head = getHeadElement();
+		styleElement.type = "text/css";
+		head.appendChild(styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement() {
+		var linkElement = document.createElement("link");
+		var head = getHeadElement();
+		linkElement.rel = "stylesheet";
+		head.appendChild(linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement());
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement();
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				styleElement.parentNode.removeChild(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement();
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				styleElement.parentNode.removeChild(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	错误处理相关
+	 */
+	var error, toast, top_toast;
+	
+	toast = __webpack_require__(4);
+	
+	top_toast = toast.getTopRightToast();
+	
+	error = {
+	  setOnErrorVm: function(vm) {
+	    return window.onerror = function(errorMsg, url, lineNumber) {
+	      error = errorMsg.replace('Uncaught Error: ', '');
+	      top_toast.error(error, '出错了!');
+	      console.log(error);
+	      console.log(top_toast);
+	      if (_.has(vm, 'error_info')) {
+	        return vm.$set('error_info', error);
+	      }
+	    };
+	  }
+	};
+	
+	module.exports = error;
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(52);
+	
+	module.exports = {
+	  bind: function() {},
+	  update: function(value, old_value) {
+	    var el;
+	    el = $(this.el);
+	    if (value) {
+	      el.children().hide();
+	      return el.prepend("<i class='fa fa-spin fa-spinner'></i>");
+	    } else {
+	      el.children(".fa.fa-spin.fa-spinner").remove();
+	      return el.children().show();
+	    }
+	  },
+	  unbind: function() {}
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	错误处理相关
+	 */
+	var toast, toastr;
+	
+	toastr = __webpack_require__(57);
+	
+	toast = {
+	  getTopRightToast: function() {
+	    toastr.options = {
+	      'closeButton': false,
+	      'debug': false,
+	      'newestOnTop': false,
+	      'progressBar': false,
+	      'positionClass': 'toast-top-right',
+	      'preventDuplicates': false,
+	      'onclick': null,
+	      'showDuration': '300',
+	      'hideDuration': '1000',
+	      'timeOut': '5000',
+	      'extendedTimeOut': '1000',
+	      'showEasing': 'swing',
+	      'hideEasing': 'linear',
+	      'showMethod': 'fadeIn',
+	      'hideMethod': 'fadeOut'
+	    };
+	    return toastr;
+	  }
+	};
+	
+	module.exports = toast;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	包装了 login signup forget 的用户登录相关组件
+	 */
+	__webpack_require__(46);
+	
+	module.exports = {
+	  props: ['oauths'],
+	  data: function() {
+	    return {
+	      current_view: 'login'
+	    };
+	  },
+	  methods: {
+	    change: function(view) {
+	      return this.current_view = view;
+	    }
+	  },
+	  template: __webpack_require__(37),
+	  components: {
+	    "login": __webpack_require__(11),
+	    "signup": __webpack_require__(14),
+	    "forget": __webpack_require__(10)
+	  }
+	};
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	 */
+	__webpack_require__(47);
+	
+	__webpack_require__(56);
+	
+	module.exports = {
+	  components: {
+	    'nav-user-info': __webpack_require__(12)
+	  },
+	  props: ['navbar_header', 'nav_links'],
+	  template: __webpack_require__(38),
+	  methods: {
+	    search: function(e) {
+	      var host, url;
+	      e.preventDefault();
+	      if (window.header_search) {
+	        window.header_search(this.search_value);
+	        return;
+	      }
+	      host = window.location.hostname;
+	      url = "https://www.google.com/search?q=site:" + host + " " + this.search_value + "&gws_rd=ssl";
+	      return window.open(url);
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var check;
+	
+	__webpack_require__(51);
+	
+	check = __webpack_require__(17);
+	
+	module.exports = {
+	  template: __webpack_require__(42),
+	  props: ['content'],
+	  ready: function() {
+	    this.initSimditor();
+	    return this.$watch('content', function(newVal, oldVal) {
+	      if (newVal !== this.simditor.getValue()) {
+	        return this.simditor.setValue(newVal);
+	      }
+	    });
+	  },
+	  methods: {
+	    initSimditor: function() {
+	      var mobileToolbar, small_tool_bar, toolbar;
+	      toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'];
+	      mobileToolbar = ['bold', 'underline', 'strikethrough', 'color', 'ul', 'ol'];
+	      small_tool_bar = ['title', 'link', 'image', 'bold'];
+	      if (check.mobileCheck()) {
+	        toolbar = mobileToolbar;
+	      }
+	      this.simditor = new Simditor({
+	        textarea: this.$el,
+	        placeholder: '这里输入文字...',
+	        toolbar: small_tool_bar,
+	        toolbarFloat: false,
+	        pasteImage: true,
+	        defaultImage: 'assets/images/image.png',
+	        upload: {
+	          url: '/upload_image',
+	          params: null,
+	          fileKey: 'upload_file',
+	          connectionCount: 3,
+	          leaveConfirm: '正在上传文件，如果离开上传会自动取消'
+	        }
+	      });
+	      return this.simditor.on('valuechanged', (function(_this) {
+	        return function(e, src) {
+	          return _this.content = _this.simditor.getValue();
+	        };
+	      })(this));
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var time;
+	
+	__webpack_require__(55);
+	
+	time = __webpack_require__(19);
+	
+	module.exports = function(value, mask) {
+	  var date_str;
+	  return date_str = time.dateFormat(value, mask);
+	};
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	Vue.config.debug = true;
+	
+	Vue.config.silent = false;
+	
+	Vue.config.delimiters = ['(%', '%)'];
+	
+	Vue.transition('fade', {
+	  enter: function(el, done) {
+	    $(el).css('opacity', 0).animate({
+	      opacity: 1
+	    }, 2000, done);
+	  },
+	  enterCancelled: function(el) {
+	    $(el).stop();
+	  },
+	  leave: function(el, done) {
+	    $(el).animate({
+	      opacity: 0
+	    }, 2000, done);
+	  },
+	  leaveCancelled: function(el) {
+	    $(el).stop();
+	  }
+	});
+	
+	module.exports = Vue;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	忘记密码
+	 */
+	__webpack_require__(44);
+	
+	module.exports = {
+	  directives: {
+	    "btn-loading": __webpack_require__(3)
+	  },
+	  template: __webpack_require__(35),
+	  created: function() {
+	    var error;
+	    error = __webpack_require__(2);
+	    return error.setOnErrorVm(this);
+	  },
+	  methods: {
+	    forget: function() {
+	      var key, parm, value;
+	      if (!this.email) {
+	        throw new Error("请输入邮箱");
+	      }
+	      this.loading = true;
+	      for (key in regexp) {
+	        value = regexp[key];
+	        if (value === false) {
+	          throw new Error("您的邮箱无法验证, 请填写正确的邮箱");
+	        }
+	      }
+	      parm = JSON.stringify({
+	        email: this.email
+	      });
+	      return $.ajax({
+	        url: '/forget',
+	        type: 'POST',
+	        data: parm,
+	        success: (function(_this) {
+	          return function(data, status, response) {
+	            _this.loading = false;
+	            if (data.error !== '0') {
+	              throw new Error(data.error);
+	            } else {
+	              bz.showSuccess5('找回密码成功,请登录你的邮箱继续修改密码');
+	              return _this.email = '';
+	            }
+	          };
+	        })(this),
+	        error: function() {}
+	      });
+	    },
+	    cleanError: function() {
+	      return this.$data.error_info = false;
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	login
+	
+	登录页
+	oauths:参见oauth2-button
+	 */
+	var error;
+	
+	__webpack_require__(45);
+	
+	error = __webpack_require__(2);
+	
+	module.exports = {
+	  props: ['oauths'],
+	  data: function() {
+	    return {
+	      user_name: '',
+	      password: '',
+	      error_info: ''
+	    };
+	  },
+	  template: __webpack_require__(36),
+	  components: {
+	    'oauth2-button': __webpack_require__(13)
+	  },
+	  created: function() {
+	    return error.setOnErrorVm(this);
+	  },
+	  methods: {
+	    signup: function() {
+	      return window.location.href = '/signup?user_name=' + this.user_name;
+	    },
+	    cleanError: function() {
+	      return this.$data.error_info = false;
+	    },
+	    login: function() {
+	      var parm;
+	      console.log('login');
+	      if (!this.user_name) {
+	        throw new Error("请输入用户名");
+	      }
+	      if (!this.password) {
+	        throw new Error("请输入用户密码");
+	      }
+	      this.error_info = false;
+	      this.loading = true;
+	      parm = JSON.stringify({
+	        user_name: this.user_name,
+	        password: this.password,
+	        geetest_challenge: $('.geetest_challenge').val(),
+	        geetest_validate: $('.geetest_validate').val(),
+	        geetest_seccode: $('.geetest_seccode').val(),
+	        validate: $('#validate').val()
+	      });
+	      return $.ajax({
+	        url: '/login',
+	        type: 'POST',
+	        data: parm,
+	        success: (function(_this) {
+	          return function(data, status, response) {
+	            _this.loading = false;
+	            if (data.error !== '0') {
+	              if (data.error === 'user not exist') {
+	                $('#confirm-ask-create').modal();
+	              } else {
+	                throw new Error(data.error);
+	              }
+	            } else {
+	              return location.pathname = '/';
+	            }
+	          };
+	        })(this),
+	        error: function() {}
+	      });
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	 */
+	var f_user_info;
+	
+	__webpack_require__(48);
+	
+	f_user_info = __webpack_require__(20);
+	
+	module.exports = {
+	  template: __webpack_require__(39),
+	  data: function() {
+	    return {
+	      user_info: {
+	        user_name: '',
+	        email: ''
+	      }
+	    };
+	  },
+	  created: function() {
+	    return f_user_info.checkNewUserInfo();
+	  },
+	  computed: {
+	    avatar: function() {
+	      if (this.user_info.picture) {
+	        return this.user_info.picture;
+	      } else {
+	        return '/static/images/avatar.svg';
+	      }
+	    },
+	    desc: function() {
+	      if (this.user_info.slogan) {
+	        return this.user_info.slogan;
+	      } else {
+	        return 'Nothing';
+	      }
+	    }
+	  },
+	  methods: {
+	    delAndLogout: function() {
+	      localStorage.removeItem('user_info');
+	      return window.location.href = "/logout";
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	oauth2-button
+	
+	渲染 oauth 的图标
+	oauth.name: oauth.name (必填)
+	oauth.icon_class: 图标样式
+	oauth.href: link
+	oauth.show_name:显示为什么，比如‘豆瓣’
+	 */
+	__webpack_require__(49);
+	
+	module.exports = {
+	  template: __webpack_require__(40),
+	  props: ['oauth'],
+	  computed: {
+	    the_href: function() {
+	      if (_.has(this.oauth, 'href')) {
+	        return this.oauth.href;
+	      } else {
+	        return '/' + this.oauth.name;
+	      }
+	    },
+	    the_icon_class: function() {
+	      if (_.has(this.oauth, 'icon_class')) {
+	        return this.oauth.icon_class;
+	      } else {
+	        return this.oauth.name;
+	      }
+	    },
+	    the_show_name: function() {
+	      if (_.has(this.oauth, 'show_name')) {
+	        return this.oauth.show_name;
+	      } else {
+	        return this.oauth.name;
+	      }
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	注册页面
+	 */
+	var error, toast, top_toast;
+	
+	__webpack_require__(50);
+	
+	error = __webpack_require__(2);
+	
+	toast = __webpack_require__(4);
+	
+	top_toast = toast.getTopRightToast();
+	
+	module.exports = {
+	  data: function() {
+	    return {
+	      user_name_error: false,
+	      email_error: false,
+	      password_error: false,
+	      error_info: null
+	    };
+	  },
+	  template: __webpack_require__(41),
+	  directives: {
+	    "regexp": __webpack_require__(16),
+	    "disable": __webpack_require__(15),
+	    "btn-loading": __webpack_require__(3)
+	  },
+	  created: function() {
+	    return error.setOnErrorVm(this);
+	  },
+	  methods: {
+	    signup: function() {
+	      var parm;
+	      if (!this.user_name) {
+	        this.user_name_error = true;
+	        return;
+	      }
+	      if (!this.email) {
+	        this.email_error = true;
+	        return;
+	      }
+	      if (!this.password) {
+	        this.password_error = true;
+	        return;
+	      }
+	      parm = JSON.stringify({
+	        user_name: this.user_name,
+	        user_type: this.user_type,
+	        password: this.password,
+	        email: this.email
+	      });
+	      this.loading = true;
+	      return $.ajax({
+	        url: '/signup',
+	        type: 'POST',
+	        data: parm,
+	        success: (function(_this) {
+	          return function(data, status, response) {
+	            if (data.error !== '0') {
+	              throw new Error(data.error);
+	            } else {
+	              top_toast["info"]("注册成功, 正在自动登录");
+	              _.delay(function() {
+	                return location.pathname = '/';
+	              }, 1500);
+	            }
+	            return _this.loading = false;
+	          };
+	        })(this),
+	        error: function() {}
+	      });
+	    },
+	    cleanError: function() {
+	      this.user_name_error = false;
+	      this.email_error = false;
+	      this.password_error = false;
+	      return this.$data.error_info = false;
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(53);
+	
+	module.exports = {
+	  bind: function() {},
+	  update: function(value, old_value) {
+	    return this.el.disabled = value;
+	  },
+	  unbind: function() {}
+	};
+
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(54);
+	
+	module.exports = {
+	  bind: function() {},
+	  update: function(value, old_value) {
+	    var r, reg;
+	    if (!window.regexp) {
+	      window.regexp = {};
+	    }
+	    if (value) {
+	      reg = new RegExp(this.arg);
+	      r = reg.test(value);
+	      if (r) {
+	        $(this.el).css('border-color', '#d2d6de');
+	        return window.regexp[this.expression] = r;
+	      } else {
+	        return $(this.el).css('border-color', '#ff0000');
+	      }
+	    } else {
+	      return window.regexp[this.expression] = false;
+	    }
+	  },
+	  unbind: function() {}
+	};
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	
+	/*
+	 */
+	var check;
+	
+	check = {
+	  mobileCheck: function() {
+	    check = false;
+	    (function(a) {
+	      if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
+	        check = true;
+	      }
+	    })(navigator.userAgent || navigator.vendor || window.opera);
+	    return check;
+	  }
+	};
+	
+	module.exports = check;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	var cookie;
+	
+	cookie = {
+	  getCookieValue: function(cookieName) {
+	    var ca;
+	    ca = document.cookie.split('; ');
+	    return _.find(ca, function(cookie) {
+	      return cookie.indexOf(cookieName) === 0;
+	    });
+	  }
+	};
+	
+	module.exports = cookie;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	
+	/*
+	错误处理相关
+	 */
+	var time;
+	
+	time = {
+	  preZero: function(num, len) {
+	    var a, numStr;
+	    numStr = num.toString();
+	    if (len < numStr.length) {
+	      return numStr;
+	    } else {
+	      a = new Array(len + 1).join("0") + numStr;
+	      return a.substr(a.length - len, a.length - 1);
+	    }
+	  },
+	  timeLen: function(that_time) {
+	    var day, desc, hour, interval, minute, month, now, second, year;
+	    second = 1000;
+	    minute = second * 60;
+	    hour = minute * 60;
+	    day = hour * 24;
+	    month = day * 30;
+	    year = month * 12;
+	    now = Date.now();
+	    interval = now - that_time;
+	    if (interval < minute) {
+	      desc = parseInt(interval / second) + "秒前";
+	    } else if (interval < hour) {
+	      desc = parseInt(interval / minute) + "分钟前";
+	    } else if (interval < day) {
+	      desc = parseInt(interval / hour) + "小时前";
+	    } else if (interval < month) {
+	      desc = parseInt(interval / day) + "天前";
+	    } else if (interval < year) {
+	      desc = parseInt(interval / month) + "个月前";
+	    } else {
+	      desc = parseInt(interval / year) + "年前";
+	    }
+	    return desc;
+	  },
+	  dateFormat: function(timestamp, mask) {
+	    var _this, date, matched_array, o, regStr, res;
+	    date = new Date(timestamp);
+	    _this = this;
+	    o = {
+	      "y+": function(len) {
+	        return _this.preZero(date.getFullYear(), len);
+	      },
+	      "M+": function(len) {
+	        return _this.preZero(date.getMonth() + 1, len);
+	      },
+	      "d+": function(len) {
+	        return _this.preZero(date.getDate(), len);
+	      },
+	      "h+": function(len) {
+	        return _this.preZero(date.getHours(), len);
+	      },
+	      "m+": function(len) {
+	        return _this.preZero(date.getMinutes(), len);
+	      },
+	      "s+": function(len) {
+	        return _this.preZero(date.getSeconds(), len);
+	      }
+	    };
+	    for (regStr in o) {
+	      matched_array = mask.match(new RegExp(regStr));
+	      if (matched_array) {
+	        res = o[regStr](matched_array[0].length);
+	        mask = mask.replace(matched_array[0], res);
+	      }
+	    }
+	    return mask;
+	  }
+	};
+	
+	module.exports = time;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	#用户信息相关
+	 */
+	var cookie, user_info;
+	
+	cookie = __webpack_require__(18);
+	
+	user_info = {
+	  getUserInfo: function() {
+	    return $.ajax({
+	      url: '/get_user_info',
+	      type: 'GET',
+	      success: (function(_this) {
+	        return function(data, status, response) {
+	          if (data.error !== '0') {
+	            return console.log(data.error);
+	          } else {
+	            localStorage.user_info = JSON.stringify(data.user_info);
+	            return _this.user_info = data.user_info;
+	          }
+	        };
+	      })(this),
+	      error: function(data, status, response) {
+	        console.log(data);
+	        console.log(status);
+	        return console.log(response);
+	      }
+	    });
+	  },
+	  checkNewUserInfo: function() {
+	    if (cookie.getCookieValue('user_id') === localStorage.cookie_user_id && localStorage.user_info) {
+	      JSON.parse(localStorage.user_info);
+	      return this.user_info = JSON.parse(localStorage.user_info);
+	    } else {
+	      user_info.getUserInfo.call();
+	      return localStorage.cookie_user_id = cookie.getCookieValue('user_id');
+	    }
+	  },
+	  isLogin: function() {
+	    return cookie.getCookieValue('user_id');
+	  }
+	};
+	
+	module.exports = user_info;
+
+
+/***/ },
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue, error, v_test;
 	
-	Vue = __webpack_require__(1);
+	Vue = __webpack_require__(9);
 	
 	error = __webpack_require__(2);
 	
@@ -90,554 +1184,248 @@
 	  },
 	  el: '#v_test',
 	  components: {
-	    'main-login': __webpack_require__(7),
-	    'simditor': __webpack_require__(38),
-	    'vnav': __webpack_require__(43)
+	    'main-login': __webpack_require__(5),
+	    'simditor': __webpack_require__(7),
+	    'vnav': __webpack_require__(6)
 	  },
 	  filters: {
-	    'dateformat': __webpack_require__(51)
+	    'dateformat': __webpack_require__(8)
 	  }
 	});
 
 
 /***/ },
-/* 1 */
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".main.container {\n  margin-top: 3em;\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".btn.btn-default.btn-oauth2-google {\n  background-color: #d34836;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-google:hover,\n.btn.btn-default.btn-oauth2-google:active {\n  background-color: #b54836 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-twitter {\n  background-color: #4997ce;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-twitter:hover,\n.btn.btn-default.btn-oauth2-twitter:active {\n  background-color: #4979b0 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-facebook {\n  background-color: #3b579d;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-facebook:hover,\n.btn.btn-default.btn-oauth2-facebook:active {\n  background-color: #39407f !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-weibo {\n  background-color: #f37907;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-weibo:hover,\n.btn.btn-default.btn-oauth2-weibo:active {\n  background-color: #d56c07 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-qq {\n  background-color: #1491e0;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-qq:hover,\n.btn.btn-default.btn-oauth2-qq:active {\n  background-color: #1474c2 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-douban {\n  background-color: #3e9846;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-douban:hover,\n.btn.btn-default.btn-oauth2-douban:active {\n  background-color: #3c7a3c !important;\n  color: #FFF;\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".simditor .simditor-body {\n  min-height: 2em !important;\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(0)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "@media only screen and (max-width: 767px) {\n  .mobile.hidden,\n  .tablet.only,\n  .small.monitor.only,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 768px) and (max-width: 991px) {\n  .mobile.only,\n  .tablet.hidden,\n  .small.monitor.only,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 992px) and (max-width: 1199px) {\n  .mobile.only,\n  .tablet.only,\n  .small.monitor.hidden,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 1200px) {\n  .mobile.only,\n  .tablet.only,\n  .small.monitor.only,\n  .large.monitor.hidden {\n    display: none !important;\n  }\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 35 */
 /***/ function(module, exports) {
 
-	Vue.config.debug = true;
-	
-	Vue.config.silent = false;
-	
-	Vue.config.delimiters = ['(%', '%)'];
-	
-	Vue.transition('fade', {
-	  enter: function(el, done) {
-	    $(el).css('opacity', 0).animate({
-	      opacity: 1
-	    }, 2000, done);
-	  },
-	  enterCancelled: function(el) {
-	    $(el).stop();
-	  },
-	  leave: function(el, done) {
-	    $(el).animate({
-	      opacity: 0
-	    }, 2000, done);
-	  },
-	  leaveCancelled: function(el) {
-	    $(el).stop();
-	  }
-	});
-	
-	module.exports = Vue;
-
+	module.exports = "    <div class=\"ui center aligned secondary segment\">\n        <b>找回密码</b>\n    </div>\n    <div class=\"ui segment\">\n        <form class=\"ui form fluid \">\n            <div class=\"field\">\n                <label>邮箱</label>\n                <input type=\"text\" v-model=\"email\" class=\"form-control\" placeholder=\"请输入邮箱地址\" @keyup.enter=\"forget\" @focus=\"cleanError\">\n            </div>\n            <a @click=\"forget\" class=\"ui blue submit button\">发送邮件</a>\n        </form>\n        <div v-show=\"error_info\" class=\"ui bottom attached warning message\">\n            <i class=\"icon help\"></i>\n            (%error_info%)\n        </div>\n    </div>\n";
 
 /***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/* 36 */
+/***/ function(module, exports) {
 
-	
-	/*
-	错误处理相关
-	 */
-	var error, toast, top_toast;
-	
-	toast = __webpack_require__(3);
-	
-	top_toast = toast.getTopRightToast();
-	
-	error = {
-	  setOnErrorVm: function(vm) {
-	    return window.onerror = function(errorMsg, url, lineNumber) {
-	      error = errorMsg.replace('Uncaught Error: ', '');
-	      top_toast.error(error, '出错了!');
-	      console.log(error);
-	      console.log(top_toast);
-	      if (_.has(vm, 'error_info')) {
-	        return vm.$set('error_info', error);
-	      }
-	    };
-	  }
-	};
-	
-	module.exports = error;
-
+	module.exports = "<div class=\"ui center aligned secondary segment\">\n    <b>用户登录</b>\n</div>\n<div class=\"ui segment\">\n    <div class=\"ui two column middle aligned very relaxed stackable grid\">\n        <div class=\"center aligned column\">\n            <div class=\"ui large\">\n                <oauth2-button  v-for=\"oauth in oauths\" :oauth=\"oauth\"></oauth2-button>\n            </div>\n        </div>\n        <div class=\"ui vertical divider\">Or </div>\n        <div class=\"center aligned column\">\n            <form class=\"ui form fluid \">\n                <div class=\"field\">\n                    <label>用户名</label>\n                    <input @focus=\"cleanError\" v-model=\"user_name\" placeholder=\"请输入邮箱/用户名\" type=\"text\">\n                </div>\n                <div class=\"field\">\n                    <label>密码</label>\n                    <input v-model=\"password\" @keyup.enter=\"login\" @focus=\"cleanError\" placeholder=\"请输入密码\"  type=\"password\">\n                </div>\n                <a @click=\"login\" class=\"ui blue submit button\">登录</a>\n            </form>\n            <div v-show=\"error_info\" class=\"ui bottom warning message\">\n                <i class=\"icon help\"></i>\n                (%error_info%)\n            </div>\n        </div>\n    </div>\n</div>\n\n\n<div class=\"ui small test modal\">\n    <div class=\"header\">\n        不存在用户 \n    </div>\n    <div class=\"content\">\n        <p>还没有用户(%user_name%),是否建立?</p>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui negative button\">\n            不用\n        </div>\n        <div @click=\"signup\" class=\"ui positive right labeled icon button\">\n            好的\n            <i class=\"checkmark icon\"></i>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/* 37 */
+/***/ function(module, exports) {
 
-	
-	/*
-	错误处理相关
-	 */
-	var toast, toastr;
-	
-	toastr = __webpack_require__(4);
-	
-	toast = {
-	  getTopRightToast: function() {
-	    toastr.options = {
-	      'closeButton': false,
-	      'debug': false,
-	      'newestOnTop': false,
-	      'progressBar': false,
-	      'positionClass': 'toast-top-right',
-	      'preventDuplicates': false,
-	      'onclick': null,
-	      'showDuration': '300',
-	      'hideDuration': '1000',
-	      'timeOut': '5000',
-	      'extendedTimeOut': '1000',
-	      'showEasing': 'swing',
-	      'hideEasing': 'linear',
-	      'showMethod': 'fadeIn',
-	      'hideMethod': 'fadeOut'
-	    };
-	    return toastr;
-	  }
-	};
-	
-	module.exports = toast;
-
+	module.exports = "\n<div class=\"ui segments\">\n<component :is=\"current_view\" :oauths=\"oauths\"></component>\n<div class=\"ui buttons\">\n    <button v-show=\"current_view !='signup'\" @click=\"change('signup')\" type=\"button\" class=\"ui basic button\">注册用户</button>\n    <button v-show=\"current_view !='forget'\" @click=\"change('forget')\" type=\"button\" class=\"ui basic button\">找回密码</button>\n    <button v-show=\"current_view !='login'\" @click=\"change('login')\" type=\"button\" class=\"ui basic button\">登录</button>\n</div>\n</div>\n\n";
 
 /***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/* 38 */
+/***/ function(module, exports) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
-	 * Toastr
-	 * Copyright 2012-2015
-	 * Authors: John Papa, Hans Fjällemark, and Tim Ferrell.
-	 * All Rights Reserved.
-	 * Use, reproduction, distribution, and modification of this code is subject to the terms and
-	 * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php
-	 *
-	 * ARIA Support: Greta Krafsig
-	 *
-	 * Project: https://github.com/CodeSeven/toastr
-	 */
-	/* global define */
-	; (function (define) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = function ($) {
-	        return (function () {
-	            var $container;
-	            var listener;
-	            var toastId = 0;
-	            var toastType = {
-	                error: 'error',
-	                info: 'info',
-	                success: 'success',
-	                warning: 'warning'
-	            };
-	
-	            var toastr = {
-	                clear: clear,
-	                remove: remove,
-	                error: error,
-	                getContainer: getContainer,
-	                info: info,
-	                options: {},
-	                subscribe: subscribe,
-	                success: success,
-	                version: '2.1.2',
-	                warning: warning
-	            };
-	
-	            var previousToast;
-	
-	            return toastr;
-	
-	            ////////////////
-	
-	            function error(message, title, optionsOverride) {
-	                return notify({
-	                    type: toastType.error,
-	                    iconClass: getOptions().iconClasses.error,
-	                    message: message,
-	                    optionsOverride: optionsOverride,
-	                    title: title
-	                });
-	            }
-	
-	            function getContainer(options, create) {
-	                if (!options) { options = getOptions(); }
-	                $container = $('#' + options.containerId);
-	                if ($container.length) {
-	                    return $container;
-	                }
-	                if (create) {
-	                    $container = createContainer(options);
-	                }
-	                return $container;
-	            }
-	
-	            function info(message, title, optionsOverride) {
-	                return notify({
-	                    type: toastType.info,
-	                    iconClass: getOptions().iconClasses.info,
-	                    message: message,
-	                    optionsOverride: optionsOverride,
-	                    title: title
-	                });
-	            }
-	
-	            function subscribe(callback) {
-	                listener = callback;
-	            }
-	
-	            function success(message, title, optionsOverride) {
-	                return notify({
-	                    type: toastType.success,
-	                    iconClass: getOptions().iconClasses.success,
-	                    message: message,
-	                    optionsOverride: optionsOverride,
-	                    title: title
-	                });
-	            }
-	
-	            function warning(message, title, optionsOverride) {
-	                return notify({
-	                    type: toastType.warning,
-	                    iconClass: getOptions().iconClasses.warning,
-	                    message: message,
-	                    optionsOverride: optionsOverride,
-	                    title: title
-	                });
-	            }
-	
-	            function clear($toastElement, clearOptions) {
-	                var options = getOptions();
-	                if (!$container) { getContainer(options); }
-	                if (!clearToast($toastElement, options, clearOptions)) {
-	                    clearContainer(options);
-	                }
-	            }
-	
-	            function remove($toastElement) {
-	                var options = getOptions();
-	                if (!$container) { getContainer(options); }
-	                if ($toastElement && $(':focus', $toastElement).length === 0) {
-	                    removeToast($toastElement);
-	                    return;
-	                }
-	                if ($container.children().length) {
-	                    $container.remove();
-	                }
-	            }
-	
-	            // internal functions
-	
-	            function clearContainer (options) {
-	                var toastsToClear = $container.children();
-	                for (var i = toastsToClear.length - 1; i >= 0; i--) {
-	                    clearToast($(toastsToClear[i]), options);
-	                }
-	            }
-	
-	            function clearToast ($toastElement, options, clearOptions) {
-	                var force = clearOptions && clearOptions.force ? clearOptions.force : false;
-	                if ($toastElement && (force || $(':focus', $toastElement).length === 0)) {
-	                    $toastElement[options.hideMethod]({
-	                        duration: options.hideDuration,
-	                        easing: options.hideEasing,
-	                        complete: function () { removeToast($toastElement); }
-	                    });
-	                    return true;
-	                }
-	                return false;
-	            }
-	
-	            function createContainer(options) {
-	                $container = $('<div/>')
-	                    .attr('id', options.containerId)
-	                    .addClass(options.positionClass)
-	                    .attr('aria-live', 'polite')
-	                    .attr('role', 'alert');
-	
-	                $container.appendTo($(options.target));
-	                return $container;
-	            }
-	
-	            function getDefaults() {
-	                return {
-	                    tapToDismiss: true,
-	                    toastClass: 'toast',
-	                    containerId: 'toast-container',
-	                    debug: false,
-	
-	                    showMethod: 'fadeIn', //fadeIn, slideDown, and show are built into jQuery
-	                    showDuration: 300,
-	                    showEasing: 'swing', //swing and linear are built into jQuery
-	                    onShown: undefined,
-	                    hideMethod: 'fadeOut',
-	                    hideDuration: 1000,
-	                    hideEasing: 'swing',
-	                    onHidden: undefined,
-	                    closeMethod: false,
-	                    closeDuration: false,
-	                    closeEasing: false,
-	
-	                    extendedTimeOut: 1000,
-	                    iconClasses: {
-	                        error: 'toast-error',
-	                        info: 'toast-info',
-	                        success: 'toast-success',
-	                        warning: 'toast-warning'
-	                    },
-	                    iconClass: 'toast-info',
-	                    positionClass: 'toast-top-right',
-	                    timeOut: 5000, // Set timeOut and extendedTimeOut to 0 to make it sticky
-	                    titleClass: 'toast-title',
-	                    messageClass: 'toast-message',
-	                    escapeHtml: false,
-	                    target: 'body',
-	                    closeHtml: '<button type="button">&times;</button>',
-	                    newestOnTop: true,
-	                    preventDuplicates: false,
-	                    progressBar: false
-	                };
-	            }
-	
-	            function publish(args) {
-	                if (!listener) { return; }
-	                listener(args);
-	            }
-	
-	            function notify(map) {
-	                var options = getOptions();
-	                var iconClass = map.iconClass || options.iconClass;
-	
-	                if (typeof (map.optionsOverride) !== 'undefined') {
-	                    options = $.extend(options, map.optionsOverride);
-	                    iconClass = map.optionsOverride.iconClass || iconClass;
-	                }
-	
-	                if (shouldExit(options, map)) { return; }
-	
-	                toastId++;
-	
-	                $container = getContainer(options, true);
-	
-	                var intervalId = null;
-	                var $toastElement = $('<div/>');
-	                var $titleElement = $('<div/>');
-	                var $messageElement = $('<div/>');
-	                var $progressElement = $('<div/>');
-	                var $closeElement = $(options.closeHtml);
-	                var progressBar = {
-	                    intervalId: null,
-	                    hideEta: null,
-	                    maxHideTime: null
-	                };
-	                var response = {
-	                    toastId: toastId,
-	                    state: 'visible',
-	                    startTime: new Date(),
-	                    options: options,
-	                    map: map
-	                };
-	
-	                personalizeToast();
-	
-	                displayToast();
-	
-	                handleEvents();
-	
-	                publish(response);
-	
-	                if (options.debug && console) {
-	                    console.log(response);
-	                }
-	
-	                return $toastElement;
-	
-	                function escapeHtml(source) {
-	                    if (source == null)
-	                        source = "";
-	
-	                    return new String(source)
-	                        .replace(/&/g, '&amp;')
-	                        .replace(/"/g, '&quot;')
-	                        .replace(/'/g, '&#39;')
-	                        .replace(/</g, '&lt;')
-	                        .replace(/>/g, '&gt;');
-	                }
-	
-	                function personalizeToast() {
-	                    setIcon();
-	                    setTitle();
-	                    setMessage();
-	                    setCloseButton();
-	                    setProgressBar();
-	                    setSequence();
-	                }
-	
-	                function handleEvents() {
-	                    $toastElement.hover(stickAround, delayedHideToast);
-	                    if (!options.onclick && options.tapToDismiss) {
-	                        $toastElement.click(hideToast);
-	                    }
-	
-	                    if (options.closeButton && $closeElement) {
-	                        $closeElement.click(function (event) {
-	                            if (event.stopPropagation) {
-	                                event.stopPropagation();
-	                            } else if (event.cancelBubble !== undefined && event.cancelBubble !== true) {
-	                                event.cancelBubble = true;
-	                            }
-	                            hideToast(true);
-	                        });
-	                    }
-	
-	                    if (options.onclick) {
-	                        $toastElement.click(function (event) {
-	                            options.onclick(event);
-	                            hideToast();
-	                        });
-	                    }
-	                }
-	
-	                function displayToast() {
-	                    $toastElement.hide();
-	
-	                    $toastElement[options.showMethod](
-	                        {duration: options.showDuration, easing: options.showEasing, complete: options.onShown}
-	                    );
-	
-	                    if (options.timeOut > 0) {
-	                        intervalId = setTimeout(hideToast, options.timeOut);
-	                        progressBar.maxHideTime = parseFloat(options.timeOut);
-	                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
-	                        if (options.progressBar) {
-	                            progressBar.intervalId = setInterval(updateProgress, 10);
-	                        }
-	                    }
-	                }
-	
-	                function setIcon() {
-	                    if (map.iconClass) {
-	                        $toastElement.addClass(options.toastClass).addClass(iconClass);
-	                    }
-	                }
-	
-	                function setSequence() {
-	                    if (options.newestOnTop) {
-	                        $container.prepend($toastElement);
-	                    } else {
-	                        $container.append($toastElement);
-	                    }
-	                }
-	
-	                function setTitle() {
-	                    if (map.title) {
-	                        $titleElement.append(!options.escapeHtml ? map.title : escapeHtml(map.title)).addClass(options.titleClass);
-	                        $toastElement.append($titleElement);
-	                    }
-	                }
-	
-	                function setMessage() {
-	                    if (map.message) {
-	                        $messageElement.append(!options.escapeHtml ? map.message : escapeHtml(map.message)).addClass(options.messageClass);
-	                        $toastElement.append($messageElement);
-	                    }
-	                }
-	
-	                function setCloseButton() {
-	                    if (options.closeButton) {
-	                        $closeElement.addClass('toast-close-button').attr('role', 'button');
-	                        $toastElement.prepend($closeElement);
-	                    }
-	                }
-	
-	                function setProgressBar() {
-	                    if (options.progressBar) {
-	                        $progressElement.addClass('toast-progress');
-	                        $toastElement.prepend($progressElement);
-	                    }
-	                }
-	
-	                function shouldExit(options, map) {
-	                    if (options.preventDuplicates) {
-	                        if (map.message === previousToast) {
-	                            return true;
-	                        } else {
-	                            previousToast = map.message;
-	                        }
-	                    }
-	                    return false;
-	                }
-	
-	                function hideToast(override) {
-	                    var method = override && options.closeMethod !== false ? options.closeMethod : options.hideMethod;
-	                    var duration = override && options.closeDuration !== false ?
-	                        options.closeDuration : options.hideDuration;
-	                    var easing = override && options.closeEasing !== false ? options.closeEasing : options.hideEasing;
-	                    if ($(':focus', $toastElement).length && !override) {
-	                        return;
-	                    }
-	                    clearTimeout(progressBar.intervalId);
-	                    return $toastElement[method]({
-	                        duration: duration,
-	                        easing: easing,
-	                        complete: function () {
-	                            removeToast($toastElement);
-	                            if (options.onHidden && response.state !== 'hidden') {
-	                                options.onHidden();
-	                            }
-	                            response.state = 'hidden';
-	                            response.endTime = new Date();
-	                            publish(response);
-	                        }
-	                    });
-	                }
-	
-	                function delayedHideToast() {
-	                    if (options.timeOut > 0 || options.extendedTimeOut > 0) {
-	                        intervalId = setTimeout(hideToast, options.extendedTimeOut);
-	                        progressBar.maxHideTime = parseFloat(options.extendedTimeOut);
-	                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
-	                    }
-	                }
-	
-	                function stickAround() {
-	                    clearTimeout(intervalId);
-	                    progressBar.hideEta = 0;
-	                    $toastElement.stop(true, true)[options.showMethod](
-	                        {duration: options.showDuration, easing: options.showEasing}
-	                    );
-	                }
-	
-	                function updateProgress() {
-	                    var percentage = ((progressBar.hideEta - (new Date().getTime())) / progressBar.maxHideTime) * 100;
-	                    $progressElement.width(percentage + '%');
-	                }
-	            }
-	
-	            function getOptions() {
-	                return $.extend({}, getDefaults(), toastr.options);
-	            }
-	
-	            function removeToast($toastElement) {
-	                if (!$container) { $container = getContainer(); }
-	                if ($toastElement.is(':visible')) {
-	                    return;
-	                }
-	                $toastElement.remove();
-	                $toastElement = null;
-	                if ($container.children().length === 0) {
-	                    $container.remove();
-	                    previousToast = undefined;
-	                }
-	            }
-	
-	        })();
-	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(6)));
-
+	module.exports = "<nav class=\"ui top fixed pointing menu\">\n    <a class=\"header item\" :href=\"navbar_header.href\"><b>(%navbar_header.name%)</b></a>\n    <a class=\"item\" v-for=\"link in nav_links\" :href=\"link.href\" :target=\"link.target\">(%link.name%)</a>\n    <div class=\"right menu \">\n        <div class=\"item large monitor only\">\n            <form :submit=\"search\" class=\"ui  transparent icon input\">\n                <input v-model=\"search_value\" type=\"text\" placeholder=\"Search...\">\n                <i class=\"search link icon\"></i>\n            </form>\n        </div>\n        <nav-user-info></nav-user-info>\n    </div>\n</nav>\n";
 
 /***/ },
-/* 5 */
+/* 39 */
+/***/ function(module, exports) {
+
+	module.exports = "<div v-show='False'>\n    <li v-show=\"user_info\" class=\"dropdown user user-menu\">\n        <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n            <i class=\"glyphicon glyphicon-user\"></i>\n            <span>(%user_info.user_name%)<i class=\"caret\"></i></span>\n        </a>\n        <ul class=\"dropdown-menu\">\n            <!-- User images -->\n            <li class=\"user-header bg-light-blue\">\n                <img :src=\"avatar\" class=\"img-circle\">\n                <p>\n                (%user_info.user_name%) <br />\n                (%user_info.email%)\n\n                <small>(%desc%)</small>\n                </p>\n            </li>\n            <!-- Menu Footer-->\n            <li class=\"user-footer\">\n                <div class=\"btn-group btn-group-justified\">\n                    <div class=\"btn-group\">\n                        <a href=\"/profile\" class=\"btn btn-default btn-flat\">个人资料</a>\n                    </div>\n                    <div class=\"btn-group\">\n                        <a :click=\"delAndLogout\" class=\"btn btn-default btn-flat\">安全退出</a>\n                    </div>\n                </div>\n            </li>\n        </ul>\n    </li>\n    <li v-show=\"!user_info\" ><a href=\"/login\"><i class=\"fa fa-sign-in\"></i> 登录</a></li>\n</div>\n";
+
+/***/ },
+/* 40 */
+/***/ function(module, exports) {
+
+	module.exports = "<a :href=\"the_href\" class=\"ui (%oauth.name%) button\">\n    <i class=\"(%the_icon_class%) icon\"></i>\n    (%the_show_name%)\n</a>\n";
+
+/***/ },
+/* 41 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"ui center aligned secondary segment\">\n    <b>用户注册</b>\n</div>\n<div class=\"ui segment\">\n    <form class=\"ui form fluid \">\n        <div v-bind:class=\"{ 'error': user_name_error }\" class=\"field\" >\n            <label>用户名</label>\n            <input @focus=\"cleanError\" v-model=\"user_name\"  placeholder=\"请输入用户名\" type=\"text\">\n        </div>\n        <div v-bind:class=\"{ 'error': email_error }\" class=\"field\" >\n            <label>邮箱</label>\n            <input @focus=\"cleanError\" v-model=\"email\" placeholder=\"请输入邮箱地址，便于密码找回\" type=\"text\">\n        </div>\n        <div v-bind:class=\"{ 'error': password_error }\" class=\"field\">\n            <label>密码</label>\n            <input v-model=\"password\" @keyup.enter=\"signup\" @focus=\"cleanError\" placeholder=\"请输入密码\"  type=\"password\">\n        </div>\n        <a @click=\"signup\" class=\"ui blue submit button\">注册</a>\n    </form>\n    <div v-show=\"error_info\" class=\"ui bottom  warning message\">\n        <i class=\"icon help\"></i>\n        (%error_info%)\n    </div>\n</div>\n";
+
+/***/ },
+/* 42 */
+/***/ function(module, exports) {
+
+	module.exports = "<textarea placeholder=\"\"></textarea>\n";
+
+/***/ },
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -9853,1188 +10641,16 @@
 
 
 /***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	module.exports = function() { throw new Error("define cannot be used indirect"); };
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/*
-	包装了 login signup forget 的用户登录相关组件
-	 */
-	__webpack_require__(8);
-	
-	module.exports = {
-	  props: ['oauths'],
-	  data: function() {
-	    return {
-	      current_view: 'login'
-	    };
-	  },
-	  methods: {
-	    change: function(view) {
-	      return this.current_view = view;
-	    }
-	  },
-	  template: __webpack_require__(12),
-	  components: {
-	    "login": __webpack_require__(13),
-	    "signup": __webpack_require__(21),
-	    "forget": __webpack_require__(34)
-	  }
-	};
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(9);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0;
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function createStyleElement() {
-		var styleElement = document.createElement("style");
-		var head = getHeadElement();
-		styleElement.type = "text/css";
-		head.appendChild(styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement() {
-		var linkElement = document.createElement("link");
-		var head = getHeadElement();
-		linkElement.rel = "stylesheet";
-		head.appendChild(linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement());
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement();
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				styleElement.parentNode.removeChild(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement();
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				styleElement.parentNode.removeChild(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-		var sourceMap = obj.sourceMap;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	module.exports = "\n<div class=\"ui segments\">\n<component :is=\"current_view\" :oauths=\"oauths\"></component>\n<div class=\"ui buttons\">\n    <button v-show=\"current_view !='signup'\" @click=\"change('signup')\" type=\"button\" class=\"ui basic button\">注册用户</button>\n    <button v-show=\"current_view !='forget'\" @click=\"change('forget')\" type=\"button\" class=\"ui basic button\">找回密码</button>\n    <button v-show=\"current_view !='login'\" @click=\"change('login')\" type=\"button\" class=\"ui basic button\">登录</button>\n</div>\n</div>\n\n";
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/*
-	login
-	
-	登录页
-	oauths:参见oauth2-button
-	 */
-	var error;
-	
-	__webpack_require__(14);
-	
-	error = __webpack_require__(2);
-	
-	module.exports = {
-	  props: ['oauths'],
-	  data: function() {
-	    return {
-	      user_name: '',
-	      password: '',
-	      error_info: ''
-	    };
-	  },
-	  template: __webpack_require__(16),
-	  components: {
-	    'oauth2-button': __webpack_require__(17)
-	  },
-	  created: function() {
-	    return error.setOnErrorVm(this);
-	  },
-	  methods: {
-	    signup: function() {
-	      return window.location.href = '/signup?user_name=' + this.user_name;
-	    },
-	    cleanError: function() {
-	      return this.$data.error_info = false;
-	    },
-	    login: function() {
-	      var parm;
-	      console.log('login');
-	      if (!this.user_name) {
-	        throw new Error("请输入用户名");
-	      }
-	      if (!this.password) {
-	        throw new Error("请输入用户密码");
-	      }
-	      this.error_info = false;
-	      this.loading = true;
-	      parm = JSON.stringify({
-	        user_name: this.user_name,
-	        password: this.password,
-	        geetest_challenge: $('.geetest_challenge').val(),
-	        geetest_validate: $('.geetest_validate').val(),
-	        geetest_seccode: $('.geetest_seccode').val(),
-	        validate: $('#validate').val()
-	      });
-	      return $.ajax({
-	        url: '/login',
-	        type: 'POST',
-	        data: parm,
-	        success: (function(_this) {
-	          return function(data, status, response) {
-	            _this.loading = false;
-	            if (data.error !== '0') {
-	              if (data.error === 'user not exist') {
-	                $('#confirm-ask-create').modal();
-	              } else {
-	                throw new Error(data.error);
-	              }
-	            } else {
-	              return location.pathname = '/';
-	            }
-	          };
-	        })(this),
-	        error: function() {}
-	      });
-	    }
-	  }
-	};
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(15);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"ui center aligned secondary segment\">\n    <b>用户登录</b>\n</div>\n<div class=\"ui segment\">\n    <div class=\"ui two column middle aligned very relaxed stackable grid\">\n        <div class=\"center aligned column\">\n            <div class=\"ui large\">\n                <oauth2-button  v-for=\"oauth in oauths\" :oauth=\"oauth\"></oauth2-button>\n            </div>\n        </div>\n        <div class=\"ui vertical divider\">Or </div>\n        <div class=\"center aligned column\">\n            <form class=\"ui form fluid \">\n                <div class=\"field\">\n                    <label>用户名</label>\n                    <input @focus=\"cleanError\" v-model=\"user_name\" placeholder=\"请输入邮箱/用户名\" type=\"text\">\n                </div>\n                <div class=\"field\">\n                    <label>密码</label>\n                    <input v-model=\"password\" @keyup.enter=\"login\" @focus=\"cleanError\" placeholder=\"请输入密码\"  type=\"password\">\n                </div>\n                <a @click=\"login\" class=\"ui blue submit button\">登录</a>\n            </form>\n            <div v-show=\"error_info\" class=\"ui bottom attached warning message\">\n                <i class=\"icon help\"></i>\n                (%error_info%)\n            </div>\n        </div>\n    </div>\n</div>\n\n\n<div class=\"ui small test modal\">\n    <div class=\"header\">\n        不存在用户 \n    </div>\n    <div class=\"content\">\n        <p>还没有用户(%user_name%),是否建立?</p>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui negative button\">\n            不用\n        </div>\n        <div @click=\"signup\" class=\"ui positive right labeled icon button\">\n            好的\n            <i class=\"checkmark icon\"></i>\n        </div>\n    </div>\n</div>\n";
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/*
-	oauth2-button
-	
-	渲染 oauth 的图标
-	oauth.name: oauth.name (必填)
-	oauth.icon_class: 图标样式
-	oauth.href: link
-	oauth.show_name:显示为什么，比如‘豆瓣’
-	 */
-	__webpack_require__(18);
-	
-	module.exports = {
-	  template: __webpack_require__(20),
-	  props: ['oauth'],
-	  computed: {
-	    the_href: function() {
-	      if (_.has(this.oauth, 'href')) {
-	        return this.oauth.href;
-	      } else {
-	        return '/' + this.oauth.name;
-	      }
-	    },
-	    the_icon_class: function() {
-	      if (_.has(this.oauth, 'icon_class')) {
-	        return this.oauth.icon_class;
-	      } else {
-	        return this.oauth.name;
-	      }
-	    },
-	    the_show_name: function() {
-	      if (_.has(this.oauth, 'show_name')) {
-	        return this.oauth.show_name;
-	      } else {
-	        return this.oauth.name;
-	      }
-	    }
-	  }
-	};
-
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(19);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".btn.btn-default.btn-oauth2-google {\n  background-color: #d34836;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-google:hover,\n.btn.btn-default.btn-oauth2-google:active {\n  background-color: #b54836 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-twitter {\n  background-color: #4997ce;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-twitter:hover,\n.btn.btn-default.btn-oauth2-twitter:active {\n  background-color: #4979b0 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-facebook {\n  background-color: #3b579d;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-facebook:hover,\n.btn.btn-default.btn-oauth2-facebook:active {\n  background-color: #39407f !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-weibo {\n  background-color: #f37907;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-weibo:hover,\n.btn.btn-default.btn-oauth2-weibo:active {\n  background-color: #d56c07 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-qq {\n  background-color: #1491e0;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-qq:hover,\n.btn.btn-default.btn-oauth2-qq:active {\n  background-color: #1474c2 !important;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-douban {\n  background-color: #3e9846;\n  color: #FFF;\n}\n.btn.btn-default.btn-oauth2-douban:hover,\n.btn.btn-default.btn-oauth2-douban:active {\n  background-color: #3c7a3c !important;\n  color: #FFF;\n}\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 20 */
-/***/ function(module, exports) {
-
-	module.exports = "<a :href=\"the_href\" class=\"ui (%oauth.name%) button\">\n    <i class=\"(%the_icon_class%) icon\"></i>\n    (%the_show_name%)\n</a>\n";
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/*
-	注册页面
-	 */
-	var error;
-	
-	__webpack_require__(22);
-	
-	error = __webpack_require__(2);
-	
-	module.exports = {
-	  data: function() {
-	    return {
-	      user_name_error: false,
-	      email_error: false,
-	      password_error: false
-	    };
-	  },
-	  template: __webpack_require__(24),
-	  directives: {
-	    "regexp": __webpack_require__(25),
-	    "disable": __webpack_require__(28),
-	    "btn-loading": __webpack_require__(31)
-	  },
-	  created: function() {
-	    return error.setOnErrorVm(this);
-	  },
-	  methods: {
-	    signup: function() {
-	      var key, parm, value;
-	      if (!this.user_name) {
-	        this.user_name_error = true;
-	        throw new Error("请输入用户名");
-	      }
-	      if (!this.password) {
-	        this.password_error = true;
-	        throw new Error("请输入用密码");
-	      }
-	      if (!this.email) {
-	        this.email_error = true;
-	        throw new Error("请输入邮箱");
-	      }
-	      for (key in regexp) {
-	        value = regexp[key];
-	        if (value === false) {
-	          throw new Error("您的邮箱无法验证, 请填写正确的邮箱");
-	        }
-	      }
-	      parm = JSON.stringify({
-	        user_name: this.user_name,
-	        user_type: this.user_type,
-	        password: this.password,
-	        email: this.email
-	      });
-	      this.loading = true;
-	      return $.ajax({
-	        url: '/signup',
-	        type: 'POST',
-	        data: parm,
-	        success: (function(_this) {
-	          return function(data, status, response) {
-	            if (data.error !== '0') {
-	              throw new Error(data.error);
-	            } else {
-	              bz.showSuccess5('注册成功, 正在自动登录');
-	              bz.delay(1500, function() {
-	                return location.pathname = '/';
-	              });
-	            }
-	            return _this.loading = false;
-	          };
-	        })(this),
-	        error: function() {}
-	      });
-	    },
-	    cleanError: function() {
-	      this.user_name_error = false;
-	      this.email_error = false;
-	      this.password_error = false;
-	      return this.$data.error_info = false;
-	    }
-	  }
-	};
-
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(23);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"ui center aligned secondary segment\">\n    <b>用户注册</b>\n</div>\n<div class=\"ui segment\">\n    <form class=\"ui form fluid \">\n        <div class=\"field\" v-bind:class=\"{ 'error': user_name_error }\">\n            <label>用户名</label>\n            <input @focus=\"cleanError\" v-model=\"user_name\"  placeholder=\"请输入用户名\" type=\"text\">\n        </div>\n        <div class=\"field\">\n            <label>邮箱</label>\n            <input @focus=\"cleanError\" v-model=\"email\" placeholder=\"请输入邮箱地址，便于密码找回\" type=\"text\">\n        </div>\n        <div class=\"field\">\n            <label>密码</label>\n            <input v-model=\"password\" @keyup.enter=\"signup\" @focus=\"cleanError\" placeholder=\"请输入密码\"  type=\"password\">\n        </div>\n        <a @click=\"signup\" class=\"ui blue submit button\">注册</a>\n    </form>\n    <div v-show=\"error_info\" class=\"ui bottom attached warning message\">\n        <i class=\"icon help\"></i>\n        (%error_info%)\n    </div>\n</div>\n";
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(26);
-	
-	module.exports = {
-	  bind: function() {},
-	  update: function(value, old_value) {
-	    var r, reg;
-	    if (!window.regexp) {
-	      window.regexp = {};
-	    }
-	    if (value) {
-	      reg = new RegExp(this.arg);
-	      r = reg.test(value);
-	      if (r) {
-	        $(this.el).css('border-color', '#d2d6de');
-	        return window.regexp[this.expression] = r;
-	      } else {
-	        return $(this.el).css('border-color', '#ff0000');
-	      }
-	    } else {
-	      return window.regexp[this.expression] = false;
-	    }
-	  },
-	  unbind: function() {}
-	};
-
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(27);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(29);
-	
-	module.exports = {
-	  bind: function() {},
-	  update: function(value, old_value) {
-	    return this.el.disabled = value;
-	  },
-	  unbind: function() {}
-	};
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(30);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(32);
-	
-	module.exports = {
-	  bind: function() {},
-	  update: function(value, old_value) {
-	    var el;
-	    el = $(this.el);
-	    if (value) {
-	      el.children().hide();
-	      return el.prepend("<i class='fa fa-spin fa-spinner'></i>");
-	    } else {
-	      el.children(".fa.fa-spin.fa-spinner").remove();
-	      return el.children().show();
-	    }
-	  },
-	  unbind: function() {}
-	};
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(33);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/*
-	忘记密码
-	 */
-	__webpack_require__(35);
-	
-	module.exports = {
-	  directives: {
-	    "btn-loading": __webpack_require__(31)
-	  },
-	  template: __webpack_require__(37),
-	  created: function() {
-	    var error;
-	    error = __webpack_require__(2);
-	    return error.setOnErrorVm(this);
-	  },
-	  methods: {
-	    forget: function() {
-	      var key, parm, value;
-	      if (!this.email) {
-	        throw new Error("请输入邮箱");
-	      }
-	      this.loading = true;
-	      for (key in regexp) {
-	        value = regexp[key];
-	        if (value === false) {
-	          throw new Error("您的邮箱无法验证, 请填写正确的邮箱");
-	        }
-	      }
-	      parm = JSON.stringify({
-	        email: this.email
-	      });
-	      return $.ajax({
-	        url: '/forget',
-	        type: 'POST',
-	        data: parm,
-	        success: (function(_this) {
-	          return function(data, status, response) {
-	            _this.loading = false;
-	            if (data.error !== '0') {
-	              throw new Error(data.error);
-	            } else {
-	              bz.showSuccess5('找回密码成功,请登录你的邮箱继续修改密码');
-	              return _this.email = '';
-	            }
-	          };
-	        })(this),
-	        error: function() {}
-	      });
-	    },
-	    cleanError: function() {
-	      return this.$data.error_info = false;
-	    }
-	  }
-	};
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(36);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports) {
-
-	module.exports = "    <div class=\"ui center aligned secondary segment\">\n        <b>找回密码</b>\n    </div>\n    <div class=\"ui segment\">\n        <form class=\"ui form fluid \">\n            <div class=\"field\">\n                <label>邮箱</label>\n                <input type=\"text\" v-model=\"email\" class=\"form-control\" placeholder=\"请输入邮箱地址\" @keyup.enter=\"forget\" @focus=\"cleanError\">\n            </div>\n            <a @click=\"forget\" class=\"ui blue submit button\">发送邮件</a>\n        </form>\n        <div v-show=\"error_info\" class=\"ui bottom attached warning message\">\n            <i class=\"icon help\"></i>\n            (%error_info%)\n        </div>\n    </div>\n";
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var check;
-	
-	__webpack_require__(39);
-	
-	check = __webpack_require__(41);
-	
-	module.exports = {
-	  template: __webpack_require__(42),
-	  props: ['content'],
-	  ready: function() {
-	    this.initSimditor();
-	    return this.$watch('content', function(newVal, oldVal) {
-	      if (newVal !== this.simditor.getValue()) {
-	        return this.simditor.setValue(newVal);
-	      }
-	    });
-	  },
-	  methods: {
-	    initSimditor: function() {
-	      var mobileToolbar, small_tool_bar, toolbar;
-	      toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'];
-	      mobileToolbar = ['bold', 'underline', 'strikethrough', 'color', 'ul', 'ol'];
-	      small_tool_bar = ['title', 'link', 'image', 'bold'];
-	      if (check.mobileCheck()) {
-	        toolbar = mobileToolbar;
-	      }
-	      this.simditor = new Simditor({
-	        textarea: this.$el,
-	        placeholder: '这里输入文字...',
-	        toolbar: small_tool_bar,
-	        toolbarFloat: false,
-	        pasteImage: true,
-	        defaultImage: 'assets/images/image.png',
-	        upload: {
-	          url: '/upload_image',
-	          params: null,
-	          fileKey: 'upload_file',
-	          connectionCount: 3,
-	          leaveConfirm: '正在上传文件，如果离开上传会自动取消'
-	        }
-	      });
-	      return this.simditor.on('valuechanged', (function(_this) {
-	        return function(e, src) {
-	          return _this.content = _this.simditor.getValue();
-	        };
-	      })(this));
-	    }
-	  }
-	};
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(40);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(10)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".simditor .simditor-body {\n  min-height: 2em !important;\n}\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	
-	/*
-	 */
-	var check;
-	
-	check = {
-	  mobileCheck: function() {
-	    check = false;
-	    (function(a) {
-	      if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
-	        check = true;
-	      }
-	    })(navigator.userAgent || navigator.vendor || window.opera);
-	    return check;
-	  }
-	};
-	
-	module.exports = check;
-
-
-/***/ },
-/* 42 */
-/***/ function(module, exports) {
-
-	module.exports = "<textarea placeholder=\"\"></textarea>\n";
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/*
-	 */
-	__webpack_require__(44);
-	
-	module.exports = {
-	  components: {
-	    'nav-user-info': __webpack_require__(46)
-	  },
-	  props: ['navbar_header', 'nav_links'],
-	  template: __webpack_require__(50),
-	  methods: {
-	    search: function(e) {
-	      var host, url;
-	      e.preventDefault();
-	      if (window.header_search) {
-	        window.header_search(this.search_value);
-	        return;
-	      }
-	      host = window.location.hostname;
-	      url = "https://www.google.com/search?q=site:" + host + " " + this.search_value + "&gws_rd=ssl";
-	      return window.open(url);
-	    }
-	  }
-	};
-
-
-/***/ },
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(45);
+	var content = __webpack_require__(22);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
+	var update = __webpack_require__(1)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -11054,88 +10670,53 @@
 /* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(10)();
-	// imports
+	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
-	
-	// module
-	exports.push([module.id, ".main.container {\n  margin-top: 3em;\n}\n@media only screen and (max-width: 767px) {\n  .mobile.hidden,\n  .tablet.only,\n  .small.monitor.only,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 768px) and (max-width: 991px) {\n  .mobile.only,\n  .tablet.hidden,\n  .small.monitor.only,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 992px) and (max-width: 1199px) {\n  .mobile.only,\n  .tablet.only,\n  .small.monitor.hidden,\n  .large.monitor.only {\n    display: none !important;\n  }\n}\n@media only screen and (min-width: 1200px) {\n  .mobile.only,\n  .tablet.only,\n  .small.monitor.only,\n  .large.monitor.hidden {\n    display: none !important;\n  }\n}\n", ""]);
-	
-	// exports
-
+	// load the styles
+	var content = __webpack_require__(23);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
-	/*
-	 */
-	__webpack_require__(47);
-	
-	module.exports = {
-	  template: __webpack_require__(49),
-	  data: function() {
-	    return {
-	      user_info: {
-	        user_name: '',
-	        email: ''
-	      }
-	    };
-	  },
-	  created: function() {
-	    if (localStorage.user_info) {
-	      JSON.parse(localStorage.user_info);
-	      return this.user_info = JSON.parse(localStorage.user_info);
-	    } else {
-	      return this.getUserInfo();
-	    }
-	  },
-	  computed: {
-	    avatar: function() {
-	      if (this.user_info.picture) {
-	        return this.user_info.picture;
-	      } else {
-	        return '/static/images/avatar.svg';
-	      }
-	    },
-	    desc: function() {
-	      if (this.user_info.slogan) {
-	        return this.user_info.slogan;
-	      } else {
-	        return 'Nothing';
-	      }
-	    }
-	  },
-	  methods: {
-	    getUserInfo: function() {
-	      return $.ajax({
-	        url: '/get_user_info',
-	        type: 'GET',
-	        success: (function(_this) {
-	          return function(data, status, response) {
-	            if (data.error !== '0') {
-	              return console.log(data.error);
-	            } else {
-	              localStorage.user_info = JSON.stringify(data.user_info);
-	              return _this.user_info = data.user_info;
-	            }
-	          };
-	        })(this),
-	        error: function(data, status, response) {
-	          console.log(data);
-	          console.log(status);
-	          return console.log(response);
-	        }
-	      });
-	    },
-	    delAndLogout: function() {
-	      localStorage.removeItem('user_info');
-	      return window.location.href = "/logout";
-	    }
-	  }
-	};
-
+	// load the styles
+	var content = __webpack_require__(24);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 47 */
@@ -11144,10 +10725,10 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(48);
+	var content = __webpack_require__(25);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
+	var update = __webpack_require__(1)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -11167,43 +10748,105 @@
 /* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(10)();
-	// imports
+	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
+	// load the styles
+	var content = __webpack_require__(26);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 49 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = "<li v-show=\"user_info\" class=\"dropdown user user-menu\">\n    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n        <i class=\"glyphicon glyphicon-user\"></i>\n        <span>(%user_info.user_name%)<i class=\"caret\"></i></span>\n    </a>\n    <ul class=\"dropdown-menu\">\n        <!-- User images -->\n        <li class=\"user-header bg-light-blue\">\n            <img :src=\"avatar\" class=\"img-circle\">\n            <p>\n            (%user_info.user_name%) <br />\n            (%user_info.email%)\n\n            <small>(%desc%)</small>\n            </p>\n        </li>\n        <!-- Menu Footer-->\n        <li class=\"user-footer\">\n            <div class=\"btn-group btn-group-justified\">\n                <div class=\"btn-group\">\n                    <a href=\"/profile\" class=\"btn btn-default btn-flat\">个人资料</a>\n                </div>\n                <div class=\"btn-group\">\n                    <a :click=\"delAndLogout\" class=\"btn btn-default btn-flat\">安全退出</a>\n                </div>\n            </div>\n        </li>\n    </ul>\n</li>\n<li v-show=\"!user_info\" ><a href=\"/login\"><i class=\"fa fa-sign-in\"></i> 登录</a></li>\n";
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(27);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 50 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = "<nav class=\"ui top fixed pointing menu\">\n    <a class=\"header item\" :href=\"navbar_header.href\"><b>(%navbar_header.name%)</b></a>\n    <a class=\"item\" v-for=\"link in nav_links\" :href=\"link.href\" :target=\"link.target\">(%link.name%)</a>\n    <div class=\"right menu \">\n        <div class=\"item large monitor only\">\n            <form :submit=\"search\" class=\"ui  transparent icon input\">\n                <input v-model=\"search_value\" type=\"text\" placeholder=\"Search...\">\n                <i class=\"search link icon\"></i>\n            </form>\n        </div>\n    </div>\n</nav>\n";
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(28);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var time;
+	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
-	__webpack_require__(52);
-	
-	time = __webpack_require__(54);
-	
-	module.exports = function(value, mask) {
-	  var date_str;
-	  return date_str = time.dateFormat(value, mask);
-	};
-
+	// load the styles
+	var content = __webpack_require__(29);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 52 */
@@ -11212,10 +10855,10 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(53);
+	var content = __webpack_require__(30);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(11)(content, {});
+	var update = __webpack_require__(1)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -11235,98 +10878,546 @@
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(10)();
-	// imports
+	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
-	
-	// module
-	exports.push([module.id, "", ""]);
-	
-	// exports
-
+	// load the styles
+	var content = __webpack_require__(31);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(32);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(33);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./style.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(34);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(1)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./mobile.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./mobile.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+	 * Toastr
+	 * Copyright 2012-2015
+	 * Authors: John Papa, Hans Fjällemark, and Tim Ferrell.
+	 * All Rights Reserved.
+	 * Use, reproduction, distribution, and modification of this code is subject to the terms and
+	 * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php
+	 *
+	 * ARIA Support: Greta Krafsig
+	 *
+	 * Project: https://github.com/CodeSeven/toastr
+	 */
+	/* global define */
+	; (function (define) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(43)], __WEBPACK_AMD_DEFINE_RESULT__ = function ($) {
+	        return (function () {
+	            var $container;
+	            var listener;
+	            var toastId = 0;
+	            var toastType = {
+	                error: 'error',
+	                info: 'info',
+	                success: 'success',
+	                warning: 'warning'
+	            };
+	
+	            var toastr = {
+	                clear: clear,
+	                remove: remove,
+	                error: error,
+	                getContainer: getContainer,
+	                info: info,
+	                options: {},
+	                subscribe: subscribe,
+	                success: success,
+	                version: '2.1.2',
+	                warning: warning
+	            };
+	
+	            var previousToast;
+	
+	            return toastr;
+	
+	            ////////////////
+	
+	            function error(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.error,
+	                    iconClass: getOptions().iconClasses.error,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+	
+	            function getContainer(options, create) {
+	                if (!options) { options = getOptions(); }
+	                $container = $('#' + options.containerId);
+	                if ($container.length) {
+	                    return $container;
+	                }
+	                if (create) {
+	                    $container = createContainer(options);
+	                }
+	                return $container;
+	            }
+	
+	            function info(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.info,
+	                    iconClass: getOptions().iconClasses.info,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+	
+	            function subscribe(callback) {
+	                listener = callback;
+	            }
+	
+	            function success(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.success,
+	                    iconClass: getOptions().iconClasses.success,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+	
+	            function warning(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.warning,
+	                    iconClass: getOptions().iconClasses.warning,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+	
+	            function clear($toastElement, clearOptions) {
+	                var options = getOptions();
+	                if (!$container) { getContainer(options); }
+	                if (!clearToast($toastElement, options, clearOptions)) {
+	                    clearContainer(options);
+	                }
+	            }
+	
+	            function remove($toastElement) {
+	                var options = getOptions();
+	                if (!$container) { getContainer(options); }
+	                if ($toastElement && $(':focus', $toastElement).length === 0) {
+	                    removeToast($toastElement);
+	                    return;
+	                }
+	                if ($container.children().length) {
+	                    $container.remove();
+	                }
+	            }
+	
+	            // internal functions
+	
+	            function clearContainer (options) {
+	                var toastsToClear = $container.children();
+	                for (var i = toastsToClear.length - 1; i >= 0; i--) {
+	                    clearToast($(toastsToClear[i]), options);
+	                }
+	            }
+	
+	            function clearToast ($toastElement, options, clearOptions) {
+	                var force = clearOptions && clearOptions.force ? clearOptions.force : false;
+	                if ($toastElement && (force || $(':focus', $toastElement).length === 0)) {
+	                    $toastElement[options.hideMethod]({
+	                        duration: options.hideDuration,
+	                        easing: options.hideEasing,
+	                        complete: function () { removeToast($toastElement); }
+	                    });
+	                    return true;
+	                }
+	                return false;
+	            }
+	
+	            function createContainer(options) {
+	                $container = $('<div/>')
+	                    .attr('id', options.containerId)
+	                    .addClass(options.positionClass)
+	                    .attr('aria-live', 'polite')
+	                    .attr('role', 'alert');
+	
+	                $container.appendTo($(options.target));
+	                return $container;
+	            }
+	
+	            function getDefaults() {
+	                return {
+	                    tapToDismiss: true,
+	                    toastClass: 'toast',
+	                    containerId: 'toast-container',
+	                    debug: false,
+	
+	                    showMethod: 'fadeIn', //fadeIn, slideDown, and show are built into jQuery
+	                    showDuration: 300,
+	                    showEasing: 'swing', //swing and linear are built into jQuery
+	                    onShown: undefined,
+	                    hideMethod: 'fadeOut',
+	                    hideDuration: 1000,
+	                    hideEasing: 'swing',
+	                    onHidden: undefined,
+	                    closeMethod: false,
+	                    closeDuration: false,
+	                    closeEasing: false,
+	
+	                    extendedTimeOut: 1000,
+	                    iconClasses: {
+	                        error: 'toast-error',
+	                        info: 'toast-info',
+	                        success: 'toast-success',
+	                        warning: 'toast-warning'
+	                    },
+	                    iconClass: 'toast-info',
+	                    positionClass: 'toast-top-right',
+	                    timeOut: 5000, // Set timeOut and extendedTimeOut to 0 to make it sticky
+	                    titleClass: 'toast-title',
+	                    messageClass: 'toast-message',
+	                    escapeHtml: false,
+	                    target: 'body',
+	                    closeHtml: '<button type="button">&times;</button>',
+	                    newestOnTop: true,
+	                    preventDuplicates: false,
+	                    progressBar: false
+	                };
+	            }
+	
+	            function publish(args) {
+	                if (!listener) { return; }
+	                listener(args);
+	            }
+	
+	            function notify(map) {
+	                var options = getOptions();
+	                var iconClass = map.iconClass || options.iconClass;
+	
+	                if (typeof (map.optionsOverride) !== 'undefined') {
+	                    options = $.extend(options, map.optionsOverride);
+	                    iconClass = map.optionsOverride.iconClass || iconClass;
+	                }
+	
+	                if (shouldExit(options, map)) { return; }
+	
+	                toastId++;
+	
+	                $container = getContainer(options, true);
+	
+	                var intervalId = null;
+	                var $toastElement = $('<div/>');
+	                var $titleElement = $('<div/>');
+	                var $messageElement = $('<div/>');
+	                var $progressElement = $('<div/>');
+	                var $closeElement = $(options.closeHtml);
+	                var progressBar = {
+	                    intervalId: null,
+	                    hideEta: null,
+	                    maxHideTime: null
+	                };
+	                var response = {
+	                    toastId: toastId,
+	                    state: 'visible',
+	                    startTime: new Date(),
+	                    options: options,
+	                    map: map
+	                };
+	
+	                personalizeToast();
+	
+	                displayToast();
+	
+	                handleEvents();
+	
+	                publish(response);
+	
+	                if (options.debug && console) {
+	                    console.log(response);
+	                }
+	
+	                return $toastElement;
+	
+	                function escapeHtml(source) {
+	                    if (source == null)
+	                        source = "";
+	
+	                    return new String(source)
+	                        .replace(/&/g, '&amp;')
+	                        .replace(/"/g, '&quot;')
+	                        .replace(/'/g, '&#39;')
+	                        .replace(/</g, '&lt;')
+	                        .replace(/>/g, '&gt;');
+	                }
+	
+	                function personalizeToast() {
+	                    setIcon();
+	                    setTitle();
+	                    setMessage();
+	                    setCloseButton();
+	                    setProgressBar();
+	                    setSequence();
+	                }
+	
+	                function handleEvents() {
+	                    $toastElement.hover(stickAround, delayedHideToast);
+	                    if (!options.onclick && options.tapToDismiss) {
+	                        $toastElement.click(hideToast);
+	                    }
+	
+	                    if (options.closeButton && $closeElement) {
+	                        $closeElement.click(function (event) {
+	                            if (event.stopPropagation) {
+	                                event.stopPropagation();
+	                            } else if (event.cancelBubble !== undefined && event.cancelBubble !== true) {
+	                                event.cancelBubble = true;
+	                            }
+	                            hideToast(true);
+	                        });
+	                    }
+	
+	                    if (options.onclick) {
+	                        $toastElement.click(function (event) {
+	                            options.onclick(event);
+	                            hideToast();
+	                        });
+	                    }
+	                }
+	
+	                function displayToast() {
+	                    $toastElement.hide();
+	
+	                    $toastElement[options.showMethod](
+	                        {duration: options.showDuration, easing: options.showEasing, complete: options.onShown}
+	                    );
+	
+	                    if (options.timeOut > 0) {
+	                        intervalId = setTimeout(hideToast, options.timeOut);
+	                        progressBar.maxHideTime = parseFloat(options.timeOut);
+	                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+	                        if (options.progressBar) {
+	                            progressBar.intervalId = setInterval(updateProgress, 10);
+	                        }
+	                    }
+	                }
+	
+	                function setIcon() {
+	                    if (map.iconClass) {
+	                        $toastElement.addClass(options.toastClass).addClass(iconClass);
+	                    }
+	                }
+	
+	                function setSequence() {
+	                    if (options.newestOnTop) {
+	                        $container.prepend($toastElement);
+	                    } else {
+	                        $container.append($toastElement);
+	                    }
+	                }
+	
+	                function setTitle() {
+	                    if (map.title) {
+	                        $titleElement.append(!options.escapeHtml ? map.title : escapeHtml(map.title)).addClass(options.titleClass);
+	                        $toastElement.append($titleElement);
+	                    }
+	                }
+	
+	                function setMessage() {
+	                    if (map.message) {
+	                        $messageElement.append(!options.escapeHtml ? map.message : escapeHtml(map.message)).addClass(options.messageClass);
+	                        $toastElement.append($messageElement);
+	                    }
+	                }
+	
+	                function setCloseButton() {
+	                    if (options.closeButton) {
+	                        $closeElement.addClass('toast-close-button').attr('role', 'button');
+	                        $toastElement.prepend($closeElement);
+	                    }
+	                }
+	
+	                function setProgressBar() {
+	                    if (options.progressBar) {
+	                        $progressElement.addClass('toast-progress');
+	                        $toastElement.prepend($progressElement);
+	                    }
+	                }
+	
+	                function shouldExit(options, map) {
+	                    if (options.preventDuplicates) {
+	                        if (map.message === previousToast) {
+	                            return true;
+	                        } else {
+	                            previousToast = map.message;
+	                        }
+	                    }
+	                    return false;
+	                }
+	
+	                function hideToast(override) {
+	                    var method = override && options.closeMethod !== false ? options.closeMethod : options.hideMethod;
+	                    var duration = override && options.closeDuration !== false ?
+	                        options.closeDuration : options.hideDuration;
+	                    var easing = override && options.closeEasing !== false ? options.closeEasing : options.hideEasing;
+	                    if ($(':focus', $toastElement).length && !override) {
+	                        return;
+	                    }
+	                    clearTimeout(progressBar.intervalId);
+	                    return $toastElement[method]({
+	                        duration: duration,
+	                        easing: easing,
+	                        complete: function () {
+	                            removeToast($toastElement);
+	                            if (options.onHidden && response.state !== 'hidden') {
+	                                options.onHidden();
+	                            }
+	                            response.state = 'hidden';
+	                            response.endTime = new Date();
+	                            publish(response);
+	                        }
+	                    });
+	                }
+	
+	                function delayedHideToast() {
+	                    if (options.timeOut > 0 || options.extendedTimeOut > 0) {
+	                        intervalId = setTimeout(hideToast, options.extendedTimeOut);
+	                        progressBar.maxHideTime = parseFloat(options.extendedTimeOut);
+	                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+	                    }
+	                }
+	
+	                function stickAround() {
+	                    clearTimeout(intervalId);
+	                    progressBar.hideEta = 0;
+	                    $toastElement.stop(true, true)[options.showMethod](
+	                        {duration: options.showDuration, easing: options.showEasing}
+	                    );
+	                }
+	
+	                function updateProgress() {
+	                    var percentage = ((progressBar.hideEta - (new Date().getTime())) / progressBar.maxHideTime) * 100;
+	                    $progressElement.width(percentage + '%');
+	                }
+	            }
+	
+	            function getOptions() {
+	                return $.extend({}, getDefaults(), toastr.options);
+	            }
+	
+	            function removeToast($toastElement) {
+	                if (!$container) { $container = getContainer(); }
+	                if ($toastElement.is(':visible')) {
+	                    return;
+	                }
+	                $toastElement.remove();
+	                $toastElement = null;
+	                if ($container.children().length === 0) {
+	                    $container.remove();
+	                    previousToast = undefined;
+	                }
+	            }
+	
+	        })();
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(__webpack_require__(58)));
+
+
+/***/ },
+/* 58 */
 /***/ function(module, exports) {
 
-	
-	/*
-	错误处理相关
-	 */
-	var time;
-	
-	time = {
-	  preZero: function(num, len) {
-	    var a, numStr;
-	    numStr = num.toString();
-	    if (len < numStr.length) {
-	      return numStr;
-	    } else {
-	      a = new Array(len + 1).join("0") + numStr;
-	      return a.substr(a.length - len, a.length - 1);
-	    }
-	  },
-	  timeLen: function(that_time) {
-	    var day, desc, hour, interval, minute, month, now, second, year;
-	    second = 1000;
-	    minute = second * 60;
-	    hour = minute * 60;
-	    day = hour * 24;
-	    month = day * 30;
-	    year = month * 12;
-	    now = Date.now();
-	    interval = now - that_time;
-	    if (interval < minute) {
-	      desc = parseInt(interval / second) + "秒前";
-	    } else if (interval < hour) {
-	      desc = parseInt(interval / minute) + "分钟前";
-	    } else if (interval < day) {
-	      desc = parseInt(interval / hour) + "小时前";
-	    } else if (interval < month) {
-	      desc = parseInt(interval / day) + "天前";
-	    } else if (interval < year) {
-	      desc = parseInt(interval / month) + "个月前";
-	    } else {
-	      desc = parseInt(interval / year) + "年前";
-	    }
-	    return desc;
-	  },
-	  dateFormat: function(timestamp, mask) {
-	    var _this, date, matched_array, o, regStr, res;
-	    date = new Date(timestamp);
-	    _this = this;
-	    o = {
-	      "y+": function(len) {
-	        return _this.preZero(date.getFullYear(), len);
-	      },
-	      "M+": function(len) {
-	        return _this.preZero(date.getMonth() + 1, len);
-	      },
-	      "d+": function(len) {
-	        return _this.preZero(date.getDate(), len);
-	      },
-	      "h+": function(len) {
-	        return _this.preZero(date.getHours(), len);
-	      },
-	      "m+": function(len) {
-	        return _this.preZero(date.getMinutes(), len);
-	      },
-	      "s+": function(len) {
-	        return _this.preZero(date.getSeconds(), len);
-	      }
-	    };
-	    for (regStr in o) {
-	      matched_array = mask.match(new RegExp(regStr));
-	      if (matched_array) {
-	        res = o[regStr](matched_array[0].length);
-	        mask = mask.replace(matched_array[0], res);
-	      }
-	    }
-	    return mask;
-	  }
-	};
-	
-	module.exports = time;
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ }

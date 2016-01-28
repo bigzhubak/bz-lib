@@ -2,7 +2,8 @@
 
 ###
 require './style.less'
-cookie = require '../../functions/cookie'
+#cookie = require '../../functions/cookie'
+f_user_info = require '../../functions/user_info'
 module.exports =
   template: require('./template.html')
   data:->
@@ -10,12 +11,7 @@ module.exports =
       user_name:''
       email:''
   created:->
-    if cookie.getCookieValue('user_id') == localStorage.cookie_user_id and localStorage.user_info
-      JSON.parse(localStorage.user_info)
-      @user_info=JSON.parse(localStorage.user_info)
-    else
-      @getUserInfo()
-      localStorage.cookie_user_id = cookie.getCookieValue('user_id')
+    f_user_info.checkNewUserInfo()
   computed:
     avatar:->
       if @user_info.picture
@@ -28,21 +24,6 @@ module.exports =
       else
         return 'Nothing'
   methods:
-    getUserInfo:->
-      $.ajax
-        url: '/get_user_info'
-        type: 'GET'
-        success: (data, status, response) =>
-          if data.error != '0'
-            console.log data.error
-            #throw new Error(data.error)
-          else
-            localStorage.user_info = JSON.stringify(data.user_info)
-            @user_info=data.user_info
-        error:(data, status, response)->
-          console.log data
-          console.log status
-          console.log response
     delAndLogout:->
       localStorage.removeItem('user_info')
       window.location.href="/logout"
