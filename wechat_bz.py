@@ -4,7 +4,7 @@
 create by bigzhu at 15/04/01 13:30:11  微信相关的操作和接口
 modify by bigzhu at 15/04/01 16:18:35  修改为依赖 pip install wechat-sdk 的版本,简化代码
 '''
-
+import urllib
 try:
     import requests
 except ImportError:
@@ -22,6 +22,65 @@ except ImportError:
 
 import functools
 import public_bz
+
+
+def mustSubscribe(method):
+    '''
+    create by bigzhu at 15/04/08 10:25:59 wechat 使用,必须要关注
+    '''
+    #from wechat_sdk import WechatBasic
+    from wechat_sdk.basic import OfficialAPIError
+
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        openid = self.get_secure_cookie("openid")
+        if openid is None:
+            # 连openid 都没有,首先要获取 openid
+            params = {
+                "appid": self.settings['appid'],
+                # "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
+                #"redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=" + self.request.uri,
+                "redirect_uri": "http://" + "admin.hoywe.com/" + self.settings['suburl'] + "/?url=" + self.request.uri,
+                "response_type": "code",
+                "scope": "snsapi_base",
+            }
+            auth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?%s#wechat_redirect"
+            auth_url = auth_url % urllib.urlencode(params)
+            self.redirect(auth_url)
+            return
+        else:
+            #exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
+            # if not exists_users:
+            try:
+                wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
+            except OfficialAPIError as e:
+                print public_bz.getExpInfoAll()
+                self.clear_cookie(name='openid')
+                error = public_bz.getExpInfo()
+                if error.find('40001') != -1:
+                    raise e
+                else:
+                    error_info = '''
+                    <html>
+                        <script type="text/javascript">
+                        alert("微信服务器异常，请关闭后，重新打开");
+                        WeixinJSBridge.call('closeWindow');
+                        </script>
+                    </html>
+                    '''
+                    self.write(error_info)
+                return
+
+            # 没有关注的,跳转到配置的关注页面
+            if wechat_user_info['subscribe'] == 0:
+                self.redirect('http://' + self.settings["domain"] + self.settings["subscribe"])
+                return
+            # else:
+            #    print 'add user'
+            #    self.pg.db.insert('wechat_user', **wechat_user_info)
+
+        return method(self, *args, **kwargs)
+    return wrapper
 
 
 def getUserAccessToken(code, appid, secret):
