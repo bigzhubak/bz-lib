@@ -13,6 +13,7 @@ import user_bz
 import public_bz
 import db_bz
 import tornado_auth_bz
+import wechat_bz
 
 from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
@@ -22,6 +23,35 @@ salt = "hold is watching you"
 
 md5 = hashlib.md5()
 
+class set_openid(BaseHandler):
+
+    """
+    微信获取不到openid时, 访问获取信息的页面后的回调页面
+    """
+
+    def get(self, parm):
+        print 'call setOpenId'
+        url = self.get_argument('url')
+        code = self.get_argument('code')
+        user_access_token = wechat_bz.getUserAccessToken(code, self.settings["appid"], self.settings["appsecret"])
+
+        openid = user_access_token.get("openid")
+        if openid is None:
+            print json.dumps(user_access_token)
+            print 'code= %s url=%s' % (code, url)
+            error = '''
+            <html>
+                <script type="text/javascript">
+                alert("微信服务器异常，请关闭后，重新打开");
+                WeixinJSBridge.call('closeWindow');
+                </script>
+            </html>
+            '''
+            self.write(error)
+            return
+
+        self.set_secure_cookie("openid", str(openid))
+        self.redirect(url)
 
 class file_upload_bz(BaseHandler):
 

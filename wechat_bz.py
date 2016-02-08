@@ -108,8 +108,8 @@ def mustSubscribe(method):
             params = {
                 "appid": self.settings['appid'],
                 # "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
-                #"redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=" + self.request.uri,
-                "redirect_uri": "http://" + "admin.hoywe.com/" + self.settings['suburl'] + "/?url=" + self.request.uri,
+                "redirect_uri": "http://" + self.settings['domain'] + "/set_openid?url=" + self.request.uri,
+                #"redirect_uri": "http://" + "admin.hoywe.com/" + self.settings['suburl'] + "/?url=" + self.request.uri,
                 "response_type": "code",
                 "scope": "snsapi_base",
             }
