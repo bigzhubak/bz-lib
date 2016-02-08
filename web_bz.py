@@ -23,13 +23,16 @@ salt = "hold is watching you"
 
 md5 = hashlib.md5()
 
+
 class set_openid(BaseHandler):
 
     """
     微信获取不到openid时, 访问获取信息的页面后的回调页面
     """
 
-    def get(self, parm):
+    def get(self, parm, parm2):
+        print parm
+        print parm2
         print 'call setOpenId'
         url = self.get_argument('url')
         code = self.get_argument('code')
@@ -52,6 +55,7 @@ class set_openid(BaseHandler):
 
         self.set_secure_cookie("openid", str(openid))
         self.redirect(url)
+
 
 class file_upload_bz(BaseHandler):
 

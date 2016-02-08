@@ -113,7 +113,6 @@ def mustSubscribe(method):
                 "response_type": "code",
                 "scope": "snsapi_base",
             }
-            print params
             auth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?%s#wechat_redirect"
             auth_url = auth_url % urllib.urlencode(params)
             self.redirect(auth_url)
