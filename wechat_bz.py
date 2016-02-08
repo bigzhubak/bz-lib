@@ -121,7 +121,8 @@ def mustSubscribe(method):
             #exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
             # if not exists_users:
             try:
-                wechat_user_info = self.wechat.get_user_info(openid, lang='zh_CN')
+                wechat = self.settings["wechat"]
+                wechat_user_info = wechat.get_user_info(openid, lang='zh_CN')
             except OfficialAPIError as e:
                 print public_bz.getExpInfoAll()
                 self.clear_cookie(name='openid')
