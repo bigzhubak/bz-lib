@@ -37,7 +37,7 @@ def getUserAccessToken(code, appid, secret):
         "grant_type": "authorization_code"
     }
 
-    return requests.get("https://api.weixin.qq.com/sns/oauth2/access_token", params=params).json()
+    return requests.get("https://api.weixin.qq.com/sns/oauth2/access_token", verify=False, params=params).json()
 
 
 def callPlatform(self, url):
