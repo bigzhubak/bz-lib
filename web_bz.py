@@ -30,9 +30,7 @@ class set_openid(BaseHandler):
     微信获取不到openid时, 访问获取信息的页面后的回调页面
     """
 
-    def get(self, parm, parm2):
-        print parm
-        print parm2
+    def get(self):
         print 'call setOpenId'
         url = self.get_argument('url')
         code = self.get_argument('code')
