@@ -109,15 +109,18 @@ def insertIfNotExist(pg, table_name, values, where=None):
 def insertOrUpdate(pg, table_name, values, where=None):
     '''
     create by bigzhu at 15/09/03 09:15:35 insert or update
+    modify by bigzhu at 16/02/09 10:02:20 改为返回id
     '''
-    result = insertIfNotExist(pg, table_name, values, where=where)
-    if result is None:
+    id = insertIfNotExist(pg, table_name, values, where=where)
+    if id is None:
         if where is None:
             where = 'id=%s' % (values['id'])
         count = pg.db.update(table_name, where=where, **values)
-        return count
-    else:
-        return result
+        if count != 1:
+            raise Exception('update count=%s, where=%s' %(count, where) )
+        else:
+            id = pg.select(table_name, where=where)[0].id
+    return id
 
 
 def getSeqIdByTableName(pg, table_name):
