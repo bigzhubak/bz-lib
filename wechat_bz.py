@@ -23,6 +23,25 @@ except ImportError:
 import functools
 import public_bz
 
+from hashlib import md5
+def createSign(api_key, params):
+    """
+    create by bigzhu at 16/02/10 15:13:12 生成签名，用于微信支付
+    """
+    #将键值对转为 key1=value1&key2=value2
+    key_az = sorted(params.keys())
+    pair_array = []
+    for k in key_az:
+        v = params.get(k, '').strip()
+        v = v.encode('utf8')
+        k = k.encode('utf8')
+        pair_array.append('%s=%s' % (k, v))
+
+    stringA = '&'.join(pair_array)
+
+    stringSignTemp = stringA + '&key=' + api_key  # api_key, API密钥，需要在商户后台设置
+    return (md5(stringSignTemp).hexdigest()).upper()
+
 
 def getUserAccessToken(code, appid, secret):
     """

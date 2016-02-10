@@ -23,7 +23,6 @@ module.exports =
     cleanError:->
       @$data.error_info = false
     login:->
-      console.log 'login'
       if not @user_name
         throw new Error("请输入用户名")
       if not @password
