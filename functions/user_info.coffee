@@ -27,6 +27,9 @@ user_info =
       user_info.getUserInfo.call()
       localStorage.cookie_user_id = cookie.getCookieValue('user_id')
   isLogin:->
-    return cookie.getCookieValue('user_id')
+    if cookie.getCookieValue('user_id')
+      return true
+    else
+      return false
 
 module.exports = user_info
