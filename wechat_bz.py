@@ -24,11 +24,13 @@ import functools
 import public_bz
 
 from hashlib import md5
+
+
 def createSign(api_key, params):
     """
     create by bigzhu at 16/02/10 15:13:12 生成签名，用于微信支付
     """
-    #将键值对转为 key1=value1&key2=value2
+    # 将键值对转为 key1=value1&key2=value2
     key_az = sorted(params.keys())
     pair_array = []
     for k in key_az:
@@ -146,7 +148,7 @@ def mustSubscribe(method):
                 print public_bz.getExpInfoAll()
                 self.clear_cookie(name='openid')
                 error = public_bz.getExpInfo()
-                if error.find('40001') != -1:
+                if False and error.find('40001') != -1:
                     raise e
                 else:
                     error_info = '''
