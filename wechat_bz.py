@@ -138,37 +138,37 @@ def mustSubscribe(method):
             auth_url = auth_url % urllib.urlencode(params)
             self.redirect(auth_url)
             return
-        else:
-            #exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
-            # if not exists_users:
-            try:
-                wechat = self.settings["wechat"]
-                wechat_user_info = wechat.get_user_info(openid, lang='zh_CN')
-            except OfficialAPIError as e:
-                print public_bz.getExpInfoAll()
-                self.clear_cookie(name='openid')
-                error = public_bz.getExpInfo()
-                if False and error.find('40001') != -1:
-                    raise e
-                else:
-                    error_info = '''
-                    <html>
-                        <script type="text/javascript">
-                        alert("微信服务器异常，请关闭后，重新打开");
-                        WeixinJSBridge.call('closeWindow');
-                        </script>
-                    </html>
-                    '''
-                    self.write(error_info)
-                return
+        #else:
+        #    #exists_users = list(self.pg.db.select('wechat_user', where="openid='%s'" % openid))
+        #    # if not exists_users:
+        #    try:
+        #        wechat = self.settings["wechat"]
+        #        wechat_user_info = wechat.get_user_info(openid, lang='zh_CN')
+        #    except OfficialAPIError as e:
+        #        print public_bz.getExpInfoAll()
+        #        self.clear_cookie(name='openid')
+        #        error = public_bz.getExpInfo()
+        #        if False and error.find('40001') != -1:
+        #            raise e
+        #        else:
+        #            error_info = '''
+        #            <html>
+        #                <script type="text/javascript">
+        #                alert("微信服务器异常，请关闭后，重新打开");
+        #                WeixinJSBridge.call('closeWindow');
+        #                </script>
+        #            </html>
+        #            '''
+        #            self.write(error_info)
+        #        return
 
-            # 没有关注的,跳转到配置的关注页面
-            if wechat_user_info['subscribe'] == 0:
-                self.redirect('http://' + self.settings["domain"] + self.settings["subscribe"])
-                return
-            # else:
-            #    print 'add user'
-            #    self.pg.db.insert('wechat_user', **wechat_user_info)
+        #    # 没有关注的,跳转到配置的关注页面
+        #    if wechat_user_info['subscribe'] == 0:
+        #        self.redirect('http://' + self.settings["domain"] + self.settings["subscribe"])
+        #        return
+        #    # else:
+        #    #    print 'add user'
+        #    #    self.pg.db.insert('wechat_user', **wechat_user_info)
 
         return method(self, *args, **kwargs)
     return wrapper
