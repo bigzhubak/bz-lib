@@ -1,21 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from db_bz import daemonDB
-import re
 import hashlib
 import public_bz
 import model_oper_bz
 import model_bz
 salt = "hold is watching you"
-
-
-def createTable(db_name):
-    '''
-    create by bigzhu at 15/04/06 20:15:55 建立 user_info 数据模型库(依赖)
-    '''
-    import model_oper_bz
-    import model_bz
-    model_oper_bz.createTable(model_bz.user_info, db_name)
 
 
 class UserOper:
@@ -182,7 +172,7 @@ class UserOper:
                               # link=user_info['link'],
                               picture=user_info.get('profile_image_url_https'),
                               # gender=user_info['gender'],
-                              #locale=user_info['profile_location']
+                              # locale=user_info['profile_location']
                               locale=user_info.get('profile_location')
 
                               )
