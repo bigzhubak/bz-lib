@@ -8,6 +8,17 @@ from webpy_db import SQLLiteral
 from webpy_db import SQLQuery
 from webpy_db import sqlparam
 
+def listToInSql(l):
+    '''
+    create by bigzhu at 16/02/18 09:59:44 把list转为了可放到sql的in()里的语句
+    >>> listToInSql(['a','b','c'])
+    "'a','b','c'"
+    '''
+    add_ap_list = []
+    for i in l:
+        add_ap_list.append("'%s'" % i)
+    return ','.join(add_ap_list)
+
 
 def daemonDB(method):
     '''
@@ -135,6 +146,7 @@ def getSeqIdByTableName(pg, table_name):
     return id
 
 if __name__ == '__main__':
-    import test_pg
-    print insertIfNotExist(test_pg, 'user_info', {'id': 990, 'user_name': "big'zhu", 'user_type': 'my'}, " id=990")
+    print listToInSql(['a','b'])
+    #import test_pg
+    #print insertIfNotExist(test_pg, 'user_info', {'id': 990, 'user_name': "big'zhu", 'user_type': 'my'}, " id=990")
     # print test_pg.db.insert('user_info', _test=False, user_type='my', user_name="big'zhu")
