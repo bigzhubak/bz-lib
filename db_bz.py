@@ -8,14 +8,19 @@ from webpy_db import SQLLiteral
 from webpy_db import SQLQuery
 from webpy_db import sqlparam
 
-def listToInSql(l):
+def formatToInSql(param):
     '''
     create by bigzhu at 16/02/18 09:59:44 把list转为了可放到sql的in()里的语句
+    modify by bigzhu at 16/02/19 11:10:34 可以传入list or string
     >>> listToInSql(['a','b','c'])
     "'a','b','c'"
+    >>> listToInSql('a,b,c')
+    "'a','b','c'"
     '''
+    if type(param) == type('') or type(param) == type(u''):
+        param = param.split(',')
     add_ap_list = []
-    for i in l:
+    for i in param:
         add_ap_list.append("'%s'" % i)
     return ','.join(add_ap_list)
 
