@@ -1,5 +1,7 @@
 require './style.less'
 check = require 'lib/functions/check.coffee'
+
+Simditor = require('simditor')
 module.exports =
   template: require('./template.html')
   props: [ 'content']

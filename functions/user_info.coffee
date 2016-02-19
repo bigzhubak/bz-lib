@@ -5,7 +5,7 @@ cookie = require './cookie'
 user_info =
   getUserInfo:->
     $.ajax
-      url: '/get_user_info'
+      url: '/api_get_user_info'
       type: 'GET'
       success: (data, status, response) =>
         if data.error != '0'
