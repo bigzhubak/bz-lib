@@ -238,6 +238,7 @@ class get_user_info(BaseHandler):
     def get(self):
         self.set_header("Content-Type", "application/json")
         user_id = self.get_secure_cookie("user_id")
+        print user_id
         if not user_id:
             self.write(json.dumps({'error': '没有登录'}, cls=public_bz.ExtEncoder))
         else:
