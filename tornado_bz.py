@@ -69,16 +69,13 @@ def getURLMap(the_globals):
     '''
         根据定义的tornado.web.RequestHandler,自动生成url map
         modify by bigzhu at 15/03/06 15:53:59 在这里需要设置 lib 的 static, 用于访问 lib 的 static 文件
+        create by bigzhu at 16/02/23 18:29:49 剔除多余的lib_static
     '''
     url_map = []
     for i in the_globals:
         try:
             if issubclass(the_globals[i], tornado.web.RequestHandler):
                 url_map.append((r'/' + i, the_globals[i]))
-                url_map.append(
-                    (r'/lib_static/(.*)', tornado.web.StaticFileHandler, {'path': public_bz.getLibPath() + "/static"})
-                )
-                # url_map.append((r"/%s/([0-9]+)" % i, the_globals[i]))
                 url_map.append((r"/%s/(.*)" % i, the_globals[i]))
         except TypeError:
             continue
