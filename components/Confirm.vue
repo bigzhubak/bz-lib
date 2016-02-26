@@ -26,20 +26,19 @@
   export default {
     data () {
     },
-    props: ['id', 'header', 'content', 'callBack'],
+    props: ['header', 'content', 'call_back'],
     ready () {
       this.$on('confirm', this.showConfirm)
-      if (!this.id) {
-        this.id = 'confirm'
-      }
+      // if (!this.id) {
+      //   this.id = 'confirm'
+      // }
     },
     methods: {
       yes: function () {
-        this.callBack()
+        this.call_back()
       },
       showConfirm: function () {
-        console.log('confirm')
-        $('#' + this.id).modal('show')
+        $(this.$el).modal('show')
       }
     }
   }
