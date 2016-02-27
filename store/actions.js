@@ -4,10 +4,9 @@ import VueResource from 'vue-resource'
 // import _ from 'underscore'
 Vue.use(VueResource)
 
-var toast = require('lib/functions/toast.coffee').getTopRightToast()
+var toast = require('../functions/toast.coffee').getTopRightToast()
 
 var api_user_info = Vue.resource('/api_user_info{/parm}')
-var api_card = Vue.resource('/api_card{/parm}')
 
 export default {
   queryUserInfo: ({ dispatch, state }) => {
