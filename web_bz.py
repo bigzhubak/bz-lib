@@ -23,6 +23,22 @@ salt = "hold is watching you"
 
 md5 = hashlib.md5()
 
+class api_user_info(BaseHandler):
+
+    @tornado_bz.handleError
+    def get(self):
+        self.set_header("Content-Type", "application/json")
+        user_id = self.get_secure_cookie("user_id")
+        if not user_id:
+            raise Exception('没有登录')
+        user_oper = user_bz.UserOper(self.pg)
+        user_info = user_oper.getUserInfo(user_id=user_id)
+        if not user_info:
+            raise Exception('没有用户' + user_id)
+        user_info = user_info[0]
+        del user_info.password
+        self.write(json.dumps({'error': '0', 'user_info': user_info}, cls=public_bz.ExtEncoder))
+
 
 class set_openid(BaseHandler):
 
