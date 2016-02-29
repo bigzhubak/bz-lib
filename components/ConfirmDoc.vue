@@ -16,19 +16,21 @@
         <tr> <td class="single line"> content </td> <td> 正文内容 </td></tr>
         <tr><td class="single line"> call_back </td> <td> 点击确认后的回调函数</td></tr>
         <tr>
-          <td colspan="2">注意，触发弹出窗口使用 <code class=" language-javascript">this.$broadcast('confirm')</code></td>
+          <td colspan="2">注意，触发弹出窗口使用 <code>this.$broadcast('confirm')</code></td>
         </tr>
       </tbody>
     </table>
   </div>
+  <pre>
   <code>
+    &lt;confirm header=&quot;&#26631;&#39064;&#20869;&#23481;&quot; content=&quot;&#20869;&#23481;&#27491;&#25991;&quot; :call_back=&quot;call_back&quot;&gt;&lt;/confirm&gt;
   </code>
-  <div class='ui center aligned basic segment'>
-    <button @click='run' class='ui basic button'>
-      <i class='icon play'></i>
-      运行
-    </button>
-  </div>
+  </pre>
+  <button @click='run' class='ui basic button'>
+
+    <i class='icon play'></i>
+    运行
+  </button>
   <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
 </template>
 
