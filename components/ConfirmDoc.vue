@@ -22,8 +22,7 @@
     </table>
   </div>
   <pre>
-  <code>
-    &lt;confirm header=&quot;&#26631;&#39064;&#20869;&#23481;&quot; content=&quot;&#20869;&#23481;&#27491;&#25991;&quot; :call_back=&quot;call_back&quot;&gt;&lt;/confirm&gt;
+  <code v-text="code">
   </code>
   </pre>
   <button @click='run' class='ui basic button'>
@@ -39,6 +38,11 @@
   export default {
     components: {
       Confirm
+    },
+    data: function () {
+      return {
+        code: `<confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>`
+      }
     },
     methods: {
       call_back: function () {

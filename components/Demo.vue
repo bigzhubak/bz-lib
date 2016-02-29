@@ -10,7 +10,11 @@
     props: [],
     components: {
     },
-    data () {
+    data: function () {
+      return {
+        remove_card: {}
+        card_numbers: ''
+      }
     },
     ready () {
     },

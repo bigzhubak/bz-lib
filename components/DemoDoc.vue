@@ -19,14 +19,14 @@
       </tbody>
     </table>
   </div>
-  <code>
+  <pre>
+  <code v-text="code">
   </code>
-  <div class='ui center aligned basic segment'>
-    <button @click='run' class='ui basic button'>
-      <i class='icon play'></i>
-      运行
-    </button>
-  </div>
+  </pre>
+  <button @click='run' class='ui basic button'>
+    <i class='icon play'></i>
+    运行
+  </button>
   <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
 </template>
 
@@ -35,6 +35,11 @@
   export default {
     components: {
       Confirm
+    },
+    data: function () {
+      return {
+        code: "<menu-user-info></menu-user-info>"
+      }
     },
     methods: {
       run: function () {

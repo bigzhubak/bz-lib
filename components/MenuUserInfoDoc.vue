@@ -17,12 +17,14 @@
         </tr>
       </tbody>
     </table>
-    <div class='ui center aligned basic segment'>
-      <button @click='run' class='ui basic button'>
-        <i class='icon play'></i>
-        运行
-      </button>
-    </div>
+    <pre>
+    <code v-text="code">
+    </code>
+    </pre>
+    <button @click='run' class='ui basic button'>
+      <i class='icon play'></i>
+      运行
+    </button>
     <menu-user-info></menu-user-info>
   </div>
 </template>
@@ -32,6 +34,11 @@
   export default {
     components: {
       MenuUserInfo
+    },
+    data: function () {
+      return {
+        code: "<menu-user-info></menu-user-info>"
+      }
     },
     methods: {
       run: function () {

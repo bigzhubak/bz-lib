@@ -24,8 +24,6 @@
   // import store from '../store'
   import $ from 'jquery'
   export default {
-    data () {
-    },
     props: ['header', 'content', 'call_back'],
     ready () {
       this.$on('confirm', this.showConfirm)
