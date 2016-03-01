@@ -26,7 +26,9 @@
       <i class='icon play'></i>
       运行
     </button>
-    <menu-user-info></menu-user-info>
+    <div class="ui segment">
+      <menu-user-info></menu-user-info>
+    </div>
   </div>
 </template>
 

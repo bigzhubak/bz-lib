@@ -28,7 +28,9 @@
     <i class='icon play'></i>
     运行
   </button>
-  <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
+  <div class="ui segment">
+    <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
+  </div>
 </template>
 
 <script>
