@@ -12,7 +12,7 @@
         <tr><th>参数</th><th>说明</th></tr>
       </thead>
       <tbody>
-        <tr> <td class="single line"> header </td> <td> 标题内容 </td></tr>
+        <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
           <td colspan="2">这货没有参数, 目前只有logout一个操作</td>
         </tr>
@@ -38,6 +38,11 @@
     },
     data: function () {
       return {
+        parms: [
+          {parm: 'header', desc: '标题内容'},
+          {parm: 'content', desc: '正文内容'},
+          {parm: 'call_back', desc: '点击确认后的回调函数'}
+        ],
         code: "<menu-user-info></menu-user-info>"
       }
     },

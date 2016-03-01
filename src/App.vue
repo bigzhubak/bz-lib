@@ -14,8 +14,7 @@
       <header class="main-header">
         <nav class="ui vertical menu">
           <a class="header item" href="/#!/"><b>公用组件说明</b></a>
-          <a class="item" v-link="{name:'Confirm'}" >Confirm</a>
-          <a class="item" v-link="{name:'MenuUserInfo'}" >MenuUserInfo</a>
+          <a v-for="name in components" class="item" v-link="{name:name}" >{{name}}</a>
         </nav>
       </header>
     </div>
@@ -29,6 +28,10 @@
   export default {
     data () {
       return {
+        components: [
+          'MenuUserInfo',
+          'Confirm'
+        ]
       }
     },
     components: {

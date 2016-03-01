@@ -12,9 +12,7 @@
         <tr><th>参数</th><th>说明</th></tr>
       </thead>
       <tbody>
-        <tr> <td class="single line"> header </td> <td> 标题内容 </td></tr>
-        <tr> <td class="single line"> content </td> <td> 正文内容 </td></tr>
-        <tr><td class="single line"> call_back </td> <td> 点击确认后的回调函数</td></tr>
+        <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
           <td colspan="2">注意，触发弹出窗口使用 <code>this.$broadcast('confirm')</code></td>
         </tr>
@@ -41,6 +39,11 @@
     },
     data: function () {
       return {
+        parms: [
+          {parm: 'header', desc: '标题内容'},
+          {parm: 'content', desc: '正文内容'},
+          {parm: 'call_back', desc: '点击确认后的回调函数'}
+        ],
         code: `<confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>`
       }
     },

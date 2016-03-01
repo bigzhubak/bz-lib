@@ -12,6 +12,7 @@
         <tr><th>参数</th><th>说明</th></tr>
       </thead>
       <tbody>
+        <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
           <td colspan="2">这货没有参数, 目前只有logout一个操作</td>
         </tr>
@@ -37,7 +38,8 @@
     },
     data: function () {
       return {
-        code: "<menu-user-info></menu-user-info>"
+        parms: [],
+        code: '<menu-user-info></menu-user-info>'
       }
     },
     methods: {
