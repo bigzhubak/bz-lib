@@ -12,7 +12,7 @@
     },
     data: function () {
       return {
-        remove_card: {}
+        remove_card: {},
         card_numbers: ''
       }
     },

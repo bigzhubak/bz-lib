@@ -6,6 +6,7 @@ import sys
 import tornado.ioloop
 import tornado.web
 import tornado_bz
+import test_pg
 from tornado.web import RequestHandler
 
 OK = '0'
@@ -24,7 +25,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         port = int(sys.argv[1])
     else:
-        port = 8888
+        port = 9000
     print port
 
     url_map = tornado_bz.getURLMap(web_class)
@@ -32,6 +33,7 @@ if __name__ == "__main__":
     url_map.append((r'/static/(.*)', tornado.web.StaticFileHandler, {'path': "."}))
 
     settings = tornado_bz.getSettings()
+    settings["pg"] = test_pg
     application = tornado.web.Application(url_map, **settings)
 
     application.listen(port)

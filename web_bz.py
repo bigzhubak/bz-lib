@@ -23,6 +23,35 @@ salt = "hold is watching you"
 
 md5 = hashlib.md5()
 
+
+class api_signup(UserInfoHandler):
+
+    @tornado_bz.handleError
+    def post(self):
+        self.set_header("Content-Type", "application/json")
+        login_info = json.loads(self.request.body)
+
+        user_name = login_info.get("user_name")
+        password = login_info.get("password")
+        email = login_info.get("email")
+
+        user_oper = user_bz.UserOper(self.pg)
+        # 用户是否存在应该注册提交前判断?以后优化
+        user_info = user_oper.getUserInfo(user_name=user_name)
+        if user_info:
+            raise Exception('用户已经存在, 请换一个用户名')
+        user_info = user_oper.getUserInfo(email=email)
+        if user_info:
+            raise Exception('邮箱已经被使用, 请更换一个邮箱')
+
+        user_type = login_info.get("user_type", 'my')
+
+        user_oper.signup(user_name, password, email, user_type)
+        user_info = user_oper.login(user_name, password, "'%s'" % user_type)
+        self.set_secure_cookie("user_id", str(user_info.id))
+        self.write(json.dumps({'error': '0'}))
+
+
 class api_user_info(BaseHandler):
 
     @tornado_bz.handleError

@@ -29,6 +29,7 @@
     data () {
       return {
         components: [
+          'Signup',
           'CountUp',
           'MenuUserInfo',
           'Confirm'

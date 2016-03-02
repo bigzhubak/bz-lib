@@ -10,9 +10,11 @@ var router = new VueRouter()
 import ConfirmDoc from '../components/ConfirmDoc.vue'
 import MenuUserInfoDoc from '../components/MenuUserInfoDoc.vue'
 import CountUpDoc from '../components/CountUpDoc.vue'
+import SignupDoc from '../components/SignupDoc.vue'
 
 router.map(
   {
+    '/Signup': { name: 'Signup', component: SignupDoc },
     '/CountUp': { name: 'CountUp', component: CountUpDoc },
     '/MenuUserInfo': { name: 'MenuUserInfo', component: MenuUserInfoDoc },
     '/Confirm': { name: 'Confirm', component: ConfirmDoc},

@@ -28,15 +28,15 @@
     运行
   </button>
   <div class="ui segment">
-    <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
+    <signup :call_back="call_back"></signup>
   </div>
 </template>
 
 <script>
-  import Confirm from './Confirm.vue'
+  import Signup from './Signup.vue'
   export default {
     components: {
-      Confirm
+      Signup
     },
     data: function () {
       return {
@@ -49,6 +49,9 @@
       }
     },
     methods: {
+      call_back: function () {
+        alert('注册成功了!')
+      },
       run: function () {
         alert('用不着运行，这货是直接运行的')
       }
