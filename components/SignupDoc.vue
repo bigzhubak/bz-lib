@@ -3,9 +3,9 @@
 
 <template>
   <div>
-    <h1>Confirm</h1>
+    <h1>Signup</h1>
     <p>
-      用来弹出semantic-ui的"是"和"否"的确认弹出窗口
+      注册
     </p>
     <table class="ui celled table">
       <thead>
@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
-          <td colspan="2">这货没有参数, 目前只有logout一个操作</td>
+          <td colspan="2"></td>
         </tr>
       </tbody>
     </table>
@@ -23,7 +23,7 @@
   <code v-text="code">
   </code>
   </pre>
-  <button @click='run' class='ui basic button'>
+  <button v-show="run" @click='run' class='ui basic button'>
     <i class='icon play'></i>
     运行
   </button>
@@ -41,19 +41,14 @@
     data: function () {
       return {
         parms: [
-          {parm: 'header', desc: '标题内容'},
-          {parm: 'content', desc: '正文内容'},
-          {parm: 'call_back', desc: '点击确认后的回调函数'}
+          {parm: 'call_back', desc: '成功注册后要干的事，可以传入，也可以不传入'}
         ],
-        code: '<menu-user-info></menu-user-info>'
+        code: '<signup :call_back="call_back"></signup>'
       }
     },
     methods: {
       call_back: function () {
         alert('注册成功了!')
-      },
-      run: function () {
-        alert('用不着运行，这货是直接运行的')
       }
     }
   }
