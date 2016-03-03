@@ -16,7 +16,7 @@
           <a class="header item" href="/#!/"><b>公用组件说明</b></a>
           <div class="item">
             <div class="ui transparent icon input">
-              <input v-model="key" type="text" placeholder="Search BZ...">
+              <input v-model="key" type="text" placeholder="Search ...">
               <i class="search icon"></i>
             </div>
           </div>
@@ -42,6 +42,12 @@
           {name: 'Confirm', desc: '确认提示框'}
         ],
         key:''
+      }
+    },
+    watch: {
+      // 过滤导致重新渲染menu, 这里重新让pop生效
+      'key': function (val, oldVal) {
+        $(this.$el).find('.item').popup({ position: 'right center'})
       }
     },
     ready () {
