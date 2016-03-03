@@ -20,7 +20,7 @@
               <i class="search icon"></i>
             </div>
           </div>
-          <a v-for="c in components|filterBy key" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
+          <a v-for="c in components|filterBy key|orderBy 'name'" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
         </nav>
       </header>
     </div>
