@@ -41,7 +41,7 @@
           {name: 'MenuUserInfo', desc: 'Menu上显示用户信息'},
           {name: 'Confirm', desc: '确认提示框'}
         ],
-        key:''
+        key: ''
       }
     },
     watch: {
