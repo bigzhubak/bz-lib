@@ -23,7 +23,7 @@
   <code v-text="code">
   </code>
   </pre>
-  <button @click='run' class='ui basic button'>
+  <button v-show="run" @click='run' class='ui basic button'>
     <i class='icon play'></i>
     运行
   </button>

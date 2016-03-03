@@ -22,10 +22,6 @@
     <code v-text="code">
     </code>
     </pre>
-    <button @click='run' class='ui basic button'>
-      <i class='icon play'></i>
-      运行
-    </button>
     <div class="ui segment">
       <menu-user-info></menu-user-info>
     </div>
@@ -45,9 +41,6 @@
       }
     },
     methods: {
-      run: function () {
-        alert('用不着运行，这货是直接运行的')
-      }
     }
   }
 </script>

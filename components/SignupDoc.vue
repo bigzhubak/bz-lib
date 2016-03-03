@@ -23,10 +23,6 @@
   <code v-text="code">
   </code>
   </pre>
-  <button v-show="run" @click='run' class='ui basic button'>
-    <i class='icon play'></i>
-    运行
-  </button>
   <div class="ui segment">
     <signup :call_back="call_back"></signup>
   </div>

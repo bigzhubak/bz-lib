@@ -14,7 +14,13 @@
       <header class="main-header">
         <nav class="ui vertical menu">
           <a class="header item" href="/#!/"><b>公用组件说明</b></a>
-          <a v-for="c in components" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
+          <div class="item">
+            <div class="ui transparent icon input">
+              <input v-model="key" type="text" placeholder="Search BZ...">
+              <i class="search icon"></i>
+            </div>
+          </div>
+          <a v-for="c in components|filterBy key" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
         </nav>
       </header>
     </div>
@@ -34,7 +40,8 @@
           {name: 'CountUp', desc: '数字渐变效果'},
           {name: 'MenuUserInfo', desc: 'Menu上显示用户信息'},
           {name: 'Confirm', desc: '确认提示框'}
-        ]
+        ],
+        key:''
       }
     },
     ready () {
