@@ -2,7 +2,7 @@
 这是bigzhu的lib库
 
 
-使用时候在 `.bash_profile` 里添加项目clone出来的目录，比如我的是
+使用时候, 因为vuex的限制, 一般要在spa里做为 submodule 取出来
 ```bash
-export LIB_BZ_PATH=/Users/bigzhu/lib_bz
+git submodule add git@bitbucket.org:bigzhu/lib_bz.git
 ```
