@@ -23,6 +23,24 @@ salt = "hold is watching you"
 
 md5 = hashlib.md5()
 
+class api_login(UserInfoHandler):
+
+    '''
+    登录后台的方法
+    modify by bigzhu at 16/03/07 22:52:33 改为单纯的登录
+    '''
+
+    @tornado_bz.handleError
+    def post(self):
+        self.set_header("Content-Type", "application/json")
+        login_info = json.loads(self.request.body)
+        user_name = login_info.get("user_name")
+        password = login_info.get("password")
+        user_oper = user_bz.UserOper(self.pg)
+        user_info = user_oper.login(user_name, password)
+        self.set_secure_cookie("user_id", str(user_info.id))
+        self.write(json.dumps({'error': '0'}))
+
 
 class api_signup(UserInfoHandler):
 

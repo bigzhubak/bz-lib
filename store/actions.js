@@ -19,7 +19,6 @@ export default {
           toast.error(response.data.error)
           throw new Error(response.data.error)
         }
-        console.log(call_back)
         if (call_back) {
           call_back()
         }
