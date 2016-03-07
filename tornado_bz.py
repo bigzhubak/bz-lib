@@ -164,7 +164,10 @@ def mustLogin(method):
         if self.current_user:
             pass
         else:
-            self.redirect("/login")
+            if self.settings['login_url']:
+                self.redirect(self.settings['login_url'])
+            else:
+                self.redirect("/login")
             return
         return method(self, *args, **kwargs)
     return wrapper

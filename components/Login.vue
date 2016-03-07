@@ -54,7 +54,7 @@
 
     <div class="ui small test modal">
       <div class="header">
-        不存在用户 
+        不存在用户
       </div>
       <div class="content">
         <p>还没有用户(%user_name%),是否建立?</p>
@@ -73,11 +73,11 @@
 </template>
 
 <script>
-  import store from '../store'
+  // import store from '../store'
   export default {
     props: [],
     components: {
-      'oauth2-button': require './oauth2-button'
+      'oauth2-button': require('./oauth2-button')
     },
     data: function () {
       return {
