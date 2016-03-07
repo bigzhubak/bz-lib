@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
-        <tr>
+        <tr v-show="parms.length===0">
           <td colspan="2">这货没有参数, 目前只有logout一个操作</td>
         </tr>
       </tbody>
