@@ -7,11 +7,11 @@ Vue.use(VueRouter)
 Vue.config.debug = true
 
 var router = new VueRouter()
-import ConfirmDoc from '../components/ConfirmDoc.vue'
-import MenuUserInfoDoc from '../components/MenuUserInfoDoc.vue'
-import CountUpDoc from '../components/CountUpDoc.vue'
-import SignupDoc from '../components/SignupDoc.vue'
-import LoginDoc from '../components/LoginDoc.vue'
+import ConfirmDoc from './components/ConfirmDoc.vue'
+import MenuUserInfoDoc from './components/MenuUserInfoDoc.vue'
+import CountUpDoc from './components/CountUpDoc.vue'
+import SignupDoc from './components/SignupDoc.vue'
+import LoginDoc from './components/LoginDoc.vue'
 
 router.map(
   {
