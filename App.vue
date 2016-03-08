@@ -36,6 +36,7 @@
     data () {
       return {
         components: [
+          {name: 'Oauth2', desc: 'Oauth2登录'},
           {name: 'Login', desc: '登录'},
           {name: 'Signup', desc: '用户注册'},
           {name: 'CountUp', desc: '数字渐变效果'},
