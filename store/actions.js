@@ -17,7 +17,7 @@ export default {
       function (response) {
         if (response.data.error !== '0') {
           toast.error(response.data.error)
-          throw new Error(response.data.error)
+          // throw new Error(response.data.error)
         }
         if (call_back) {
           actions.queryUserInfo()
@@ -33,7 +33,8 @@ export default {
       function (response) {
         if (response.data.error !== '0') {
           toast.error(response.data.error)
-          throw new Error(response.data.error)
+          // throw new Error(response.data.error)
+          return
         }
         if (call_back) {
           actions.queryUserInfo()
@@ -53,7 +54,8 @@ export default {
       function (response) {
         if (response.data.error !== '0') {
           toast.error(response.data.error)
-          throw new Error(response.data.error)
+          return
+          // throw new Error(response.data.error)
         }
         dispatch('SET_USER_INFO', response.data.user_info)
       },

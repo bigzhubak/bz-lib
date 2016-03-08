@@ -8,6 +8,9 @@
       <a href="/logout" class="item">退出登录</a>
     </div>
   </div>
+  <a href="/app/login.html" v-show="user_info.user_name === '' " class="item">
+    登录
+  </a>
 </template>
 
 <script>
