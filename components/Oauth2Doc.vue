@@ -3,7 +3,7 @@
 
 <template>
   <div>
-    <h1>Confirm</h1>
+    <h1>Oauth2</h1>
     <p>
       用来弹出semantic-ui的"是"和"否"的确认弹出窗口
     </p>
@@ -23,29 +23,32 @@
   <code v-text="code">
   </code>
   </pre>
-  <button v-show="run" @click='run' class='ui basic button'>
-    <i class='icon play'></i>
-    运行
-  </button>
   <div class="ui segment">
-    <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
+    <oauth2 :oauths="oauths"></oauth2>
   </div>
 </template>
 
 <script>
-  import Confirm from './Confirm.vue'
+  import Oauth2 from './Oauth2.vue'
   export default {
     components: {
-      Confirm
+      Oauth2
     },
     data: function () {
       return {
-        parms: [
-          {parm: 'header', desc: '标题内容'},
-          {parm: 'content', desc: '正文内容'},
-          {parm: 'call_back', desc: '点击确认后的回调函数'}
+        oauths: [
+          'vk',
+          'youtube',
+          'facebook',
+          'google plus',
+          'twitter',
+          'github',
+          'instagram'
         ],
-        code: '<menu-user-info></menu-user-info>'
+        parms: [
+          {parm: 'oauths', desc: '一个list, 指定要显示的oauth方式: '+`['vk', 'twitter']`}
+        ],
+        code: '<oauth2 :oauths="oauths"></oauth2>'
       }
     },
     methods: {

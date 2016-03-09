@@ -12,15 +12,15 @@ var api_signup = Vue.resource('/api_signup{/parm}')
 var api_login = Vue.resource('/api_login{/parm}')
 
 export default {
-  login: ({ dispatch, state }, parm, call_back = null) => {
+  login: ({ dispatch, state, actions }, parm, call_back = null) => {
     api_login.save(parm).then(
       function (response) {
         if (response.data.error !== '0') {
           toast.error(response.data.error)
-          throw new Error(response.data.error)
+          // throw new Error(response.data.error)
         }
-        console.log(call_back)
         if (call_back) {
+          actions.queryUserInfo()
           call_back()
         }
       },
@@ -28,15 +28,16 @@ export default {
       }
     )
   },
-  signup: ({ dispatch, state }, parm, call_back = null) => {
+  signup: ({ dispatch, state, actions }, parm, call_back = null) => {
     api_signup.save(parm).then(
       function (response) {
         if (response.data.error !== '0') {
           toast.error(response.data.error)
-          throw new Error(response.data.error)
+          // throw new Error(response.data.error)
+          return
         }
-        console.log(call_back)
         if (call_back) {
+          actions.queryUserInfo()
           call_back()
         }
       },
@@ -53,7 +54,8 @@ export default {
       function (response) {
         if (response.data.error !== '0') {
           toast.error(response.data.error)
-          throw new Error(response.data.error)
+          return
+          // throw new Error(response.data.error)
         }
         dispatch('SET_USER_INFO', response.data.user_info)
       },
