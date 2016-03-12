@@ -28,6 +28,14 @@
       <router-view></router-view>
     </div>
   </div>
+  <div class="ui vertical footer segment">
+    <div class="ui center aligned container">
+      <div class="ui horizontal small divided link list">
+        <a class="item" href="/sui.html">mobile version</a>
+        <a class="item" href="#">created by bz</a>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

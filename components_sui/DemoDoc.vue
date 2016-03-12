@@ -3,9 +3,9 @@
 
 <template>
   <div>
-    <h1>Oauth2</h1>
+    <h1>Confirm</h1>
     <p>
-      生成 Oauth2 按钮
+      用来弹出semantic-ui的"是"和"否"的确认弹出窗口
     </p>
     <table class="ui celled table">
       <thead>
@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr v-show="parms.length===0">
-          <td colspan="2"></td>
+          <td colspan="2">这货没有参数, 目前只有logout一个操作</td>
         </tr>
       </tbody>
     </table>
@@ -23,32 +23,29 @@
   <code v-text="code">
   </code>
   </pre>
+  <button v-show="run" @click='run' class='ui basic button'>
+    <i class='icon play'></i>
+    运行
+  </button>
   <div class="ui segment">
-    <oauth2 :oauths="oauths"></oauth2>
+    <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
   </div>
 </template>
 
 <script>
-  import Oauth2 from './Oauth2.vue'
+  import Confirm from './Confirm.vue'
   export default {
     components: {
-      Oauth2
+      Confirm
     },
     data: function () {
       return {
-        oauths: [
-          'vk',
-          'youtube',
-          'facebook',
-          'google plus',
-          'twitter',
-          'github',
-          'instagram'
-        ],
         parms: [
-          {parm: 'oauths', desc: '一个list, 指定要显示的oauth方式: ' + `['vk', 'twitter']`}
+          {parm: 'header', desc: '标题内容'},
+          {parm: 'content', desc: '正文内容'},
+          {parm: 'call_back', desc: '点击确认后的回调函数'}
         ],
-        code: '<oauth2 :oauths="oauths"></oauth2>'
+        code: '<menu-user-info></menu-user-info>'
       }
     },
     methods: {
