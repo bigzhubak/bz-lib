@@ -5,7 +5,7 @@
 </style>
 
 <template>
-  <a v-for="oauth in oauths" href="/{{oauth}}" class="ui {{oauth}} button oauth">
+  <a v-for="oauth in oauths" @click="loading" href="/{{oauth}}" class="ui {{oauth}} button oauth">
     <i class="{{oauth}} icon"></i>
     {{upperFirst(oauth)}}
   </a>
@@ -27,6 +27,9 @@
     methods: {
       upperFirst: function (string) {
         return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase()
+      },
+      loading: function (e) {
+        e.target.className += ' loading '
       }
     }
   }
