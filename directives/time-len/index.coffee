@@ -1,4 +1,3 @@
-require './style.less'
 time = require '../../functions/time.coffee'
 
 module.exports =
