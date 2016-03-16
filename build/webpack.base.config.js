@@ -12,6 +12,7 @@ module.exports = {
       loaders: [
         { test: /\.coffee$/, loader: "coffee-loader" },
         { test: /\.less$/, loader: "style!css!less" },
+        { test: /\.css$/, loader: 'style!css'},
         { test: /\.(html|tpl)$/, loader: "html?attrs=img:requir-src" },
         { test: /\.vue$/, loader: 'vue' },
         {
