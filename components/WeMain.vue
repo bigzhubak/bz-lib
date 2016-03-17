@@ -1,5 +1,5 @@
 <template>
-  <div class="page" transition="app">
+  <div class="" transition="app">
     <div class="hd">
       <h1>Vue-WeUI</h1>
       <p>使用Vue封装，为微信Web服务量身设计</p>

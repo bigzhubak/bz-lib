@@ -14,6 +14,7 @@ import SignupDoc from './components/SignupDoc'
 import LoginDoc from './components/LoginDoc'
 import Oauth2Doc from './components/Oauth2Doc'
 import WeMain from './components/WeMain'
+import './style/weui.less'
 
 import {Button, Cell, Toast, Dialog, Progress, Message, Article, Actionsheet, Icons} from './weui_doc'
 

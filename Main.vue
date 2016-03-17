@@ -9,7 +9,7 @@
 </style>
 
 <template>
-  <div class="ui grid container basic segment">
+  <div class="ui stackable grid container basic segment">
     <div class="four wide column">
       <header class="main-header">
         <nav class="ui vertical menu">
@@ -25,7 +25,7 @@
       </header>
     </div>
     <div class="twelve wide column">
-      <router-view transition="fade" transition-mode="out-in" keep-alive></router-view>
+      <router-view transition="slide"></router-view>
     </div>
   </div>
   <div class="ui vertical footer segment">
