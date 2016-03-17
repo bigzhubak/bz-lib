@@ -25,7 +25,7 @@
       </header>
     </div>
     <div class="twelve wide column">
-      <router-view></router-view>
+      <router-view transition="fade" transition-mode="out-in" keep-alive></router-view>
     </div>
   </div>
   <div class="ui vertical footer segment">
@@ -45,6 +45,7 @@
     data () {
       return {
         components: [
+          {name: 'WeMain', desc: 'weui组件的入口'},
           {name: 'Oauth2', desc: 'Oauth2登录'},
           {name: 'Login', desc: '登录'},
           {name: 'Signup', desc: '用户注册'},

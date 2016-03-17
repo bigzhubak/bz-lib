@@ -1,5 +1,5 @@
 ###
-错误处理相关
+time相关
 ###
 time =
   preZero:(num, len)->

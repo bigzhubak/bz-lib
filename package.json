@@ -1,22 +1,26 @@
 {
-  "name": "vue-loader-example",
-  "version": "3.0.0",
-  "description": "Example using Webpack with vue-loader",
+  "name": "lib_bz",
+  "version": "1.0.0",
+  "description": "bigzhu lib",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --inline --hot --config build/webpack.dev.config.js",
+    "dev": "webpack-dev-server --port 8000 --inline --hot --config build/webpack.dev.config.js",
     "build": "webpack --progress --hide-modules --config build/webpack.prod.config.js",
     "test": "karma start build/karma.conf.js"
   },
   "dependencies": {
+    "css-loader": "^0.23.1",
     "highlight.js": "^9.2.0",
     "less": "^2.6.0",
     "less-loader": "^2.2.2",
+    "style-loader": "^0.13.0",
     "toastr": "^2.1.2",
     "vue": "^1.0.0",
     "vue-resource": "^0.7.0",
     "vue-router": "^0.7.11",
-    "vuex": "^0.3.0"
+    "vue-weui": "^0.2.0",
+    "vuex": "^0.3.0",
+    "weui": "^0.4.0"
   },
   "devDependencies": {
     "babel-core": "^6.1.2",
@@ -47,6 +51,6 @@
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.0"
   },
-  "author": "Evan You",
+  "author": "Bigzhu",
   "license": "MIT"
 }
