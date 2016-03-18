@@ -14,9 +14,9 @@ import SignupDoc from './components/SignupDoc'
 import LoginDoc from './components/LoginDoc'
 import Oauth2Doc from './components/Oauth2Doc'
 import WeMain from './components/WeMain'
-import WeIcons from './components/WeIcons'
+import './style/weui.less'
 
-import {Button, Cell, Toast, Dialog, Progress, Message, Article, Actionsheet} from './weui_doc'
+import {Button, Cell, Toast, Dialog, Progress, Message, Article, Actionsheet, Icons} from './weui_doc'
 
 var rout = {
   '/WeMain': { name: 'WeMain', component: WeMain },
@@ -55,7 +55,7 @@ var weui_rout = {
     component: Actionsheet
   },
   '/icons': {
-    component: WeIcons
+    component: Icons
   }
 }
 Object.assign(rout, weui_rout)

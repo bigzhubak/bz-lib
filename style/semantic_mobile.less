@@ -1,0 +1,9 @@
+/*为了在微信显示正常 inline-block 会导致grid column 长度异常*/
+.ui.grid > .column:not(.row),
+.ui.grid > .row > .column {
+  display: block;
+}
+/*解决grid比屏幕宽导致能左右移动的问题*/
+.ui.grid {
+  width:100%;
+}
