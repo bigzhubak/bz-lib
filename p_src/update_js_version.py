@@ -3,6 +3,7 @@
 import bs4
 import re
 import hashlib
+import sys
 
 
 def getScripts(html):
@@ -22,21 +23,22 @@ def getScriptHash(script):
     print 'new hash=%s' % hash
     return hash
 
-if __name__ == '__main__':
-    # if len(sys.argv) == 2:
-    #    file = int(sys.argv[1])
-    #    soup = bs4.BeautifulSoup(self.request.text)
-    # else:
-    #    print 'run as:'
-    #    print 'python update_js_version.py index.html'
 
-    f = open('../index.html', 'rw')
+def main(file_path):
+    f = open(file_path, 'rw')
     html = f.read()
     f.close()
     scripts = getScripts(html)
-    f = open('../index.html', 'w')
+    f = open(file_path, 'w')
     for script in scripts:
         hash = getScriptHash(script)
-        html = re.sub('\?v=.*"', '?v=%s"'%hash, html)
+        html = re.sub('\?v=.*"', '?v=%s"' % hash, html)
         f.write(html)
     f.close()
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        file_path = int(sys.argv[1])
+        main(file_path)
+    else:
+        print 'run as:'
+        print 'python update_js_version.py index.html'
