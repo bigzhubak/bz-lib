@@ -37,7 +37,7 @@ def main(file_path):
     f.close()
 if __name__ == '__main__':
     if len(sys.argv) == 2:
-        file_path = int(sys.argv[1])
+        file_path = sys.argv[1]
         main(file_path)
     else:
         print 'run as:'
