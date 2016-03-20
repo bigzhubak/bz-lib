@@ -9,31 +9,32 @@
 </style>
 
 <template>
-  <div class="ui stackable grid container basic segment">
-    <div class="four wide column">
-      <header class="main-header">
-        <nav class="ui vertical menu">
-          <a class="header item" href="/#!/"><b>公用组件说明</b></a>
-          <div class="item">
-            <div class="ui transparent icon input">
-              <input v-model="key" type="text" placeholder="Search ...">
-              <i class="search icon"></i>
+  <div>
+    <div class="ui stackable grid container basic segment">
+      <div class="four wide column">
+        <header class="main-header">
+          <nav class="ui vertical menu">
+            <a class="header item" href="/#!/"><b>公用组件说明</b></a>
+            <div class="item">
+              <div class="ui transparent icon input">
+                <input v-model="key" type="text" placeholder="Search ...">
+                <i class="search icon"></i>
+              </div>
             </div>
-          </div>
-          <a v-for="c in components|filterBy key|orderBy 'name'" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
-        </nav>
-      </header>
+            <a v-for="c in components|filterBy key|orderBy 'name'" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
+          </nav>
+        </header>
+      </div>
+      <div class="twelve wide column">
+        <router-view transition="slide"></router-view>
+      </div>
     </div>
-    <div class="twelve wide column">
-      <router-view transition="slide"></router-view>
-    </div>
-  </div>
-  <div class="ui vertical footer segment">
-    <div class="ui center aligned container">
-      <div class="ui horizontal small divided link list">
-        <a class="item" v-link="{name:'WeMain'}">Mobile</a>
-        <a class="item" href="#">Created by bz</a>
-        <a class="item" target="_blank" href="http://semantic-ui.com">Semantic-UI</a>
+    <div class="ui vertical footer segment">
+      <div class="ui center aligned container">
+        <div class="ui horizontal small divided link list">
+          <a class="item" href="#">Created by bz</a>
+          <a class="item" target="_blank" href="http://semantic-ui.com">Semantic-UI</a>
+        </div>
       </div>
     </div>
   </div>

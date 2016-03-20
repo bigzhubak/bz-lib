@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="ui segment">
     <h1>Confirm</h1>
     <p>
       用来弹出semantic-ui的"是"和"否"的确认弹出窗口
@@ -18,17 +18,13 @@
         </tr>
       </tbody>
     </table>
-  </div>
-  <pre>
-  <code v-text="code">
-  </code>
-  </pre>
-  <button @click='run' class='ui basic button'>
-
-    <i class='icon play'></i>
-    运行
-  </button>
-  <div class="ui segment">
+    <code v-text="code">
+    </code>
+    <div class="ui divider"></div>
+    <button @click='run' class='ui basic button'>
+      <i class='icon play'></i>
+      运行
+    </button>
     <confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>
   </div>
 </template>

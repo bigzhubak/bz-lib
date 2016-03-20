@@ -33,7 +33,7 @@
 </template>
 
 <script>
-  import Confirm from './Confirm.vue'
+  import Confirm from './Confirm'
   export default {
     components: {
       Confirm

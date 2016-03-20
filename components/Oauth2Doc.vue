@@ -3,28 +3,27 @@
 
 <template>
   <div>
-    <h1>Oauth2</h1>
-    <p>
-      生成 Oauth2 按钮
-    </p>
-    <table class="ui celled table">
-      <thead>
-        <tr><th>参数</th><th>说明</th></tr>
-      </thead>
-      <tbody>
-        <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
-        <tr v-show="parms.length===0">
-          <td colspan="2"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <pre>
-  <code v-text="code">
-  </code>
-  </pre>
-  <div class="ui segment">
-    <oauth2 :oauths="oauths"></oauth2>
+    <div>
+      <h1>Oauth2</h1>
+      <p>
+        生成 Oauth2 按钮
+      </p>
+      <table class="ui celled table">
+        <thead>
+          <tr><th>参数</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
+          <tr v-show="parms.length===0">
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pre> <code v-text="code"> </code> </pre>
+    <div class="ui segment">
+      <oauth2 :oauths="oauths"></oauth2>
+    </div>
   </div>
 </template>
 
