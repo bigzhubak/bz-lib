@@ -29,15 +29,13 @@
       <i class='icon play'></i>
       运行
     </button>
-    <div class="ui existing segment">
-      <count-up :end="count" :duration="2.5" :options="{useEasing : true,
-        useGrouping : true,
-        separator : ',',
-        decimal : '.',
-        prefix : '',
-        suffix : ''}">
-      </count-up>
-    </div>
+    <count-up :end="count" :duration="2.5" :options="{useEasing : true,
+      useGrouping : true,
+      separator : ',',
+      decimal : '.',
+      prefix : '',
+      suffix : ''}">
+    </count-up>
   </div>
 </template>
 

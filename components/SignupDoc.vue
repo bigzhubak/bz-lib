@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="ui segment">
     <h1>Signup</h1>
     <p>
       注册
@@ -18,12 +18,9 @@
         </tr>
       </tbody>
     </table>
-  </div>
-  <pre>
-  <code v-text="code">
-  </code>
-  </pre>
-  <div class="ui segment">
+    <code v-text="code">
+    </code>
+    <div class="ui divider"></div>
     <signup :call_back="call_back"></signup>
   </div>
 </template>
