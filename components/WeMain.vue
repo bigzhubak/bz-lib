@@ -13,7 +13,6 @@
 </template>
 
 <script>
-
   import 'weui/dist/style/weui.css'
   import {Grids, Grid} from 'vue-weui'
   import icon_nav_button from '../images/icon_nav_button.png'

@@ -31,7 +31,7 @@
   <div class="ui vertical footer segment">
     <div class="ui center aligned container">
       <div class="ui horizontal small divided link list">
-        <a class="item" href="/sui.html">Mobile</a>
+        <a class="item" v-link="{name:'WeMain'}">Mobile</a>
         <a class="item" href="#">Created by bz</a>
         <a class="item" target="_blank" href="http://semantic-ui.com">Semantic-UI</a>
       </div>
