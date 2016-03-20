@@ -49,9 +49,9 @@
       return {
         count: 0,
         parms: [
-          {parm: 'header', desc: '标题内容'},
-          {parm: 'content', desc: '正文内容'},
-          {parm: 'call_back', desc: '点击确认后的回调函数'}
+          {parm: 'end', desc: '结束的数字'},
+          {parm: 'duration', desc: '速度?'},
+          {parm: 'options', desc: '配置项'}
         ],
         code: `
         <count-up
