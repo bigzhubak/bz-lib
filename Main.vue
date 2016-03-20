@@ -45,7 +45,6 @@
   import _ from 'underscore'
   import router_conf from './router_conf.js'
   var components = _.values(router_conf)
-  console.log(components)
   export default {
     data () {
       return {
