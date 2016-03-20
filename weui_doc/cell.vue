@@ -78,9 +78,9 @@
 <cells-title>表单</cells-title>
 <cells type="form">
   <input-cell type="text" label="qq" placeholder="请输入qq号" :value.sync="qqValue"></input-cell>
-<input-cell type="text" label="验证码" placeholder="请输入验证码" :vcode="vcode" :value.sync="vcodeValue"></input-cell>
-      <input-cell type="number" label="银行卡" placeholder="请输入银行卡号" :value.sync="bankCardValue"></input-cell>
-    <input-cell type="text" label="验证码" placeholder="请输入验证码" :vcode="vcode" :warn="true" :value.sync="vcodeValue2"></input-cell>
+  <input-cell type="text" label="验证码" placeholder="请输入验证码" :vcode="vcode" :value.sync="vcodeValue"></input-cell>
+   <input-cell type="number" label="银行卡" placeholder="请输入银行卡号" :value.sync="bankCardValue"></input-cell>
+   <input-cell type="text" label="验证码" placeholder="请输入验证码" :vcode="vcode" :warn="true" :value.sync="vcodeValue2"></input-cell>
 </cells>
 <cells-tips>底部说明文字底部说明文字</cells-tips>
 <button-area>
