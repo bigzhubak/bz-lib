@@ -9,7 +9,7 @@
     <form class="ui form fluid ">
       <div class="field">
         <label>邮箱</label>
-        <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址" @keyup.enter="forget" @focus="cleanError">
+        <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址" @keyup.enter="forget">
       </div>
       <a @click="forget" class="ui blue submit button">发送邮件</a>
     </form>
