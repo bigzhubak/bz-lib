@@ -8,14 +8,14 @@ import sys
 
 def getScripts(html):
     soup = bs4.BeautifulSoup(html)
-    reg = re.compile("\?v=", re.I)
+    reg = re.compile("\?vbz=", re.I)
     scripts = soup.find_all('script', {'src': reg})
     return scripts
 
 
 def getScriptHash(script):
     src = script.get('src')
-    script_file = re.sub('\?v=.*', '', src)
+    script_file = re.sub('\?vbz=.*', '', src)
     f = open(script_file, 'r')
     script_content = f.read()
     hash = hashlib.sha224(script_content).hexdigest()
@@ -32,7 +32,7 @@ def main(file_path):
     f = open(file_path, 'w')
     for script in scripts:
         hash = getScriptHash(script)
-        html = re.sub('\?v=.*"', '?v=%s"' % hash, html)
+        html = re.sub('\?vbz=.*"', '?vbz=%s"' % hash, html)
         f.write(html)
     f.close()
 if __name__ == '__main__':
