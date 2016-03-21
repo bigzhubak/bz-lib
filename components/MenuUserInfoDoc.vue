@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="ui segment">
     <h1>MenuUserInfo</h1>
     <p>
       显示当前登录用户已经相关操作, 通常放在menu上显示下拉菜单
@@ -18,13 +18,10 @@
         </tr>
       </tbody>
     </table>
-    <pre>
     <code v-text="code">
     </code>
-    </pre>
-    <div class="ui segment">
-      <menu-user-info></menu-user-info>
-    </div>
+    <div class="ui divider"></div>
+    <menu-user-info></menu-user-info>
   </div>
 </template>
 

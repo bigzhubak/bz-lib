@@ -5,7 +5,6 @@
 使用时候, 因为vuex的限制, 一般要在spa里取出来
 
 ```bash
-cd spa
 git clone git@bitbucket.org:bigzhu/lib_bz.git
 ```
 
