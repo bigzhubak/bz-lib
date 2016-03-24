@@ -5,7 +5,7 @@
   <div v-show="user_info.user_name != '' " class="ui simple dropdown item">
     <i class="dropdown icon"></i> {{user_info.user_name}}
     <div class="menu">
-      <slot v-show="user_name!=''" name="one"></slot>
+      <slot name="one"></slot>
       <slot name="two"></slot>
       <slot name="three"></slot>
       <a href="/logout" class="item">退出登录</a>
