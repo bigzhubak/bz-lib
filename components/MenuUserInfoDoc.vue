@@ -22,7 +22,6 @@
     </code>
     <div class="ui divider"></div>
     <menu-user-info>
-
       <a slot="one" href="/test" class="item">test</a>
     </menu-user-info>
   </div>
