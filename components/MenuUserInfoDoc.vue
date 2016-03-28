@@ -14,14 +14,16 @@
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
-          <td colspan="2">这货没有参数, 目前只有logout一个操作</td>
+          <td colspan="2">加入了3个slot</td>
         </tr>
       </tbody>
     </table>
     <code v-text="code">
     </code>
     <div class="ui divider"></div>
-    <menu-user-info></menu-user-info>
+    <menu-user-info>
+      <a slot="one" href="/test" class="item">test</a>
+    </menu-user-info>
   </div>
 </template>
 
@@ -34,7 +36,9 @@
     data: function () {
       return {
         parms: [],
-        code: '<menu-user-info></menu-user-info>'
+        code: `<menu-user-info>
+        <a slot="one" href="/test" class="item">test</a>
+        </menu-user-info>`
       }
     },
     methods: {
