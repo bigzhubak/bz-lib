@@ -9,31 +9,32 @@
 </style>
 
 <template>
-  <div class="ui stackable grid container basic segment">
-    <div class="four wide column">
-      <header class="main-header">
-        <nav class="ui vertical menu">
-          <a class="header item" href="/#!/"><b>公用组件说明</b></a>
-          <div class="item">
-            <div class="ui transparent icon input">
-              <input v-model="key" type="text" placeholder="Search ...">
-              <i class="search icon"></i>
+  <div>
+    <div class="ui stackable grid container basic segment">
+      <div class="four wide column">
+        <header class="main-header">
+          <nav class="ui vertical menu">
+            <a class="header item" href="/#!/"><b>公用组件说明</b></a>
+            <div class="item">
+              <div class="ui transparent icon input">
+                <input v-model="key" type="text" placeholder="Search ...">
+                <i class="search icon"></i>
+              </div>
             </div>
-          </div>
-          <a v-for="c in components|filterBy key|orderBy 'name'" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
-        </nav>
-      </header>
+            <a v-show="c.name" v-for="c in components|filterBy key|orderBy 'name'" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
+          </nav>
+        </header>
+      </div>
+      <div class="twelve wide column">
+        <router-view transition="slide"></router-view>
+      </div>
     </div>
-    <div class="twelve wide column">
-      <router-view transition="slide"></router-view>
-    </div>
-  </div>
-  <div class="ui vertical footer segment">
-    <div class="ui center aligned container">
-      <div class="ui horizontal small divided link list">
-        <a class="item" href="/sui.html">Mobile</a>
-        <a class="item" href="#">Created by bz</a>
-        <a class="item" target="_blank" href="http://semantic-ui.com">Semantic-UI</a>
+    <div class="ui vertical footer segment">
+      <div class="ui center aligned container">
+        <div class="ui horizontal small divided link list">
+          <a class="item" href="#">Created by bz</a>
+          <a class="item" target="_blank" href="http://semantic-ui.com">Semantic-UI</a>
+        </div>
       </div>
     </div>
   </div>
@@ -41,18 +42,13 @@
 
 <script>
   import $ from 'jquery'
+  import _ from 'underscore'
+  import router_conf from './router_conf.js'
+  var components = _.values(router_conf)
   export default {
     data () {
       return {
-        components: [
-          {name: 'WeMain', desc: 'weui组件的入口'},
-          {name: 'Oauth2', desc: 'Oauth2登录'},
-          {name: 'Login', desc: '登录'},
-          {name: 'Signup', desc: '用户注册'},
-          {name: 'CountUp', desc: '数字渐变效果'},
-          {name: 'MenuUserInfo', desc: 'Menu上显示用户信息'},
-          {name: 'Confirm', desc: '确认提示框'}
-        ],
+        components: components,
         key: ''
       }
     },

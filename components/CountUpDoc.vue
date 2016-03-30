@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="ui segment">
     <h1>CountUp</h1>
     <p>
       缓速变化数字的效果，用到了<a href="https://inorganik.github.io/countUp.js/">countUp.js</a>，把<a href="https://github.com/samcrosoft/vue-countup">vue-countup</a>改为了数据绑定的
@@ -22,16 +22,13 @@
         </tr>
       </tbody>
     </table>
-  </div>
-  <pre>
-  <code v-text="code">
-  </code>
-  </pre>
-  <button @click='run' class='ui basic button'>
-    <i class='icon play'></i>
-    运行
-  </button>
-  <div class="ui existing segment">
+    <code v-text="code">
+    </code>
+    <div class="ui divider"></div>
+    <button @click='run' class='ui basic button'>
+      <i class='icon play'></i>
+      运行
+    </button>
     <count-up :end="count" :duration="2.5" :options="{useEasing : true,
       useGrouping : true,
       separator : ',',
@@ -52,9 +49,9 @@
       return {
         count: 0,
         parms: [
-          {parm: 'header', desc: '标题内容'},
-          {parm: 'content', desc: '正文内容'},
-          {parm: 'call_back', desc: '点击确认后的回调函数'}
+          {parm: 'end', desc: '结束的数字'},
+          {parm: 'duration', desc: '速度?'},
+          {parm: 'options', desc: '配置项'}
         ],
         code: `
         <count-up

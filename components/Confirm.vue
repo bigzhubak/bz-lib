@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <div :id="id" class="ui small test modal transition hidden">
+  <div class="ui small test modal transition hidden">
     <div class="header">
       {{header}}
     </div>

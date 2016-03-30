@@ -1,10 +1,9 @@
-export App from './app.vue';
-export Button from './button.vue';
-export Cell from './cell.vue';
-export Toast from './toast.vue';
-export Dialog from './dialog.vue';
-export Progress from './progress.vue';
-export Message from './message.vue';
-export Article from './article.vue';
-export Actionsheet from './actionsheet.vue';
-export Icons from './icons.vue';
+export {default as Button} from './button.vue'
+export {default as Cell} from './cell.vue'
+export {default as Toast} from './toast.vue'
+export {default as Dialog} from './dialog.vue'
+export {default as Progress} from './progress.vue'
+export {default as Message} from './message.vue'
+export {default as Article} from './article.vue'
+export {default as Actionsheet} from './actionsheet.vue'
+export {default as Icons} from './icons.vue'

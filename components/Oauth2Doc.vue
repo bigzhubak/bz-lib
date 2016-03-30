@@ -2,7 +2,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="ui segment">
     <h1>Oauth2</h1>
     <p>
       生成 Oauth2 按钮
@@ -18,12 +18,8 @@
         </tr>
       </tbody>
     </table>
-  </div>
-  <pre>
-  <code v-text="code">
-  </code>
-  </pre>
-  <div class="ui segment">
+    <code v-text="code"></code>
+    <div class="ui divider"></div>
     <oauth2 :oauths="oauths"></oauth2>
   </div>
 </template>
