@@ -20,20 +20,19 @@ def getScriptHash(script):
     script_content = f.read()
     hash = hashlib.sha224(script_content).hexdigest()
     f.close()
-    print 'new hash=%s' % hash
     return hash
 
 
 def main(file_path):
-    f = open(file_path, 'rw')
+    f = open(file_path, 'r+')
     html = f.read()
-    f.close()
     scripts = getScripts(html)
-    f = open(file_path, 'w')
     for script in scripts:
+        print script
         hash = getScriptHash(script)
         html = re.sub('\?vbz=.*"', '?vbz=%s"' % hash, html)
-        f.write(html)
+    f.seek(0)
+    f.write(html)
     f.close()
 if __name__ == '__main__':
     if len(sys.argv) == 2:
