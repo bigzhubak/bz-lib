@@ -37,7 +37,7 @@
           {parm: 'search', desc: '按下查找的回调函数'},
           {parm: 'focus_run', desc: '焦点时候的回调函数(可以不传入)'}
         ],
-        code: `<we-search-bar></we-search-bar>`
+        code: `<we-search-bar :search="run" :focus_run="focus"></we-search-bar>`
       }
     },
     methods: {
