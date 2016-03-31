@@ -24,6 +24,8 @@
     props: {
       search: {
         required: true
+      },
+      focus_run: {
       }
     },
     components: {
@@ -39,6 +41,9 @@
     methods: {
       focus: function () {
         this.is_focus = true
+        if(this.focus_run) {
+          this.focus_run()
+        }
       },
       blur: function () {
         this.is_focus = false

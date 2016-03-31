@@ -21,7 +21,7 @@
     <code v-text="code">
     </code>
     <div class="ui divider"></div>
-    <we-search-bar :search="run"></we-search-bar>
+    <we-search-bar :search="run" :focus_run="focus"></we-search-bar>
   </div>
 </template>
 
@@ -34,7 +34,8 @@
     data: function () {
       return {
         parms: [
-          {parm: 'search', desc: '按下查找的回调函数'}
+          {parm: 'search', desc: '按下查找的回调函数'},
+          {parm: 'focus_run', desc: '焦点时候的回调函数(可以不传入)'}
         ],
         code: `<we-search-bar></we-search-bar>`
       }
@@ -45,6 +46,9 @@
       },
       run: function (a) {
         alert('查找:' + a)
+      },
+      focus: function () {
+        console.log('focus时候，干些什么')
       }
     }
   }
