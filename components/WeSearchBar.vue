@@ -41,7 +41,7 @@
     methods: {
       focus: function () {
         this.is_focus = true
-        if(this.focus_run) {
+        if (this.focus_run) {
           this.focus_run()
         }
       },
