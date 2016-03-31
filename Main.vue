@@ -26,7 +26,7 @@
         </header>
       </div>
       <div class="twelve wide column">
-        <router-view transition="slide"></router-view>
+        <router-view></router-view>
       </div>
     </div>
     <div class="ui vertical footer segment">

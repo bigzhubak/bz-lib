@@ -6,8 +6,10 @@ import Login from './components/LoginDoc'
 import Oauth2 from './components/Oauth2Doc'
 import WeMain from './components/WeMain'
 import Forget from './components/ForgetDoc'
+import BottomLoader from './components/BottomLoaderDoc'
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
+  '/BottomLoader': { name: 'BottomLoader', component: BottomLoader, desc: '滚动到底部做些什么'},
   '/Forget': { name: 'Forget', component: Forget, desc: '忘记密码'},
   '/WeMain': { name: 'WeMain', component: WeMain, desc: 'weui组件的入口'},
   '/Oauth2': { name: 'Oauth2', component: Oauth2, desc: 'Oauth2登录'},
