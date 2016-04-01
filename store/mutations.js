@@ -2,6 +2,10 @@
 // import Vue from 'vue'
 // import $ from 'jquery'
 export default {
+  SET_Q_MAP (state, q_map) {
+    state.q_map = q_map
+  }
+
   SET_CARDS (state, cards) {
     console.log(cards)
     state.cards = cards
@@ -11,8 +15,4 @@ export default {
     console.log(state)
     console.log(state.user_info.user_name)
   }
-// ,
-//   CLEAR_USER_INFO (state, user_info) {
-//     state.user_info.user_name = ''
-//   }
 }

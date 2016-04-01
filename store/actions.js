@@ -11,6 +11,7 @@ var api_login = Vue.resource('/api_login{/parm}')
 var api_forget = Vue.resource('/api_forget{/parm}')
 
 export default {
+  setQMap: 'SET_Q_MAP',
   forget: ({ dispatch, state, actions }, email) => {
     api_forget.save(email).then(
       function (response) {
