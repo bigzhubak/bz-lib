@@ -2,6 +2,9 @@
 // import Vue from 'vue'
 // import $ from 'jquery'
 export default {
+  SET_LOCATION (state, location) {
+    state.location = location
+  },
   SET_CARDS (state, cards) {
     console.log(cards)
     state.cards = cards
