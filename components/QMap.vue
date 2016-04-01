@@ -27,7 +27,6 @@
     },
     data: function () {
       return {
-        map: null
       }
     },
     ready () {
@@ -59,7 +58,7 @@
         this.toPsotion(this.location.lat, this.location.lng)
       },
       initMap: function () {
-        let map = new window.qq.maps.Map(
+        var map = new window.qq.maps.Map(
           document.getElementById('map-container'), {
             zoom: 12,
             zoomControl: false,
@@ -71,7 +70,7 @@
             mapTypeControl: false
           }
         )
-        store.actions.setQMap(map)
+        window.qq_map = map
       },
       loadQQSource: function () {
         var script = document.createElement('script')
