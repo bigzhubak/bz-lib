@@ -4,8 +4,7 @@
 export default {
   SET_Q_MAP (state, q_map) {
     state.q_map = q_map
-  }
-
+  },
   SET_CARDS (state, cards) {
     console.log(cards)
     state.cards = cards
