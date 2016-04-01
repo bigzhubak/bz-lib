@@ -8,9 +8,11 @@ import WeMain from './components/WeMain'
 import Forget from './components/ForgetDoc'
 import BottomLoader from './components/BottomLoaderDoc'
 import WeSearchBar from './components/WeSearchBarDoc'
+import QMap from './components/QMapDoc'
 
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
+  '/QMap': { name: 'QMap', component: QMap, desc: 'qq 地图基础组件'},
   '/WeSearchBar': { name: 'WeSearchBar', component: WeSearchBar, desc: 'weui的searchbar组件，有一些js操作'},
   '/BottomLoader': { name: 'BottomLoader', component: BottomLoader, desc: '滚动到底部做些什么'},
   '/Forget': { name: 'Forget', component: Forget, desc: '忘记密码'},
