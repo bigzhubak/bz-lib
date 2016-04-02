@@ -16,21 +16,26 @@
 
 <template>
   <div id="map-container"></div>
+  <script-loader :scripts="scripts"></script-loader>
 </template>
 
 <script>
   import store from '../store'
+  import ScriptLoader from './ScriptLoader'
   export default {
     components: {
+      ScriptLoader
     },
     computed: {
     },
     data: function () {
       return {
+        scripts:[
+          '//map.qq.com/api/js?v=2.exp&callback=initMap'
+        ]
       }
     },
     ready () {
-      this.loadQQSource()
       window.initMap = this.initMap
     },
     methods: {
@@ -70,12 +75,6 @@
             mapTypeControl: false
           }
         )
-      },
-      loadQQSource: function () {
-        var script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.src = 'http://map.qq.com/api/js?v=2.exp&callback=initMap'
-        document.body.appendChild(script)
       }
     }
   }
