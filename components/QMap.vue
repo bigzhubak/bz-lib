@@ -30,7 +30,7 @@
     },
     data: function () {
       return {
-        scripts:[
+        scripts: [
           '//map.qq.com/api/js?v=2.exp&callback=initMap'
         ]
       }
