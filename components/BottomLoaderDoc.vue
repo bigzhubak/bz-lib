@@ -21,10 +21,6 @@
     <code v-text="code">
     </code>
     <div class="ui divider"></div>
-    <button @click='run' class='ui basic button'>
-      <i class='icon play'></i>
-      运行
-    </button>
     <div class="ui grid">
       <div  v-for="data in datas" class="sixteen wide column">
         <div class="ui card">
@@ -48,7 +44,7 @@
     route: {
       deactivate: function (transition) {
         this.$broadcast('unbind-scroll')
-        alert('解除了scroll绑定')
+        console.log('解除了scroll绑定')
         transition.next()
       }
     },

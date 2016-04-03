@@ -7,7 +7,7 @@ import middlewares from './middlewares'
 Vue.use(Vuex)
 
 const state = {
-  cards: [],
+  qq_map: null, // qq 地图的实例
   user_info: {user_name: ''} // 登录的用户信息
 }
 

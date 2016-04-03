@@ -8,9 +8,15 @@ import WeMain from './components/WeMain'
 import Forget from './components/ForgetDoc'
 import BottomLoader from './components/BottomLoaderDoc'
 import WeSearchBar from './components/WeSearchBarDoc'
+import QMap from './components/QMapDoc'
+import QMapLocation from './components/QMapLocationDoc'
+import ScriptLoader from './components/ScriptLoaderDoc'
 
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
+  '/ScriptLoader': { name: 'ScriptLoader', component: ScriptLoader, desc: 'js 非阻塞加载模块'},
+  '/QMapLocation': { name: 'QMapLocation', component: QMapLocation, desc: 'QMap 的附加组件，能够定位当前位置'},
+  '/QMap': { name: 'QMap', component: QMap, desc: 'qq 地图基础组件'},
   '/WeSearchBar': { name: 'WeSearchBar', component: WeSearchBar, desc: 'weui的searchbar组件，有一些js操作'},
   '/BottomLoader': { name: 'BottomLoader', component: BottomLoader, desc: '滚动到底部做些什么'},
   '/Forget': { name: 'Forget', component: Forget, desc: '忘记密码'},

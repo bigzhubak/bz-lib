@@ -2,6 +2,9 @@
 // import Vue from 'vue'
 // import $ from 'jquery'
 export default {
+  SET_LOCATION (state, location) {
+    state.location = location
+  },
   SET_CARDS (state, cards) {
     console.log(cards)
     state.cards = cards
@@ -11,8 +14,4 @@ export default {
     console.log(state)
     console.log(state.user_info.user_name)
   }
-// ,
-//   CLEAR_USER_INFO (state, user_info) {
-//     state.user_info.user_name = ''
-//   }
 }
