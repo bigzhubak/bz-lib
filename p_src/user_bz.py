@@ -7,6 +7,16 @@ import model_oper_bz
 import model_bz
 salt = "hold is watching you"
 
+def insertOrUpdateUserByType(pg, type, name):
+    '''
+    create by bigzhu at 16/03/26 06:16:52 根据社交帐号,新增或者更新一个用户信息
+    '''
+    name = name.lower()
+    user_info = public_bz.storage()
+    user_info[type] = name
+
+    return pg.insertOrUpdate(pg, 'user_info', user_info, "lower(user_name)='%s'" % name)
+
 
 class UserOper:
 
