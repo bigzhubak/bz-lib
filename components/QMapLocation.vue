@@ -2,8 +2,9 @@
 </style>
 
 <template>
-  <div v-show="false">
-    <img @click="toLocation" id="location" class="ui image locationicon" src="../images/icon_location.png"><img>
+  <div>
+    <img @click="toLocation"  class="ui image locationicon" src="../images/icon_location.png"><img>
+    <img @click="toLocation"  class="ui image locationicon" src="../images/icon_location.png"><img>
     <iframe id="geoPage" width=0 height=0 frameborder=0  style="display:none;" scrolling="no"
       src="http://apis.map.qq.com/tools/geolocation?key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp">
     </iframe>
@@ -12,7 +13,7 @@
 
 <script>
   import store from '../store'
-  import $ from 'jquery'
+  import $ from 'zepto'
   export default {
     props: [],
     components: {
@@ -32,8 +33,11 @@
     },
     methods: {
       insertButton: function () {
-        window.qq_map.controls[window.qq.maps.ControlPosition.BOTTOM_RIGHT].push($('#location')[0])
-        console.log('insert ok')
+        if ($('.locationicon')[0]) {
+          console.log($('.locationicon')[0])
+          window.qq_map.controls[window.qq.maps.ControlPosition.BOTTOM_RIGHT].push($('.locationicon')[0])
+          console.log('insert ok')
+        }
       },
       checkMapOk: function () {
         if (typeof window.qq_map !== 'undefined') {

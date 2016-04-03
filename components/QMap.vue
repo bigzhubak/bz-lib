@@ -1,3 +1,4 @@
+O
 <style lang="less">
   #map-container {
     min-width: 500px;
@@ -16,12 +17,14 @@
 
 <template>
   <div id="map-container"></div>
+  <img @click="toLocation"  class="ui image locationicon" src="../images/icon_location.png"><img>
   <script-loader :scripts="scripts"></script-loader>
 </template>
 
 <script>
   import store from '../store'
   import ScriptLoader from './ScriptLoader'
+  import $ from 'zepto'
   export default {
     components: {
       ScriptLoader
@@ -75,6 +78,7 @@
             mapTypeControl: false
           }
         )
+        window.qq_map.controls[window.qq.maps.ControlPosition.BOTTOM_RIGHT].push($('.locationicon')[0])
       }
     }
   }

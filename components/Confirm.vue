@@ -22,7 +22,7 @@
 
 <script>
   // import store from '../store'
-  import $ from 'jquery'
+  import $ from 'zepto'
   export default {
     props: ['header', 'content', 'call_back'],
     ready () {
