@@ -5,7 +5,7 @@
 </style>
 
 <template>
-  <a v-for="oauth in oauths" @click="loading" href="/{{oauth}}" class="ui {{oauth}} button oauth">
+  <a v-for="oauth in oauths" @click="loading" href="/api_{{oauth}}" class="ui {{oauth}} button oauth">
     <i class="{{oauth}} icon"></i>
     {{upperFirst(oauth)}}
   </a>
