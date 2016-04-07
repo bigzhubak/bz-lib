@@ -22,7 +22,8 @@
     "vue-router": "^0.7.11",
     "vue-weui": "^0.2.0",
     "vuex": "^0.3.0",
-    "weui": "^0.4.0"
+    "weui": "^0.4.0",
+    "zepto": "^1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.1.2",

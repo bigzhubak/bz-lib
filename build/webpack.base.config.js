@@ -48,7 +48,6 @@ module.exports = {
     }
   },
   externals: {
-    jquery: "jQuery",
-    zepto: 'Zepto'
+    jquery: 'jQuery'
   }
 }

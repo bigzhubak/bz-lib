@@ -24,7 +24,7 @@ O
 <script>
   import store from '../store'
   import ScriptLoader from './ScriptLoader'
-  import $ from 'zepto'
+  import $ from 'jquery'
   export default {
     components: {
       ScriptLoader

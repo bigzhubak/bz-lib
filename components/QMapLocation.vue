@@ -13,7 +13,7 @@
 
 <script>
   import store from '../store'
-  import $ from 'zepto'
+  import $ from 'jquery'
   export default {
     props: [],
     components: {
