@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import $ from 'zepto'
+  import $ from 'jquery'
   import _ from 'underscore'
   export default {
     props: {
