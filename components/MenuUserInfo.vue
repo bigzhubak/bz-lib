@@ -2,6 +2,7 @@
 </style>
 
 <template>
+</div>
   <div v-show="user_info.user_name != '' " class="ui simple dropdown item">
     <i class="dropdown icon"></i> {{user_info.user_name}}
     <div class="menu">
@@ -14,6 +15,7 @@
   <a href="/app/login.html" v-show="user_info.user_name === '' " class="item">
     登录
   </a>
+</div>
 </template>
 
 <script>

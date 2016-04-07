@@ -41,6 +41,9 @@
       },
       doScroll: function () {
         let last = $(this.el).find(this.element_class).last()
+        if (!last.offset()) {
+          return
+        }
         // 最后一个元素 元素偏移量+元素高度 得到元素底部的像素高度
         // let offset_bottom = last.offset().top + last.height() + 14 - 1.12 // padding
         let offset_bottom = last.offset().top + last.height()// padding
