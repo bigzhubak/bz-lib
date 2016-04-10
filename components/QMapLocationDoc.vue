@@ -14,7 +14,8 @@
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
-          <td colspan="2"></td>
+          <td colspan="2">失败了！<br>腾讯地图在 app dom 到地图里后，会删除原先的dom
+vue 的 component 在路由切换的时候，并不会完全重新传染 html，导致第二次路由切换进共来后，找不到定位按钮这个dom了（之前被腾讯地图删除了）</td>
         </tr>
       </tbody>
     </table>
