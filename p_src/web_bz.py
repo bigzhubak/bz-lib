@@ -23,13 +23,6 @@ salt = "hold is watching you"
 
 md5 = hashlib.md5()
 
-class api_logout(BaseHandler):
-
-    @tornado_bz.handleError
-    def get(self):
-        self.clear_cookie(name='user_id')
-        self.redirect("/login.html")
-
 
 class api_login(UserInfoHandler):
 

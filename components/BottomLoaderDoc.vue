@@ -52,7 +52,7 @@
       return {
         datas: [1],
         parms: [
-          {parm: 'el', desc: '使用该组件的el,主要为了把查找last限定在本el中'},
+          {parm: 'el', desc: '使用该组件的el,主要为了把查找last限定在本el中. !注意, fragment的el是无法传递进去的'},
           {parm: 'element_class', desc: '用于定位last的class .hah.jj 的格式'},
           {parm: 'call_back', desc: '滚到底部的回调函数'}
         ],
