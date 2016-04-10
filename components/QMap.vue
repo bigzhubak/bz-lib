@@ -1,5 +1,5 @@
 O
-<style lang="less">
+<style lang=less>
   #map-container {
     min-width: 500px;
     min-height: 500px;
@@ -70,7 +70,7 @@ O
           document.getElementById('map-container'), {
             zoom: 12,
             zoomControl: false,
-            mapTypeId: window.qq.maps.MapTypeId.ROADMAP, //ROADMAP, SATELLITE, HYBRID
+            mapTypeId: window.qq.maps.MapTypeId.ROADMAP, // ROADMAP, SATELLITE, HYBRID
             draggable: true,
             draggableCursor: 'crosshair',
             scrollwheel: true,

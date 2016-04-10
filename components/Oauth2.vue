@@ -1,4 +1,4 @@
-<style lang="less">
+<style lang=less>
   .ui.button.oauth {
     margin: 0.75em
   }

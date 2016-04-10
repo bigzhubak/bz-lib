@@ -1,4 +1,4 @@
-<style lang="less">
+<style lang=less>
 </style>
 
 <template>
@@ -23,6 +23,7 @@
     <div class="ui divider"></div>
     <menu-user-info>
       <a slot="one" href="/test" class="item">test</a>
+      <a slot="three" href="/api_logout" class="item">退出登录</a>
     </menu-user-info>
   </div>
 </template>
@@ -37,8 +38,9 @@
       return {
         parms: [],
         code: `<menu-user-info>
-        <a slot="one" href="/test" class="item">test</a>
-        </menu-user-info>`
+    <a slot="one" href="/test" class="item">test</a>
+    <a slot="three" href="/api_logout" class="item">退出登录</a>
+  </menu-user-info>`
       }
     },
     methods: {
