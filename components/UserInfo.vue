@@ -203,6 +203,7 @@
             twitter: this.user_info.twitter,
             github: this.user_info.github,
             instagram: this.user_info.instagram,
+            tumblr: this.user_info.tumblr,
             slogan: this.user_info.bio,
             picture: this.user_info.avatar
           }
