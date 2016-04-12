@@ -29,6 +29,7 @@
 
 <script>
   import Login from './Login.vue'
+  import toastr from 'toastr'
   export default {
     components: {
       Login
@@ -43,7 +44,7 @@
     },
     methods: {
       call_back: function () {
-        alert('登录成功')
+        toastr.info('登录成功')
       }
     }
   }

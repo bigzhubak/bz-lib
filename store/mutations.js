@@ -10,8 +10,6 @@ export default {
     state.cards = cards
   },
   SET_USER_INFO (state, user_info) {
-    state.user_info.user_name = user_info.user_name
-    console.log(state)
-    console.log(state.user_info.user_name)
+    state.user_info = user_info
   }
 }

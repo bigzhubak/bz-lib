@@ -4,6 +4,7 @@ import VueResource from 'vue-resource'
 // import _ from 'underscore'
 Vue.use(VueResource)
 import toastr from 'toastr'
+import _ from 'underscore'
 
 var api_user_info = Vue.resource('/api_user_info{/parm}')
 var api_signup = Vue.resource('/api_signup{/parm}')
@@ -11,6 +12,20 @@ var api_login = Vue.resource('/api_login{/parm}')
 var api_forget = Vue.resource('/api_forget{/parm}')
 
 export default {
+  updateOrInsertUser: ({ dispatch, state, actions }, user) => {
+    api_user_info.update(user).then(
+      function (response) {
+        console.log(response.data)
+        if (response.data.error !== '0') {
+          toastr.error(response.data.error)
+        } else {
+          toastr.info('成功')
+        }
+      },
+      function (response) {
+      }
+    )
+  },
   setLocation: 'SET_LOCATION',
   forget: ({ dispatch, state, actions }, email) => {
     api_forget.save(email).then(
@@ -57,7 +72,7 @@ export default {
       }
     )
   },
-  queryUserInfo: ({ dispatch, state }) => {
+  queryUserInfo: ({ dispatch, state }, call_bak = null) => {
     if (state.user_info.user_name !== '') {
       console.log('had user_info')
       return
@@ -68,6 +83,9 @@ export default {
           toastr.error(response.data.error)
           return
           // throw new Error(response.data.error)
+        }
+        if (call_bak) {
+          call_bak(_.clone(response.data.user_info))
         }
         dispatch('SET_USER_INFO', response.data.user_info)
       },

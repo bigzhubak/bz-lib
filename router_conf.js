@@ -11,9 +11,11 @@ import WeSearchBar from './components/WeSearchBarDoc'
 import QMap from './components/QMapDoc'
 import QMapLocation from './components/QMapLocationDoc'
 import ScriptLoader from './components/ScriptLoaderDoc'
+import UserInfo from './components/UserInfoDoc'
 
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
+  '/UserInfo': { name: 'UserInfo', component: UserInfo, desc: '显示并编辑用户信息'},
   '/ScriptLoader': { name: 'ScriptLoader', component: ScriptLoader, desc: 'js 非阻塞加载模块'},
   '/QMapLocation': { name: 'QMapLocation', component: QMapLocation, desc: 'QMap 的附加组件，能够定位当前位置'},
   '/QMap': { name: 'QMap', component: QMap, desc: 'qq 地图基础组件'},

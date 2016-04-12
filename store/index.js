@@ -8,12 +8,19 @@ Vue.use(Vuex)
 
 const state = {
   qq_map: null, // qq 地图的实例
-  user_info: {user_name: ''} // 登录的用户信息
+  user_info: { // 登录的用户信息
+    user_name: '',
+    bio: '',
+    github: '',
+    twitter: '',
+    instagram: '',
+    tumblr: ''
+  }
 }
 
 const store_lib = new Vuex.Store(
   {
-    strict: true,
+  //  strict: true,
     state,
     actions,
     middlewares,

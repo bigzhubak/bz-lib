@@ -86,6 +86,18 @@ class api_user_info(BaseHandler):
         user_info = user_info[0]
         del user_info.password
         self.write(json.dumps({'error': '0', 'user_info': user_info}, cls=public_bz.ExtEncoder))
+    @tornado_bz.handleError
+    def put(self):
+        self.set_header("Content-Type", "application/json")
+        data = json.loads(self.request.body)
+        user_name = data.get('user_name')
+        if user_name == '' or user_name is None:
+            raise Exception('必须有用户名才能修改')
+
+        where = "user_name='%s'" % data['user_name']
+        print where
+        db_bz.insertOrUpdate(self.pg, 'user_info', data, where)
+        self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
 
 
 class set_openid(BaseHandler):
