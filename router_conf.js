@@ -8,6 +8,7 @@ import WeMain from './components/WeMain'
 import Forget from './components/ForgetDoc'
 import BottomLoader from './components/BottomLoaderDoc'
 import WeSearchBar from './components/WeSearchBarDoc'
+import WeErrorInfo from './components/WeErrorInfoDoc'
 import QMap from './components/QMapDoc'
 import QMapLocation from './components/QMapLocationDoc'
 import ScriptLoader from './components/ScriptLoaderDoc'
@@ -29,6 +30,7 @@ export default {
   '/CountUp': { name: 'CountUp', component: CountUp, desc: '数字递增递减动画效果'},
   '/MenuUserInfo': { name: 'MenuUserInfo', component: MenuUserInfo, desc: 'Menu上显示用户信息'},
   '/Confirm': { name: 'Confirm', component: Confirm, desc: '确认提示框'},
+  '/WeErrorInfo': { name: 'WeErrorInfo', component: WeErrorInfo, desc: '错误信息提示'},
   '/': { component: Confirm }
 }
 

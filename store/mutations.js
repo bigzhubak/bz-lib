@@ -11,5 +11,13 @@ export default {
   },
   SET_USER_INFO (state, user_info) {
     state.user_info = user_info
+    state.user_info.user_name = user_info.user_name
+    console.log(state)
+    console.log(state.user_info.user_name)
+  },
+  SET_ERROR_INFO (state, error_info) {
+    state.error_info = error_info
+    console.log(state)
+    console.log(state.error_info)
   }
 }
