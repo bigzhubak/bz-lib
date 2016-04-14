@@ -30,7 +30,7 @@ export default {
   '/CountUp': { name: 'CountUp', component: CountUp, desc: '数字递增递减动画效果'},
   '/MenuUserInfo': { name: 'MenuUserInfo', component: MenuUserInfo, desc: 'Menu上显示用户信息'},
   '/Confirm': { name: 'Confirm', component: Confirm, desc: '确认提示框'},
-  '/WeErrorInfo': { name: 'WeErrorInfo', component: WeErrorInfo, desc: '错误信息提示'},
+  '/WeErrorInfo': { name: 'WeErrorInfo', component: WeErrorInfo, desc: '微信weui的错误信息提示'},
   '/': { component: Confirm }
 }
 

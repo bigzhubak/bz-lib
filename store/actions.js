@@ -93,6 +93,5 @@ export default {
       }
     )
   },
-  deleteTodo: 'DELETE_TODO',
   setErrorInfo: 'SET_ERROR_INFO'
 }
