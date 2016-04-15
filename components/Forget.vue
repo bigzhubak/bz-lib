@@ -18,8 +18,15 @@
 
 <script>
   import store from '../store'
+  import {forget} from '../store/actions'
   import toastr from 'toastr'
   export default {
+    store,
+    vuex: {
+      actions: {
+        aforget: forget
+      }
+    },
     directives: {
     },
     created: function () {
@@ -37,7 +44,7 @@
         //     return
         //   }
         // }
-        store.actions.forget(this.email)
+        this.aforget(this.email)
       }
     }
   }

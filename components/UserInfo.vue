@@ -82,12 +82,13 @@
   var $ = require('jquery')
 
   import store from '../store'
-  import {queryUserInfo} from '../store/actions'
+  import {queryUserInfo, updateOrInsertUser} from '../store/actions'
   export default {
     store,
     vuex: {
       actions: {
-        queryUserInfo
+        queryUserInfo,
+        updateOrInsertUser
       }
     },
     components: {
@@ -214,7 +215,7 @@
             slogan: this.user_info.bio,
             picture: this.user_info.avatar
           }
-          store.actions.updateOrInsertUser(user)
+          this.updateOrInsertUser(user)
         }
       }
     }
