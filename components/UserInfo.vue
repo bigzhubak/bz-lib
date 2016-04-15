@@ -82,7 +82,14 @@
   var $ = require('jquery')
 
   import store from '../store'
+  import {queryUserInfo} from '../store/actions'
   export default {
+    store,
+    vuex: {
+      actions: {
+        queryUserInfo
+      }
+    },
     components: {
     },
     directives: {
@@ -114,7 +121,7 @@
       }
     },
     ready: function () {
-      store.actions.queryUserInfo()
+      this.queryUserInfo()
       $(this.$el).find('.button').popup(
         {
           inline: true

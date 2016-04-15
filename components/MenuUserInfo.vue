@@ -23,9 +23,8 @@
   export default {
     store,
     vuex: {
-      // getters: { ... }, // state getters
       actions: {
-        queryUserInfo // ES6 同名对象字面量缩写
+        queryUserInfo
       }
     },
     computed: {
