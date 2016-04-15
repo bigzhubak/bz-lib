@@ -22,9 +22,16 @@
 <script>
   import store from '../store'
   import {getTopRightToast} from '../functions/toast.js'
+  import {login} from '../store/actions'
 
   var toast = getTopRightToast()
   export default {
+    store,
+    vuex: {
+      actions: {
+        aLogin: login
+      }
+    },
     props: ['call_back'],
     components: {
     },
@@ -54,7 +61,7 @@
           user_name: this.user_name,
           password: this.password
         }
-        store.actions.login(parm, this.call_back)
+        this.aLogin(parm, this.call_back)
       },
       cleanError: function () {
         this.user_name_error = false
