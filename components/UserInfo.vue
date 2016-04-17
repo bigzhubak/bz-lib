@@ -82,7 +82,15 @@
   var $ = require('jquery')
 
   import store from '../store'
+  import {queryUserInfo, updateOrInsertUser} from '../store/actions'
   export default {
+    store,
+    vuex: {
+      actions: {
+        queryUserInfo,
+        updateOrInsertUser
+      }
+    },
     components: {
     },
     directives: {
@@ -114,7 +122,7 @@
       }
     },
     ready: function () {
-      store.actions.queryUserInfo()
+      this.queryUserInfo()
       $(this.$el).find('.button').popup(
         {
           inline: true
@@ -203,10 +211,11 @@
             twitter: this.user_info.twitter,
             github: this.user_info.github,
             instagram: this.user_info.instagram,
+            tumblr: this.user_info.tumblr,
             slogan: this.user_info.bio,
             picture: this.user_info.avatar
           }
-          store.actions.updateOrInsertUser(user)
+          this.updateOrInsertUser(user)
         }
       }
     }

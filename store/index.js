@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import actions from './actions'
 import mutations from './mutations'
-import middlewares from './middlewares'
+// import middlewares from './middlewares'
 
 Vue.use(Vuex)
 
@@ -23,7 +23,7 @@ const store_lib = new Vuex.Store(
   //  strict: true,
     state,
     actions,
-    middlewares,
+    // middlewares,
     mutations
   }
 )
