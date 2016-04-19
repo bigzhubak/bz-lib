@@ -7,6 +7,7 @@ import mutations from './mutations'
 Vue.use(Vuex)
 
 const state = {
+  error_info: null,
   qq_map: null, // qq 地图的实例
   user_info: { // 登录的用户信息
     user_name: '',
