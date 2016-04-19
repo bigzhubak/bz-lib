@@ -4,7 +4,7 @@
 <template>
 </div>
 <div v-show="user_info.user_name != '' " class="ui simple dropdown item">
-  <i class="dropdown icon"></i> {{user_info.user_name}}
+   <img :src="avatar" class="ui avatar image">
   <div class="menu">
     <slot name="one"></slot>
     <slot name="two"></slot>
@@ -33,6 +33,9 @@
       },
       user_info () {
         return store.state.user_info
+      },
+      avatar () {
+        return store.state.user_info.picture
       }
     },
     ready () {
