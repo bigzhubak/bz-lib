@@ -149,7 +149,7 @@ def mustLoginApi(method):
         if self.current_user:
             pass
         else:
-            raise Exception('must login')
+            raise Exception('请登录后再操作')
         return method(self, *args, **kwargs)
     return wrapper
 
