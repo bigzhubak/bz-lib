@@ -20,6 +20,10 @@ export const queryUserInfo = ({ dispatch, state }, call_bak = null) => {
   api_user_info.get().then(
     function (response) {
       if (response.data.error !== '0') {
+        if (response.data.error === '没有登录') {
+          console.log(response.data.error)
+          return
+        }
         toastr.error(response.data.error)
         return
         // throw new Error(response.data.error)
