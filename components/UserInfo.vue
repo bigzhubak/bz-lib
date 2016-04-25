@@ -2,12 +2,15 @@
   .hide{
     display: none
   }
-  .icon.github{
+  /*.icon.github{
     color:black
+  }*/
+  .ui.segment.god-info-bz {
+    margin-top: 0.9em;
   }
 </style>
 <template>
-  <div class="ui piled center aligned segment">
+  <div class="ui piled center aligned segment god-info-bz">
     <h4 class="ui header">{{user_info.user_name}}</h4>
     <input :disabled="disable_edit" id="profile-image-upload" class="hide" type="file" @change="previewImg" accept="image/*"/>
     <a id="avatar" @click="changeImg" href="javascript:void(0)" data-content="点击更换头像">
