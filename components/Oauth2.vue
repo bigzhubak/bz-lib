@@ -23,7 +23,7 @@
   .ui.douban.button:hover {
     background-color: #499E55;
   }
-  i.icon.douban:before { 
+  i.icon.douban:before {
     content: "\e94a";
   }
 </style>
