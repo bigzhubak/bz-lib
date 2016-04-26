@@ -14,6 +14,7 @@ import public_bz
 import db_bz
 import tornado_auth_bz
 import wechat_bz
+import oper_bz
 
 from tornado_bz import UserInfoHandler
 from tornado_bz import BaseHandler
@@ -93,9 +94,12 @@ class api_user_info(BaseHandler):
         user_name = data.get('user_name')
         if user_name == '' or user_name is None:
             raise Exception('必须有用户名才能修改')
+        oper_bz.checkSocialData(self.pg, data, 'twitter')
+        oper_bz.checkSocialData(self.pg, data, 'github')
+        oper_bz.checkSocialData(self.pg, data, 'tumblr')
+        oper_bz.checkSocialData(self.pg, data, 'instagram')
 
         where = "user_name='%s'" % data['user_name']
-        print where
         db_bz.insertOrUpdate(self.pg, 'user_info', data, where)
         self.write(json.dumps({'error': '0'}, cls=public_bz.ExtEncoder))
 
