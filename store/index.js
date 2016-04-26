@@ -2,11 +2,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import actions from './actions'
 import mutations from './mutations'
-import middlewares from './middlewares'
+// import middlewares from './middlewares'
 
 Vue.use(Vuex)
 
 const state = {
+  error_info: null,
   qq_map: null, // qq 地图的实例
   user_info: { // 登录的用户信息
     user_name: '',
@@ -23,7 +24,7 @@ const store_lib = new Vuex.Store(
   //  strict: true,
     state,
     actions,
-    middlewares,
+    // middlewares,
     mutations
   }
 )

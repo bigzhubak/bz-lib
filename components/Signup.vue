@@ -32,9 +32,17 @@
 
 <script>
   import store from '../store'
+  import {signup} from '../functions/toast.js'
+
   import {getTopRightToast} from '../functions/toast.js'
   var toast = getTopRightToast()
   export default {
+    store,
+    vuex: {
+      actions: {
+        asignup: signup
+      }
+    },
     props: ['call_back'],
     components: {
     },
@@ -73,7 +81,7 @@
           email: this.email,
           password: this.password
         }
-        store.actions.signup(parm, this.call_back)
+        this.asignup(parm, this.call_back)
       },
       cleanError: function () {
         this.user_name_error = false
