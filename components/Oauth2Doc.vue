@@ -34,6 +34,7 @@
       return {
         oauths: [
           'vk',
+          'douban',
           'youtube',
           'facebook',
           'google plus',
