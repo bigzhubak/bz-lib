@@ -14,7 +14,7 @@ module.exports = {
       { test: /\.css$/, loader: 'style!css!autoprefixer'},
       { test: /\.(html|tpl)$/, loader: "html?attrs=img:requir-src" },
       { test: /\.vue$/, loader: 'vue' },
-      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
+      // { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
       {
         test: /\.js$/,
         loader: 'babel!eslint',
@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         // edit this for additional asset file types
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|gif|svg|woff|woff2|eot|ttf)$/,
         loader: 'url',
         query: {
           // inline files smaller then 10kb as base64 dataURL
