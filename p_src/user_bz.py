@@ -7,6 +7,7 @@ import model_oper_bz
 import model_bz
 salt = "hold is watching you"
 
+
 def insertOrUpdateUserByType(pg, type, name):
     '''
     create by bigzhu at 16/03/26 06:16:52 根据社交帐号,新增或者更新一个用户信息
@@ -168,7 +169,7 @@ class UserOper:
         twitter 登录信息存到 db 中
         '''
         if merge:
-            user_infos = self.mergeLogin('twitter', user_info['name'])
+            user_infos = self.mergeLogin('twitter', user_info['username'])
         else:
             user_infos = self.getUserInfo(user_type="'twitter'", out_id=user_info['id'])
         if user_infos:
