@@ -67,7 +67,7 @@ class DoubanOAuth2Mixin(DoubanMixin):
         })
 
         http.fetch(self._OAUTH_ACCESS_TOKEN_URL, functools.partial(self._on_access_token, callback),
-                   method="POST", body=body)
+                   method="POST", body=body, user_agent="Etherpy")
 
     def _on_access_token(self, future, response):
         if response.error:
