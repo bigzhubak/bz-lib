@@ -16,7 +16,7 @@ def getScripts(html):
 def getScriptHash(script):
     src = script.get('src')
     script_file = re.sub('\?vbz=.*', '', src)
-    f = open(script_file, 'r')
+    f = open("."+script_file, 'r')
     script_content = f.read()
     hash = hashlib.sha224(script_content).hexdigest()
     f.close()
