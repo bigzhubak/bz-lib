@@ -42,10 +42,11 @@ export const login = ({ dispatch, state, actions }, parm, call_back = null) => {
     function (response) {
       if (response.data.error !== '0') {
         toastr.error(response.data.error)
+        return
         // throw new Error(response.data.error)
       }
       if (call_back) {
-        actions.queryUserInfo()
+        queryUserInfo({ dispatch, state, actions })
         call_back()
       }
     },

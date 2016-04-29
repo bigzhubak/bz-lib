@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
-          <td colspan="2">加入了3个slot</td>
+          <td colspan="2">加入了3个slot <br>slot one 在未登录的时候显示，通常用来做登录按钮</td>
         </tr>
       </tbody>
     </table>
@@ -22,7 +22,10 @@
     </code>
     <div class="ui divider"></div>
     <menu-user-info>
-      <a slot="one" href="/test" class="item">test</a>
+      <a slot="one" href="/" class="item">
+        登录
+      </a>
+      <a slot="two" href="/test" class="item">test</a>
       <a slot="three" href="/api_logout" class="item">退出登录</a>
     </menu-user-info>
   </div>
@@ -37,10 +40,15 @@
     data: function () {
       return {
         parms: [],
-        code: `<menu-user-info>
-    <a slot="one" href="/test" class="item">test</a>
-    <a slot="three" href="/api_logout" class="item">退出登录</a>
-  </menu-user-info>`
+        code: `
+    <menu-user-info>
+      <a slot="one" href="/" class="item">
+        登录
+      </a>
+      <a slot="two" href="/test" class="item">test</a>
+      <a slot="three" href="/api_logout" class="item">退出登录</a>
+    </menu-user-info>
+        `
       }
     },
     methods: {
