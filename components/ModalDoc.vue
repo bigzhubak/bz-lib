@@ -64,7 +64,7 @@
              <div slot="actions">
                这是操作
              </div>
-            </modal>       
+            </modal>
         `
       }
     },
