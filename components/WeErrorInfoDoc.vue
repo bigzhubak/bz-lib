@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
         <tr>
-          <td colspan="2">注意，触发弹出窗口使用 <code>store.actions.setErrorInfo('test')</code></td>
+          <td colspan="2">注意，触发弹出窗口通过修改 error_info </td>
         </tr>
       </tbody>
     </table>
@@ -25,29 +25,29 @@
       <i class='icon play'></i>
       运行
     </button>
-    <we-error-info :show_time='1000'></we-error-info>
+    <we-error-info :error_info.sync="error_info" :show_time='1000'></we-error-info>
   </div>
 </template>
 
 <script>
   import WeErrorInfo from './WeErrorInfo.vue'
-  import store from '../store'
   export default {
     components: {
       WeErrorInfo
     },
     data: function () {
       return {
+        error_info: '',
         parms: [
-          {parm: 'show_time', desc: '提示框持续时间'}
+          {parm: 'show_time', desc: '提示框持续时间, 0 的时候不自动消失'},
+          {parm: 'error_info', desc: '错误信息, 要用sync的方式传入，否则其无法改变，第二次就无法设置了'},
         ],
-        code: `<we-error-info :show_time='2000'></we-error-info>`
+        code: `<we-error-info :error_info.sync="error_info" :show_time='1000'></we-error-info>`
       }
     },
     methods: {
       run: function () {
-        store.actions.setErrorInfo('test')
-        return
+        this.error_info = 'test'
       }
     }
   }
