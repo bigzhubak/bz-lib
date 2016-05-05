@@ -22,7 +22,7 @@
     props: {
       show_time: { // 显示时长
         type: Number,
-        default: 3000
+        default: 1000
       },
       error_info: {
         type: String,
