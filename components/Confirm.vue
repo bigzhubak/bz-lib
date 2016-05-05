@@ -2,13 +2,13 @@
 </style>
 
 <template>
-  <div class="ui small test modal transition hidden">
-    <div class="header">
+  <modal>
+    <div slot="header">
       {{header}}
     </div>
-    <div v-html="content" class="content">
+    <div v-html="content" slot="content">
     </div>
-    <div class="actions">
+    <div slot="actions">
       <div class="ui negative button">
         取消
       </div>
@@ -17,26 +17,25 @@
         <i class="checkmark icon"></i>
       </div>
     </div>
-  </div>
+  </modal>
 </template>
 
 <script>
-  // import store from '../store'
-  import $ from 'jquery'
+  import Modal from './Modal'
   export default {
+    components: {
+      Modal
+    },
     props: ['header', 'content', 'call_back'],
     ready () {
       this.$on('confirm', this.showConfirm)
-      // if (!this.id) {
-      //   this.id = 'confirm'
-      // }
     },
     methods: {
       yes: function () {
         this.call_back()
       },
       showConfirm: function () {
-        $(this.$el).modal('show')
+        this.$broadcast('modal')
       }
     }
   }

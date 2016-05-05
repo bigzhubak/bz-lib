@@ -70,7 +70,7 @@ O
           document.getElementById('map-container'), {
             zoom: 12,
             zoomControl: false,
-            mapTypeId: window.qq.maps.MapTypeId.ROADMAP, // ROADMAP, SATELLITE, HYBRID
+            mapTypeId: window.qq.maps.MapTypeId.HYBRID, // ROADMAP, SATELLITE, HYBRID
             draggable: true,
             draggableCursor: 'crosshair',
             scrollwheel: true,

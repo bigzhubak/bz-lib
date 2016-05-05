@@ -14,7 +14,6 @@ module.exports = {
       { test: /\.css$/, loader: 'style!css!autoprefixer'},
       { test: /\.(html|tpl)$/, loader: "html?attrs=img:requir-src" },
       { test: /\.vue$/, loader: 'vue' },
-      // { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
       {
         test: /\.js$/,
         loader: 'babel!eslint',
