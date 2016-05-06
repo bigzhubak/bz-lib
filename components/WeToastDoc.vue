@@ -63,7 +63,6 @@
     data: function () {
       return {
         type: '',
-
         desc: '用来弹出we-ui的信息提示',
         name: 'WeToast',
         parms: [
