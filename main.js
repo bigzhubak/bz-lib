@@ -9,7 +9,12 @@ Vue.use(VueRouter)
 
 Vue.config.debug = true
 
-var router = new VueRouter()
+const router = new VueRouter(
+  {
+    history: true,
+    saveScrollPosition: true
+  }
+)
 
 Object.assign(router_conf, weui_router_conf)
 router.map(router_conf)

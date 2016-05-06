@@ -24,11 +24,11 @@
             <a class="header item" href="/#!/"><b>公用组件说明</b></a>
             <div class="item">
               <div class="ui transparent icon input">
-                <input v-model="key" type="text" placeholder="Search ...">
+                <input v-model="key" @keyup.enter="showFirst" type="text" placeholder="Search ...">
                 <i class="search icon"></i>
               </div>
             </div>
-            <a v-show="c.name" v-for="c in components|filterBy key|orderBy 'name'" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
+            <a v-show="c.name" v-for="c in components|filterBy key|orderBy 'name'" class="item componet" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
           </nav>
         </header>
       </div>
@@ -73,6 +73,12 @@
     computed: {
     },
     methods: {
+      showFirst: function () {
+        let target = $(this.$el).find('.componet')
+        if (target.length > 0) {
+          target[0].click()
+        }
+      }
     }
   }
 </script>
