@@ -3,9 +3,9 @@
 
 <template>
   <div class="ui segment">
-    <h1>WeErrorInfo</h1>
+    <h1>{{name}}</h1>
     <p>
-      用来弹出we-ui的错误提示图标
+      {{desc}}
     </p>
     <table class="ui celled table">
       <thead>
@@ -25,19 +25,21 @@
       <i class='icon play'></i>
       运行
     </button>
-    <we-error-info :error_info.sync="error_info" :show_time='1000'></we-error-info>
+    <we-toast :error_info.sync="error_info" :show_time='1000'></we-toast>
   </div>
 </template>
 
 <script>
-  import WeErrorInfo from './WeErrorInfo.vue'
+  import WeToast from './WeToast'
   export default {
     components: {
-      WeErrorInfo
+      WeToast
     },
     data: function () {
       return {
         error_info: '',
+        desc: '用来弹出we-ui的信息提示',
+        name: 'WeToast',
         parms: [
           {parm: 'show_time', desc: '提示框持续时间, 0 的时候不自动消失'},
           {parm: 'error_info', desc: '错误信息, 要用sync的方式传入，否则其无法改变，第二次就无法设置了'}
