@@ -44,7 +44,7 @@ vue 的 component 在路由切换的时候，并不会完全重新传染 html，
     },
     methods: {
       call_back: function () {
-        alert('点击了确认')
+        window.alert('点击了确认')
       },
       run: function () {
         this.$broadcast('confirm')

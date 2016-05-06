@@ -62,11 +62,11 @@
     watch: {
       // 过滤导致重新渲染menu, 这里重新让pop生效
       'key': function (val, oldVal) {
-        $(this.$el).find('.item').popup({ position: 'right center'})
+        $(this.$el).find('.componet').popup({position: 'right center'})
       }
     },
     ready () {
-      $(this.$el).find('.item').popup({ position: 'right center'})
+      $(this.$el).find('.componet').popup({position: 'right center'})
     },
     components: {
     },

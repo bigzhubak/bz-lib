@@ -24,6 +24,7 @@
 </template>
 
 <script>
+  import '../static/weui.min.css'
   export default {
     props: {
       type: {

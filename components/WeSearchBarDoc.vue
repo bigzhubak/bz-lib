@@ -42,10 +42,10 @@
     },
     methods: {
       call_back: function () {
-        alert('点击了确认')
+        window.alert('点击了确认')
       },
       run: function (a) {
-        alert('查找:' + a)
+        window.alert('查找:' + a)
       },
       focus: function () {
         console.log('focus时候，干些什么')

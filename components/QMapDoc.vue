@@ -40,7 +40,7 @@
     },
     methods: {
       call_back: function () {
-        alert('点击了确认')
+        window.alert('点击了确认')
       },
       run: function () {
         this.$broadcast('confirm')

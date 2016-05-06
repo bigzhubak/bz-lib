@@ -43,7 +43,7 @@
     },
     methods: {
       call_back: function () {
-        alert('注册成功了!')
+        window.alert('注册成功了!')
       }
     }
   }

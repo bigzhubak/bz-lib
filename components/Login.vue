@@ -21,10 +21,9 @@
 
 <script>
   import store from '../store'
-  import {getTopRightToast} from '../functions/toast.js'
   import {login} from '../store/actions'
 
-  var toast = getTopRightToast()
+  import toastr from 'toastr'
   export default {
     store,
     vuex: {
@@ -49,12 +48,12 @@
       login: function () {
         if (!this.user_name) {
           this.user_name_error = true
-          toast.error('请输入用户名')
+          toastr.error('请输入用户名')
           return
         }
         if (!this.password) {
           this.password_error = true
-          toast.error('请输入密码')
+          toastr.error('请输入密码')
           return
         }
         var parm = {

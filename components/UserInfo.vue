@@ -115,7 +115,7 @@
       avatar: function () {
         if (this.user_info.avatar) {
           var avatar_url = this.user_info.avatar
-          return '/api_sp/' + btoa(btoa(avatar_url))
+          return '/api_sp/' + window.btoa(window.btoa(avatar_url))
         } else {
           return '/media/images/avatar.svg'
         }
@@ -157,7 +157,7 @@
         if (file.size > (10 * 1024 * 1024)) {
           throw new Error('图片大小只能小于10m哦~')
         }
-        reader = new FileReader()
+        reader = new window.FileReader()
         reader.onload = function (e) {
           return $('#profile-image-upload').attr('src', e.target.result)
         }
@@ -166,7 +166,7 @@
       },
       uploadImage: function () {
         var fd, file
-        fd = new FormData()
+        fd = new window.FormData()
         file = $('#profile-image-upload')[0].files[0]
         if (file) {
           fd.append('img', file)

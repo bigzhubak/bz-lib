@@ -42,7 +42,7 @@
       checkMapOk: function () {
         if (typeof window.qq_map !== 'undefined') {
           this.insertButton()
-        }else {
+        } else {
           setTimeout(this.checkMapOk, 100)
         }
       },
