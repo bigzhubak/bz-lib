@@ -8,45 +8,33 @@
 </style>
 
 <template>
-  <div v-show="error_info">
+  <div :class="{'weui_loading_toast': type === 'loading'}">
     <div class="weui_mask_transparent"></div>
     <div class="weui_toast">
-      <i class="warning sign icon"></i>
-      <p class="weui_toast_content">{{error_info}}</p>
+      <div v-if="type === 'loading'" class="weui_loading" >
+        <div v-for="n in 12" class="weui_loading_leaf" :class="'weui_loading_leaf_' + n"></div>
+      </div>
+      <i v-if="type === 'success'" class="weui_icon_toast" ></i>
+      <i v-if="type === 'warning'" class="warning sign icon" ></i>
+      <i v-if="type === 'info'" class="info icon" ></i>
+      <div class="weui_toast_content"><slot></slot></div>
     </div>
   </div>
+
 </template>
 
 <script>
   export default {
     props: {
-      show_time: { // 显示时长
-        type: Number,
-        default: 1000
-      },
-      error_info: {
+      type: {
         type: String,
-        required: true
+        required: false,
+        default: 'loading'
       }
     },
     computed: {
     },
     components: {
-    },
-    watch: {
-      'error_info': function (val, oldVal) {
-        if (!val) {
-          return
-        }
-        if (this.show_time !== 0) { // 定时消失
-          let _this = this
-          setTimeout(
-            () => {
-              _this.error_info = ''
-            }, this.show_time
-          )
-        }
-      }
     },
     data: function () {
       return {

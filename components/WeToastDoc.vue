@@ -21,11 +21,36 @@
     <code v-text="code">
     </code>
     <div class="ui divider"></div>
-    <button @click='run' class='ui basic button'>
+    <button @click="run('loading')" class='ui basic button'>
       <i class='icon play'></i>
-      运行
+      loading
     </button>
-    <we-toast :error_info.sync="error_info" :show_time='1000'></we-toast>
+    <button @click="run('warning')" class='ui basic button'>
+      <i class='icon play'></i>
+      warning
+    </button>
+    <button @click="run('info')" class='ui basic button'>
+      <i class='icon play'></i>
+      info
+    </button>
+
+    <button @click="run('success')" class='ui basic button'>
+      <i class='icon play'></i>
+      success
+    </button>
+
+    <we-toast v-show="type==='loading'">
+      数据加载中
+    </we-toast>
+    <we-toast type="warning" v-show="type==='warning'">
+      警告你哦
+    </we-toast>
+    <we-toast type="info" v-show="type==='info'">
+      提示信息
+    </we-toast>
+    <we-toast type="success" v-show="type==='success'">
+      成功啦
+    </we-toast>
   </div>
 </template>
 
@@ -37,19 +62,28 @@
     },
     data: function () {
       return {
-        error_info: '',
+        type: '',
+
         desc: '用来弹出we-ui的信息提示',
         name: 'WeToast',
         parms: [
-          {parm: 'show_time', desc: '提示框持续时间, 0 的时候不自动消失'},
-          {parm: 'error_info', desc: '错误信息, 要用sync的方式传入，否则其无法改变，第二次就无法设置了'}
+          {parm: 'type', desc: 'loading warning info success 任意选一种，默认 loading'}
         ],
-        code: `<we-error-info :error_info.sync="error_info" :show_time='1000'></we-error-info>`
+        code: `
+        <we-toast v-show="type==='loading'">
+        数据加载中
+        </we-toast>
+        `
       }
     },
     methods: {
-      run: function () {
-        this.error_info = 'test'
+      run: function (type) {
+        this.type = type
+        setTimeout(
+          () => {
+            this.type = ''
+          }, 3000
+        )
       }
     }
   }

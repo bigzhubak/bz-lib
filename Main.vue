@@ -21,7 +21,7 @@
       <div class="four wide column">
         <header class="main-header">
           <nav class="ui vertical menu">
-            <a class="header item" href="/#!/"><b>公用组件说明</b></a>
+            <a class="header item" v-link="{name:'BottomLoader'}"><b>公用组件说明</b></a>
             <div class="item">
               <div class="ui transparent icon input">
                 <input v-model="key" @keyup.enter="showFirst" type="text" placeholder="Search ...">
