@@ -1,4 +1,3 @@
-O
 <style lang=less>
   #map-container {
     min-width: 500px;
