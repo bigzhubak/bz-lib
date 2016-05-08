@@ -7,7 +7,6 @@ import Oauth2 from './components/Oauth2Doc'
 import Forget from './components/ForgetDoc'
 import BottomLoader from './components/BottomLoaderDoc'
 import WeSearchBar from './components/WeSearchBarDoc'
-import WeErrorInfo from './components/WeErrorInfoDoc'
 import QMap from './components/QMapDoc'
 import QMapLocation from './components/QMapLocationDoc'
 import ScriptLoader from './components/ScriptLoaderDoc'
@@ -18,7 +17,6 @@ import WeToast from './components/WeToastDoc'
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
   '/WeToast': {name: 'WeToast', component: WeToast, desc: '微信信息提示'},
-  '/WeErrorInfo': {name: 'WeErrorInfo', component: WeErrorInfo, desc: '微信weui的错误信息提示'},
   '/Modal': {name: 'Modal', component: Modal, desc: 'modal'},
   '/UserInfo': {name: 'UserInfo', component: UserInfo, desc: '显示并编辑用户信息'},
   '/ScriptLoader': {name: 'ScriptLoader', component: ScriptLoader, desc: 'js 非阻塞加载模块'},
