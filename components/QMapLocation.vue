@@ -4,7 +4,6 @@
 <template>
   <div>
     <img @click="toLocation"  class="ui image locationicon" src="../images/icon_location.png"><img>
-    <img @click="toLocation"  class="ui image locationicon" src="../images/icon_location.png"><img>
     <iframe id="geoPage" width=0 height=0 frameborder=0  style="display:none;" scrolling="no"
       src="http://apis.map.qq.com/tools/geolocation?key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp">
     </iframe>

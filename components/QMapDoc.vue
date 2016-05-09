@@ -3,8 +3,6 @@
     width: 100%;
     height: 500px;
   }
-
-
 </style>
 
 <template>
@@ -47,11 +45,7 @@
       }
     },
     methods: {
-      call_back: function () {
-        window.alert('点击了确认')
-      },
       run: function () {
-        this.$broadcast('confirm')
       }
     }
   }
