@@ -25,7 +25,7 @@
 <script>
   import ScriptLoader from './ScriptLoader'
   export default {
-    propos: {
+    props: {
       config_map: {
         default: null
       }
