@@ -1,11 +1,17 @@
-<style lang=less>
+<style lang="less">
+  .map {
+    width: 100%;
+    height: 500px;
+  }
+
+
 </style>
 
 <template>
-  <div class="ui segment map">
-    <h1>QMap</h1>
+  <div class="ui segment">
+    <h1>{{name}}</h1>
     <p>
-      目前就是简单的显示了一个腾讯地图, 解决了资源加载问题, 但是污染了window.initMap 名字空间, 以后功能再添加
+      {{desc}}
     </p>
     <table class="ui celled table">
       <thead>
@@ -21,7 +27,7 @@
     <code v-text="code">
     </code>
     <div class="ui divider"></div>
-    <q-map></q-map>
+    <q-map class="map"></q-map>
   </div>
 </template>
 
@@ -33,6 +39,8 @@
     },
     data: function () {
       return {
+        name: 'Qmap',
+        desc: '目前就是简单的显示了一个腾讯地图, 解决了资源加载问题, 但是污染了window.initMap 名字空间, 以后功能再添加',
         parms: [
         ],
         code: `<q-map></q-map>`

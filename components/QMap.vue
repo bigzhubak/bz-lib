@@ -1,9 +1,10 @@
-<style lang=less>
-  #map-container {
-    min-width: 500px;
-    min-height: 500px;
+<style lang="less">
+  #map_container {
+    width: 100%;
+    height: 100%;
   }
   /*屏蔽腾讯logo */
+  div[style="position: absolute; left: 0px; top: 0px;"], // 左上角按钮
   div[style="position: absolute; z-index: 1000000; -webkit-user-select: none; left: 7px; bottom: 0px; "],
   div[style="position: absolute; z-index: 1000000; margin: 2px 5px 0px 2px; left: 0px; bottom: 0px; "],
   div[style="position: absolute; z-index: 1000000; -webkit-user-select: none; left: 7px; bottom: 0px;"],
@@ -15,16 +16,20 @@
 </style>
 
 <template>
-  <div id="map-container"></div>
-  <img @click="toLocation"  class="ui image locationicon" src="../images/icon_location.png"><img>
-  <script-loader :scripts="scripts"></script-loader>
+  <div>
+    <script-loader :scripts="scripts"></script-loader>
+    <div id="map_container"></div>
+  </div>
 </template>
 
 <script>
-  import store from '../store'
   import ScriptLoader from './ScriptLoader'
-  import $ from 'jquery'
   export default {
+    propos: {
+      config_map: {
+        default: null
+      }
+    },
     components: {
       ScriptLoader
     },
@@ -48,28 +53,12 @@
           overlay = overlays.pop()
         }
       },
-      toPsotion: function (lat, lng) {
-        var position = new window.qq.maps.LatLng(lat, lng)
-        this.map.panTo(position)
-        this.setMark(position)
-        store.actions.setPosition(position)
-      },
-      backToLast: function () {
-        this.toPsotion(this.position.lat, this.position.lng)
-      },
-      toLocation: function () {
-        if (!this.location) { // 还没取到当前位置
-          this.toMiLe()
-          return
-        }
-        this.toPsotion(this.location.lat, this.location.lng)
-      },
       initMap: function () {
-        window.qq_map = new window.qq.maps.Map(
-          document.getElementById('map-container'), {
+        window.q_map = new window.qq.maps.Map(
+          document.getElementById('map_container'), {
             zoom: 12,
             zoomControl: false,
-            mapTypeId: window.qq.maps.MapTypeId.HYBRID, // ROADMAP, SATELLITE, HYBRID
+            // mapTypeId: window.qq.maps.MapTypeId.HYBRID, // ROADMAP, SATELLITE, HYBRID
             draggable: true,
             draggableCursor: 'crosshair',
             scrollwheel: true,
@@ -77,7 +66,9 @@
             mapTypeControl: false
           }
         )
-        window.qq_map.controls[window.qq.maps.ControlPosition.BOTTOM_RIGHT].push($('.locationicon')[0])
+        if (this.config_map) {
+          this.config_map()
+        }
       }
     }
   }
