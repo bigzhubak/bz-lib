@@ -46,13 +46,6 @@
       window.initMap = this.initMap
     },
     methods: {
-      clearOverlays: function (overlays) { // 删除 mark
-        var overlay = overlays.pop()
-        while (overlay) {
-          overlay.setMap(null)
-          overlay = overlays.pop()
-        }
-      },
       initMap: function () {
         window.q_map = new window.qq.maps.Map(
           document.getElementById('map_container'), {
