@@ -14,9 +14,11 @@ import UserInfo from './components/UserInfoDoc'
 import Modal from './components/ModalDoc'
 import WeToast from './components/WeToastDoc'
 import Demo from './components/DemoDoc'
+import VSwiper from './components/VSwiperDoc'
 
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
+  '/VSwiper': {name: 'VSwiper', component: VSwiper, desc: '走马灯'},
   '/Demo': {name: 'Demo', component: Demo, desc: 'Demo'},
   '/WeToast': {name: 'WeToast', component: WeToast, desc: '微信信息提示'},
   '/Modal': {name: 'Modal', component: Modal, desc: 'modal'},
