@@ -13,9 +13,11 @@ import ScriptLoader from './components/ScriptLoaderDoc'
 import UserInfo from './components/UserInfoDoc'
 import Modal from './components/ModalDoc'
 import WeToast from './components/WeToastDoc'
+import Demo from './components/DemoDoc'
 
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
+  '/Demo': {name: 'Demo', component: Demo, desc: 'Demo'},
   '/WeToast': {name: 'WeToast', component: WeToast, desc: '微信信息提示'},
   '/Modal': {name: 'Modal', component: Modal, desc: 'modal'},
   '/UserInfo': {name: 'UserInfo', component: UserInfo, desc: '显示并编辑用户信息'},
