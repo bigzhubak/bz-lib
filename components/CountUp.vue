@@ -4,6 +4,7 @@
 <style>
 </style>
 <script>
+  import CountUp from 'countup.js'
   export default{
     data () {
       return {}
@@ -50,7 +51,7 @@
     },
     ready () {
       // instantiate the countUp for the element
-      this.count_up = new window.CountUp(this.$el, this.startValue,
+      this.count_up = new CountUp(this.$el, this.startValue,
         this.endValue,
         this.decimalValue,
         this.durationValue,

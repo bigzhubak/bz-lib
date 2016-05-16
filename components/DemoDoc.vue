@@ -3,25 +3,23 @@
 
 <template>
   <div class="ui segment">
-    <h1>Confirm</h1>
-    <p>
-      用来弹出semantic-ui的"是"和"否"的确认弹出窗口
-    </p>
+    <h1>{{name}}</h1>
+    <p>{{desc}}</p>
     <table class="ui celled table">
       <thead>
         <tr><th>参数</th><th>说明</th></tr>
       </thead>
       <tbody>
-        <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
-        <tr>
-          <td colspan="2">注意，触发弹出窗口使用 <code>this.$broadcast('confirm')</code></td>
+        <tr v-show="parm_desc">
+          <td colspan="2" v-html="parm_desc"></td>
         </tr>
+        <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
       </tbody>
     </table>
     <code v-text="code">
     </code>
     <div class="ui divider"></div>
-    <button @click='run' class='ui basic button'>
+    <button v-show="run" @click='run' class='ui basic button'>
       <i class='icon play'></i>
       运行
     </button>
@@ -37,17 +35,20 @@
     },
     data: function () {
       return {
+        title: 'Demo',
+        desc: '就是个demo用来做模板',
+        parm_desc: `注意，触发弹出窗口使用 <code>this.$broadcast('confirm')</code>`,
         parms: [
-          {parm: 'header', desc: '标题内容'},
-          {parm: 'content', desc: '正文内容'},
-          {parm: 'call_back', desc: '点击确认后的回调函数'}
+          {parm: 'parm1', desc: '参数1'},
+          {parm: 'parm2', desc: '参数2'},
+          {parm: 'parm3', desc: '参数3'}
         ],
         code: `<confirm header="标题内容" content="内容正文" :call_back="call_back"></confirm>`
       }
     },
     methods: {
       call_back: function () {
-        alert('点击了确认')
+        window.alert('点击了确认')
       },
       run: function () {
         this.$broadcast('confirm')

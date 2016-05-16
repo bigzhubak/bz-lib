@@ -50,7 +50,7 @@
     },
     methods: {
       run: function () {
-        alert('用不着运行，这货是直接运行的')
+        window.alert('用不着运行，这货是直接运行的')
       }
     }
   }

@@ -21,14 +21,13 @@
       <div class="four wide column">
         <header class="main-header">
           <nav class="ui vertical menu">
-            <a class="header item" href="/#!/"><b>公用组件说明</b></a>
             <div class="item">
               <div class="ui transparent icon input">
-                <input v-model="key" type="text" placeholder="Search ...">
+                <input v-model="key" @keyup.enter="showFirst" type="text" placeholder="Search ...">
                 <i class="search icon"></i>
               </div>
             </div>
-            <a v-show="c.name" v-for="c in components|filterBy key|orderBy 'name'" class="item" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
+            <a v-show="c.name" v-for="c in components|filterBy key|orderBy 'name'" class="item componet" :data-content="c.desc" v-link="{name:c.name}" >{{c.name}}</a>
           </nav>
         </header>
       </div>
@@ -62,17 +61,23 @@
     watch: {
       // 过滤导致重新渲染menu, 这里重新让pop生效
       'key': function (val, oldVal) {
-        $(this.$el).find('.item').popup({ position: 'right center'})
+        $(this.$el).find('.componet').popup({position: 'right center'})
       }
     },
     ready () {
-      $(this.$el).find('.item').popup({ position: 'right center'})
+      $(this.$el).find('.componet').popup({position: 'right center'})
     },
     components: {
     },
     computed: {
     },
     methods: {
+      showFirst: function () {
+        let target = $(this.$el).find('.componet')
+        if (target.length > 0) {
+          target[0].click()
+        }
+      }
     }
   }
 </script>

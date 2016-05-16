@@ -32,10 +32,8 @@
 
 <script>
   import store from '../store'
-  import {signup} from '../functions/toast.js'
-
-  import {getTopRightToast} from '../functions/toast.js'
-  var toast = getTopRightToast()
+  import {signup} from '../store/actions.js'
+  import toastr from 'toastr'
   export default {
     store,
     vuex: {
@@ -62,18 +60,17 @@
       signup: function () {
         if (!this.user_name) {
           this.user_name_error = true
-          toast.error('请输入用户名')
-          console.log(toast)
+          toastr.error('请输入用户名')
           return
         }
         if (!this.email) {
           this.email_error = true
-          toast.error('请输入邮箱')
+          toastr.error('请输入邮箱')
           return
         }
         if (!this.password) {
           this.password_error = true
-          toast.error('请输入密码')
+          toastr.error('请输入密码')
           return
         }
         var parm = {

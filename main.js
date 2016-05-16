@@ -3,14 +3,18 @@ import VueRouter from 'vue-router'
 import Main from './Main.vue'
 import './style/weui.less'
 import router_conf from './router_conf.js'
-import {weui_router_conf} from './router_conf.js'
+import './node_modules/toastr/toastr.less'
 
 Vue.use(VueRouter)
 
 Vue.config.debug = true
 
-var router = new VueRouter()
+const router = new VueRouter(
+  {
+    history: true,
+    saveScrollPosition: true
+  }
+)
 
-Object.assign(router_conf, weui_router_conf)
 router.map(router_conf)
-router.start(Main, '#app')
+router.start(Main, 'app')

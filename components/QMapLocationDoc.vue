@@ -1,11 +1,15 @@
-<style lang=less>
+<style lang="less">
+  .map {
+    width: 100%;
+    height: 500px;
+  }
 </style>
 
 <template>
-  <div class="ui segment map">
-    <h1>QMapLocation</h1>
+  <div class="ui segment">
+    <h1>{{name}}</h1>
     <p>
-      QMap 的附加组件，能够定位当前位置
+      {{desc}}
     </p>
     <table class="ui celled table">
       <thead>
@@ -13,21 +17,19 @@
       </thead>
       <tbody>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
-        <tr>
-          <td colspan="2">失败了！<br>腾讯地图在 app dom 到地图里后，会删除原先的dom
-vue 的 component 在路由切换的时候，并不会完全重新传染 html，导致第二次路由切换进共来后，找不到定位按钮这个dom了（之前被腾讯地图删除了）</td>
-        </tr>
       </tbody>
     </table>
     <code v-text="code">
     </code>
     <div class="ui divider"></div>
-    <q-map></q-map>
-    <q-map-location></q-map-location>
+    <q-map :config_map="configMap" class="map"></q-map>
+    <q-map-location :loc.sync="loc" ></q-map-location>
+    <img @click="toLocation" id="location" class="ui image" src="../images/icon_location.png"><img>
   </div>
 </template>
 
 <script>
+  import $ from 'jquery'
   import QMap from './QMap.vue'
   import QMapLocation from './QMapLocation.vue'
   export default {
@@ -37,17 +39,44 @@ vue 的 component 在路由切换的时候，并不会完全重新传染 html，
     },
     data: function () {
       return {
+
+        marker: null,
+        loc: null,
+        name: 'QMapLocation',
+        desc: '封装了qq map的定位插件，能取到当前位置',
         parms: [
+          {parm: 'loc', desc: '当前位置，要开启 two way'}
         ],
-        code: `<q-map></q-map>`
+        code: `<q-map-location :loc.sync="loc" ></q-map-location>`
       }
     },
     methods: {
-      call_back: function () {
-        alert('点击了确认')
+      toLocation: function () {
+        if (this.loc) {
+          let position = new window.qq.maps.LatLng(this.loc.lat, this.loc.lng)
+          window.q_map.panTo(position)
+          this.setMark(position)
+        } else {
+          console.log('定位失败!')
+          console.log(this.loc)
+        }
       },
-      run: function () {
-        this.$broadcast('confirm')
+      setMark: function (position) {
+        if (this.marker) {
+          this.marker.setMap(null)
+          this.marker = null
+        }
+        this.marker = new window.qq.maps.Marker(
+          {
+            position: position,
+            map: window.q_map,
+            animation: window.qq.maps.MarkerAnimation.DROP
+          }
+        )
+      },
+      configMap: function () {
+        // 加入按钮
+        window.q_map.controls[window.qq.maps.ControlPosition.BOTTOM_RIGHT].push($('#location')[0])
       }
     }
   }
