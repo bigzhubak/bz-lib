@@ -5,6 +5,8 @@ create by bigzhu at 15/09/14 09:59:05
 这里放所有公用的tornado的web class
     用于暴露到url，因此class name用_分割，不用驼峰法
 '''
+
+from webpy_db import SQLLiteral
 import tornado.web
 import tornado_bz
 import json
@@ -87,6 +89,7 @@ class api_user_info(BaseHandler):
         user_info = user_info[0]
         del user_info.password
         self.write(json.dumps({'error': '0', 'user_info': user_info}, cls=public_bz.ExtEncoder))
+
     @tornado_bz.handleError
     def put(self):
         self.set_header("Content-Type", "application/json")
@@ -381,13 +384,24 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
     def get(self):
         if self.get_argument("oauth_token", None):
             user_info = yield self.get_authenticated_user()
-
-            self.user_oper = user_bz.UserOper(self.pg)
-            user_info = self.user_oper.twitterLogin(user_info, self.merge)
-            self.set_secure_cookie("user_id", str(user_info.id))
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_info['username'])
+            if db_user_infos:
+                where = "user_name='%s'" % user_info['username']
+                self.pg.update('user_info', where=where, picture=user_info.get('profile_image_url_https'), stat_date=SQLLiteral('NOW()'))
+            else:
+                self.pg.db.insert('user_info',
+                                  out_id=user_info['id'],
+                                  # email=user_info['email'],
+                                  user_name=user_info['username'],
+                                  twitter=user_info['username'],
+                                  # link=user_info['link'],
+                                  picture=user_info.get('profile_image_url_https'),
+                                  # gender=user_info['gender'],
+                                  locale=user_info.get('profile_location')
+                                  )
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_info['username'])
+            self.set_secure_cookie("user_id", str(db_user_infos.id))
             self.redirect("/")
-
-            # Save the user using e.g. set_secure_cookie()
         else:
             yield self.authorize_redirect()
 
