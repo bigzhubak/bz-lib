@@ -2,18 +2,13 @@
 </style>
 
 <template>
-  <div>
-    <div v-show="user_info.user_name != '' " class="ui simple dropdown item">
+    <div v-show="user_name" class="ui simple dropdown item">
       <img :src="avatar" class="ui avatar image">
       <div class="menu">
         <slot name="two"></slot>
         <slot name="three"></slot>
       </div>
     </div>
-    <div v-show="user_name == '' ">
-      <slot name="one"></slot>
-    </div>
-  </div>
 </template>
 
 <script>
