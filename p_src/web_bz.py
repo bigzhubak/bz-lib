@@ -400,7 +400,7 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
                                   locale=user_info.get('profile_location')
                                   )
             db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_info['username'])
-            self.set_secure_cookie("user_id", str(db_user_infos.id))
+            self.set_secure_cookie("user_id", str(db_user_infos[0].id))
             self.redirect("/")
         else:
             yield self.authorize_redirect()
