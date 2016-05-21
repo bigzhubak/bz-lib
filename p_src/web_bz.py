@@ -384,22 +384,24 @@ class twitter(BaseHandler, tornado.auth.TwitterMixin):
     def get(self):
         if self.get_argument("oauth_token", None):
             user_info = yield self.get_authenticated_user()
-            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_info['username'])
+            user_name = user_info['username']
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
             if db_user_infos:
-                where = "user_name='%s'" % user_info['username']
+                where = "user_name='%s'" % user_name
                 self.pg.update('user_info', where=where, picture=user_info.get('profile_image_url_https'), stat_date=SQLLiteral('NOW()'))
             else:
                 self.pg.db.insert('user_info',
                                   out_id=user_info['id'],
+                                  user_type='twitter',
                                   # email=user_info['email'],
-                                  user_name=user_info['username'],
-                                  twitter=user_info['username'],
+                                  user_name=user_name,
+                                  twitter=user_name,
                                   # link=user_info['link'],
                                   picture=user_info.get('profile_image_url_https'),
                                   # gender=user_info['gender'],
                                   locale=user_info.get('profile_location')
                                   )
-            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_info['username'])
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
             self.set_secure_cookie("user_id", str(db_user_infos[0].id))
             self.redirect("/")
         else:
@@ -420,19 +422,34 @@ class github(BaseHandler, tornado_auth_bz.GithubOAuth2Mixin):
     def get(self):
         # if we have a code, we have been authorized so we can log in
         if self.get_argument("code", False):
-            user = yield self.get_authenticated_user(
+            user_info = yield self.get_authenticated_user(
                 redirect_uri=self.settings['github_oauth']['redirect_uri'],
                 client_id=self.settings['github_oauth']['client_id'],
                 client_secret=self.settings['github_oauth']['client_secret'],
                 code=self.get_argument("code"),
                 extra_fields="user:email"
             )
+            user_name = user_info['login']
 
-            self.user_oper = user_bz.UserOper(self.pg)
-            user_info = self.user_oper.githubLogin(user, self.merge)
-            self.set_secure_cookie('user_id', str(user_info.id))
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
+
+            if db_user_infos:
+                where = "user_name='%s'" % user_name
+                self.pg.update('user_info', where=where, picture=user_info['avatar_url'], stat_date=SQLLiteral('NOW()'))
+            else:
+                self.pg.db.insert('user_info',
+                                  user_type='github',
+                                  out_id=user_info['id'],
+                                  email=user_info['email'],
+                                  user_name=user_name,
+                                  github=user_name,
+                                  picture=user_info['avatar_url'],
+                                  locale=user_info['location']
+                                  )
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
+
+            self.set_secure_cookie("user_id", str(db_user_infos[0].id))
             self.redirect('/')
-
         else:
             yield self.authorize_redirect(
                 redirect_uri=self.settings['github_oauth']['redirect_uri'],
