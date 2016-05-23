@@ -117,7 +117,7 @@
           var avatar_url = this.user_info.avatar
           return '/api_sp/' + window.btoa(window.btoa(avatar_url))
         } else {
-          return '/media/images/avatar.svg'
+          return '/static/images/avatar.svg'
         }
       }
     },

@@ -19,6 +19,29 @@ def insertOrUpdateUserByType(pg, type, name):
     return pg.insertOrUpdate(pg, 'user_info', user_info, "lower(user_name)='%s'" % name)
 
 
+def getUserInfoBySocial(pg, type, name):
+    '''
+    create by bigzhu at 16/05/20 17:31:52 根据社交帐号来取user_info
+    '''
+    sql = '''
+    select * from user_info where %s = '%s'
+    ''' % (type, name)
+    return list(pg.db.query(sql))
+
+
+def getUserInfo(pg, user_name=None, email=None, user_id=None):
+    '''
+    '''
+    sql = " select * from user_info where (is_delete=0 or is_delete is null)"
+    if email:
+        sql += " and email='%s' " % email
+    if user_name:
+        sql += " and user_name='%s' " % user_name
+    if user_id:
+        sql += " and id=%s " % user_id
+    return list(pg.db.query(sql))
+
+
 class UserOper:
 
     '''

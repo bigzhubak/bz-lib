@@ -24,7 +24,7 @@
     <div class="ui divider"></div>
     <q-map :config_map="configMap" class="map"></q-map>
     <q-map-location :loc.sync="loc" ></q-map-location>
-    <img @click="toLocation" id="location" class="ui image" src="../images/icon_location.png"><img>
+    <img @click="toLocation" id="location" class="ui image" src="/static/images/icon_location.png"><img>
   </div>
 </template>
 

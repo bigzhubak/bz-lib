@@ -24,8 +24,8 @@
       运行
     </button>
     <v-swiper>
-      <div class="swiper-slide"><a v-link="{name: 'Demo'}"><img class="img slide" src="../images/tomato.jpg" alt=""></a></div>
-      <div class="swiper-slide"><a v-link="{name: 'BottomLoader'}"><img class="img slide" src="../images/farm.jpg" alt=""></a></div>
+      <div class="swiper-slide"><a v-link="{name: 'Demo'}"><img class="img slide" src="/static/images/tomato.jpg" alt=""></a></div>
+      <div class="swiper-slide"><a v-link="{name: 'BottomLoader'}"><img class="img slide" src="/static/images/farm.jpg" alt=""></a></div>
     </v-swiper>
   </div>
 </template>
@@ -45,8 +45,8 @@
         ],
         code: `
           <v-swiper>
-            <div class="swiper-slide"><a v-link="{name: 'Demo'}"><img class="img slide" src="../images/tomato.jpg" alt=""></a></div>
-            <div class="swiper-slide"><a v-link="{name: 'BottomLoader'}"><img class="img slide" src="../images/farm.jpg" alt=""></a></div>
+            <div class="swiper-slide"><a v-link="{name: 'Demo'}"><img class="img slide" src="/static/images/tomato.jpg" alt=""></a></div>
+            <div class="swiper-slide"><a v-link="{name: 'BottomLoader'}"><img class="img slide" src="/static/images/farm.jpg" alt=""></a></div>
           </v-swiper>
         `
       }
