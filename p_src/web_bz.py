@@ -492,6 +492,9 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
 
 class facebook(BaseHandler, tornado.auth.FacebookGraphMixin):
 
+    def initialize(self):
+        BaseHandler.initialize(self)
+
     @tornado.gen.coroutine
     def get(self):
         if self.get_argument("code", False):
