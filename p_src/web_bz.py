@@ -498,18 +498,38 @@ class facebook(BaseHandler, tornado.auth.FacebookGraphMixin):
     @tornado.gen.coroutine
     def get(self):
         if self.get_argument("code", False):
-            user = yield self.get_authenticated_user(
-                redirect_uri='/auth/facebookgraph/',
+            user_info = yield self.get_authenticated_user(
+                redirect_uri=self.settings["facebook_redirect_uri"],
                 client_id=self.settings["facebook_api_key"],
                 client_secret=self.settings["facebook_secret"],
                 code=self.get_argument("code"))
             # Save the user with e.g. set_secure_cookie
-            print user
+            user_name = user_info['name']
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
+            picture = user_info.get('picture').get('data').get('url')
+            if db_user_infos:
+                where = "user_name='%s'" % user_name
+                self.pg.update('user_info', where=where, picture=picture, stat_date=SQLLiteral('NOW()'))
+            else:
+                self.pg.db.insert('user_info',
+                                  out_id=user_info['id'],
+                                  user_type='facebook',
+                                  # email=user_info['email'],
+                                  user_name=user_name,
+                                  # facebook=user_name,
+                                  link=user_info['link'],
+                                  picture=picture,
+                                  # gender=user_info['gender'],
+                                  locale=user_info.get('locale')
+                                  )
+            db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
+            self.set_secure_cookie("user_id", str(db_user_infos[0].id))
+            self.redirect("/")
         else:
             yield self.authorize_redirect(
-                redirect_uri='/auth/facebookgraph/',
+                redirect_uri=self.settings["facebook_redirect_uri"],
                 client_id=self.settings["facebook_api_key"],
-                extra_params={"scope": "read_stream,offline_access"})
+                extra_params={"scope": "public_profile"})
 
 if __name__ == '__main__':
     pass
