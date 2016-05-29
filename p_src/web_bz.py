@@ -489,5 +489,24 @@ class douban(BaseHandler, tornado_auth_bz.DoubanOAuth2Mixin):
                 response_type='code'
             )
 
+
+class facebook(BaseHandler, tornado.auth.FacebookGraphMixin):
+
+    @tornado.gen.coroutine
+    def get(self):
+        if self.get_argument("code", False):
+            user = yield self.get_authenticated_user(
+                redirect_uri='/auth/facebookgraph/',
+                client_id=self.settings["facebook_api_key"],
+                client_secret=self.settings["facebook_secret"],
+                code=self.get_argument("code"))
+            # Save the user with e.g. set_secure_cookie
+            print user
+        else:
+            yield self.authorize_redirect(
+                redirect_uri='/auth/facebookgraph/',
+                client_id=self.settings["facebook_api_key"],
+                extra_params={"scope": "read_stream,offline_access"})
+
 if __name__ == '__main__':
     pass
