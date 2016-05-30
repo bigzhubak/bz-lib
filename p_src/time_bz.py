@@ -77,6 +77,12 @@ def getLastMonth():
     '''
     return getYearMonth(-1, fmt='%m')
 
+def getBeforeDay(day=-1):
+    '''
+    create by bigzhu at 16/05/30 14:15:44 取前几天
+    '''
+    date = datetime.datetime.now() + datetime.timedelta(days=day)
+    return date
 
 def getYearMonth(months=0, fmt='%Y%m'):
     '''取当年当月
