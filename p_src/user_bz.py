@@ -70,6 +70,7 @@ class UserOper:
         modify by bigzhu at 15/04/27 16:49:21 没有用户时提示注册
         modify by bigzhu at 15/05/17 16:12:29 密码加密放到函数内
         modify by bigzhu at 15/05/17 17:01:12 添加用户登录的测试,使用base数据库
+        modify by bigzhu at 16/05/28 09:13:52 暂时开放登录
         >>> import test_pg as pg
         >>> f = UserOper(pg)
         >>> f.login('bigzhu', 'bigzhu') #doctest:+ELLIPSIS
@@ -81,10 +82,11 @@ class UserOper:
         if not user_infos:
             user_infos = self.getUserInfo(email=user_name)
         if user_infos:
-            for user_info in user_infos:
-                if user_info.password == password:
-                    return user_info
-            raise Exception('密码错误!')
+            return user_infos[0]
+            # for user_info in user_infos:
+            #     if user_info.password == password:
+            #         return user_info
+            # raise Exception('密码错误!')
         else:
             # 前台要根据这个来弹出建议用户注册的提示,请不要修改
             raise Exception('user not exist')
