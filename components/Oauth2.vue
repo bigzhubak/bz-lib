@@ -31,7 +31,7 @@
 <template>
   <a v-for="oauth in oauths" @click="loading" href="/api_{{oauth}}" class="ui {{oauth}} button oauth">
     <i class="{{oauth}} icon"></i>
-    {{upperFirst(oauth)}}
+    {{getName(oauth)}}
   </a>
 </template>
 
@@ -54,6 +54,13 @@
       },
       loading: function (e) {
         e.target.className += ' loading '
+      },
+      getName: function (oauth) {
+        if (oauth === 'qq') {
+          return 'QQ'
+        } else {
+          return this.upperFirst(oauth)
+        }
       }
     }
   }
