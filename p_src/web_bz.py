@@ -531,5 +531,86 @@ class facebook(BaseHandler, tornado.auth.FacebookGraphMixin):
                 client_id=self.settings["facebook_api_key"],
                 extra_params={"scope": "public_profile"})
 
+
+class qq(BaseHandler, tornado_auth_bz.QQAuth2Minix):
+
+    def initialize(self):
+        BaseHandler.initialize(self)
+
+    @tornado.web.asynchronous
+    def get(self):
+        redirect_uri=self.settings["qq_redirect_uri"]
+        if self.get_argument("code", False):
+            self.get_authenticated_user(
+                redirect_uri=redirect_uri,
+                client_id=self.settings["qq_api_key"],
+                client_secret=self.settings["qq_api_secret"],
+                code=self.get_argument("code"),
+                extra_fields={"grant_type": "authorization_code"},
+                callback=self._on_auth)
+            return
+        self.authorize_redirect(redirect_uri=redirect_uri,
+                                client_id=self.settings["qq_api_key"],
+                                extra_params={"response_type": "code"})
+
+    def _on_auth(self, user):
+        if not user:
+            raise tornado.web.HTTPError(500, "qq auth failed")
+        self.openid = user.get("openid", 0)
+        if user.get("ret", 0) or not self.openid:
+            self.render('error.html', msg=user.get('msg', 'error'))
+        else:
+            print user
+            access_token = user.get('access_token')
+            client_id = user.get('client_id')
+            self.qq_request("/user/get_user_info", 'GET', self.openid, access_token, client_id, self.saveUserInfo)
+    def saveUserInfo(self, user_info):
+        '''
+        {
+            "ret": 0,
+            "msg": "",
+            "is_lost":0,
+            "nickname": "bigzhu",
+            "gender": "男",
+            "province": "云南",
+            "city": "昆明",
+            "year": "1983",
+            "figureurl": "http:\/\/qzapp.qlogo.cn\/qzapp\/101318491\/73B15F4A285048EB28AD25B26D01207F\/30",
+            "figureurl_1": "http:\/\/qzapp.qlogo.cn\/qzapp\/101318491\/73B15F4A285048EB28AD25B26D01207F\/50",
+            "figureurl_2": "http:\/\/qzapp.qlogo.cn\/qzapp\/101318491\/73B15F4A285048EB28AD25B26D01207F\/100",
+            "figureurl_qq_1": "http:\/\/q.qlogo.cn\/qqapp\/101318491\/73B15F4A285048EB28AD25B26D01207F\/40",
+            "figureurl_qq_2": "http:\/\/q.qlogo.cn\/qqapp\/101318491\/73B15F4A285048EB28AD25B26D01207F\/100",
+            "is_yellow_vip": "0",
+            "vip": "0",
+            "yellow_vip_level": "0",
+            "level": "0",
+            "is_yellow_year_vip": "0"
+        }
+        '''
+        user_info = json.loads(user_info)
+        user_name = user_info['nickname']
+        picture = user_info.get('figureurl_qq_2')
+        db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
+        if db_user_infos:
+            where = "user_name='%s'" % user_name
+            self.pg.update('user_info', where=where, picture=picture, stat_date=SQLLiteral('NOW()'))
+        else:
+            self.pg.db.insert('user_info',
+                              out_id=self.openid,
+                              user_type='qq',
+                              # email=user_info['email'],
+                              user_name=user_name,
+                              # facebook=user_name,
+                              #link=user_info['link'],
+                              picture=picture,
+                              # gender=user_info['gender'],
+                              locale=user_info.get('province') + user_info.get('city')
+                              )
+        db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
+        self.set_secure_cookie("user_id", str(db_user_infos[0].id))
+        self.redirect("/")
+
+
+
 if __name__ == '__main__':
     pass
