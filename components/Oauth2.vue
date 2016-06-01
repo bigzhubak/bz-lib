@@ -26,6 +26,13 @@
   i.icon.douban:before {
     content: "\e94a";
   }
+  .ui.qq.button {
+    color: #fff;
+    background-color: #44BADC;
+  }
+  .ui.qq.button:hover {
+    background-color: #35A2C1;
+  }
 </style>
 
 <template>
