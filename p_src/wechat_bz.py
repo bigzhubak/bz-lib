@@ -69,7 +69,6 @@ def callPlatform(self, url):
     signature = self.get_argument('signature')
     timestamp = self.get_argument('timestamp')
     nonce = self.get_argument('nonce')
-    #url = 'http://admin.hoywe.com/api.php?hash=WD13B&signature=%s&timestamp=%s&nonce=%s' %(signature, timestamp, nonce)
     url = '%s&signature=%s&timestamp=%s&nonce=%s' % (url, signature, timestamp, nonce)
     r = requests.post(url, data=self.request.body)
     return r.text
@@ -128,9 +127,7 @@ def mustSubscribe(method):
             # 连openid 都没有,首先要获取 openid
             params = {
                 "appid": self.settings['appid'],
-                # "redirect_uri": "http://" + self.settings['domain'] + "/setOpenid?url=/" + self.__class__.__name__,
-                "redirect_uri": "http://" + self.settings['domain'] + "/set_openid?url=" + self.request.uri,
-                #"redirect_uri": "http://" + "admin.hoywe.com/" + self.settings['suburl'] + "/?url=" + self.request.uri,
+                "redirect_uri": "http://" + self.request.host + "/set_openid?url=" + self.request.uri,
                 "response_type": "code",
                 "scope": "snsapi_base",
             }
