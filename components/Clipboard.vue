@@ -21,7 +21,7 @@
       return {}
     },
     ready () {
-      ZeroClipboard.config({swfPath: 'zeroclipboard/ZeroClipboard.swf'})
+      ZeroClipboard.config({swfPath: '/static/ZeroClipboard.swf'})
     },
     methods: {
       copyEnter: function (event) {
