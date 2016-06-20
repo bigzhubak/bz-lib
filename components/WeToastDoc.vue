@@ -69,9 +69,18 @@
           {parm: 'type', desc: 'loading warning info success 任意选一种，默认 loading'}
         ],
         code: `
-        <we-toast v-show="type==='loading'">
-        数据加载中
-        </we-toast>
+          <we-toast v-show="type==='loading'">
+            数据加载中
+          </we-toast>
+          <we-toast type="warning" v-show="type==='warning'">
+            警告你哦
+          </we-toast>
+          <we-toast type="info" v-show="type==='info'">
+            提示信息
+          </we-toast>
+          <we-toast type="success" v-show="type==='success'">
+            成功啦
+          </we-toast>
         `
       }
     },

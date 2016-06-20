@@ -539,7 +539,7 @@ class qq(BaseHandler, tornado_auth_bz.QQAuth2Minix):
 
     @tornado.web.asynchronous
     def get(self):
-        redirect_uri=self.settings["qq_redirect_uri"]
+        redirect_uri = self.settings["qq_redirect_uri"]
         if self.get_argument("code", False):
             self.get_authenticated_user(
                 redirect_uri=redirect_uri,
@@ -564,6 +564,7 @@ class qq(BaseHandler, tornado_auth_bz.QQAuth2Minix):
             access_token = user.get('access_token')
             client_id = user.get('client_id')
             self.qq_request("/user/get_user_info", 'GET', self.openid, access_token, client_id, self.saveUserInfo)
+
     def saveUserInfo(self, user_info):
         '''
         {
@@ -601,7 +602,7 @@ class qq(BaseHandler, tornado_auth_bz.QQAuth2Minix):
                               # email=user_info['email'],
                               user_name=user_name,
                               # facebook=user_name,
-                              #link=user_info['link'],
+                              # link=user_info['link'],
                               picture=picture,
                               # gender=user_info['gender'],
                               locale=user_info.get('province') + user_info.get('city')
@@ -609,7 +610,6 @@ class qq(BaseHandler, tornado_auth_bz.QQAuth2Minix):
         db_user_infos = user_bz.getUserInfo(self.pg, user_name=user_name)
         self.set_secure_cookie("user_id", str(db_user_infos[0].id))
         self.redirect("/")
-
 
 
 if __name__ == '__main__':
