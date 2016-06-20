@@ -34,27 +34,26 @@ export function timeLen (that_time) {
   return desc
 }
 export function dateFormat (timestamp, mask) {
-  var _this, date, matched_array, o, regStr, res
+  var date, matched_array, o, regStr, res
   date = new Date(timestamp)
-  _this = this
   o = {
     'y+': function (len) {
-      return _this.preZero(date.getFullYear(), len)
+      return preZero(date.getFullYear(), len)
     },
     'M+': function (len) {
-      return _this.preZero(date.getMonth() + 1, len)
+      return preZero(date.getMonth() + 1, len)
     },
     'd+': function (len) {
-      return _this.preZero(date.getDate(), len)
+      return preZero(date.getDate(), len)
     },
     'h+': function (len) {
-      return _this.preZero(date.getHours(), len)
+      return preZero(date.getHours(), len)
     },
     'm+': function (len) {
-      return _this.preZero(date.getMinutes(), len)
+      return preZero(date.getMinutes(), len)
     },
     's+': function (len) {
-      return _this.preZero(date.getSeconds(), len)
+      return preZero(date.getSeconds(), len)
     }
   }
   for (regStr in o) {
@@ -64,5 +63,6 @@ export function dateFormat (timestamp, mask) {
       mask = mask.replace(matched_array[0], res)
     }
   }
+  console.log(mask)
   return mask
 }
