@@ -2,9 +2,7 @@
 </style>
 
 <template>
-  <iframe id="geoPage" width=0 height=0 frameborder=0  style="display:none;" scrolling="no"
-    src="http://apis.map.qq.com/tools/geolocation?key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp">
-  </iframe>
+  <div v-show="false"></div>
 </template>
 
 <script>
@@ -22,15 +20,23 @@
       }
     },
     ready () {
-      window.addEventListener('message', this.rsync, false)
-      this.$on('removeLocationListener', this.removeListener)
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(this.setLoc, this.showError)
+      } else {
+        console.log('系统不支持')
+      }
+    },
+    computed: {
     },
     methods: {
-      removeListener: function () {
-        window.removeEventListener('message', this.rsync, false)
+      setLoc: function (position) {
+        console.log(position)
+        this.loc = {}
+        this.loc.lat = position.coords.latitude
+        this.loc.lng = position.coords.longitude
       },
-      rsync: function (event) {
-        this.loc = event.data
+      showError: function (error) {
+        console.log(error)
       }
     }
   }
