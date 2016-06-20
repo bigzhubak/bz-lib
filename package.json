@@ -26,7 +26,8 @@
     "vue-resource": "^0.7.4",
     "vue-router": "^0.7.13",
     "vuex": "^0.6.3",
-    "weui": "^0.4.2"
+    "weui": "^0.4.2",
+    "zeroclipboard": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.9.1",

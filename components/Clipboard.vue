@@ -12,7 +12,7 @@
 
 <script>
   import $ from 'jquery'
-  import ZeroClipboard from 'ZeroClipboard'
+  import ZeroClipboard from 'zeroclipboard'
   export default {
     props: [],
     components: {
@@ -21,7 +21,7 @@
       return {}
     },
     ready () {
-      ZeroClipboard.config({swfPath: './static/ZeroClipboard.swf'})
+      ZeroClipboard.config({swfPath: 'zeroclipboard/ZeroClipboard.swf'})
     },
     methods: {
       copyEnter: function (event) {
