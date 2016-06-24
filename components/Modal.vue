@@ -4,15 +4,7 @@
 <template>
   <div class="ui small test modal transition hidden">
     <i v-show="show_close" class="close icon"></i>
-    <div class="header">
-      <slot name="header"></slot>
-    </div>
-    <div class="content">
-      <slot name="content"></slot>
-    </div>
-    <div class="actions">
-      <slot name="actions"></slot>
-    </div>
+    <slot></slot>
   </div>
 </template>
 

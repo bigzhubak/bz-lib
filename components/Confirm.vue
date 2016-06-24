@@ -3,12 +3,12 @@
 
 <template>
   <modal>
-    <div slot="header">
+    <div class="header">
       {{header}}
     </div>
-    <div v-html="content" slot="content">
+    <div v-html="content" class="content">
     </div>
-    <div slot="actions">
+    <div class="actions">
       <div class="ui negative button">
         取消
       </div>
