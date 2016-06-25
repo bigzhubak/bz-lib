@@ -19,7 +19,7 @@ import Clipboard from './components/ClipboardDoc'
 
 // desc 是为了menu上显示用，vue-router本身是不需要的
 export default {
-  '/Clipboard': {name: 'Clipboard', component: Clipboard, desc: '剪贴板'},
+  '/Clipboard': {name: 'Clipboard', component: Clipboard, desc: '点击复制'},
   '/VSwiper': {name: 'VSwiper', component: VSwiper, desc: '走马灯'},
   '/Demo': {name: 'Demo', component: Demo, desc: 'Demo'},
   '/WeToast': {name: 'WeToast', component: WeToast, desc: '微信信息提示'},

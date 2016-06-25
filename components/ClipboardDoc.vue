@@ -3,9 +3,9 @@
 
 <template>
   <div class="ui segment">
-    <h1>Clipboard</h1>
+    <h1>{{title}}</h1>
     <p>
-      页面剪贴板 
+      {{desc}}
     </p>
     <table class="ui celled table">
       <thead>
@@ -34,6 +34,8 @@
     },
     data: function () {
       return {
+        title: 'Clipboard',
+        desc: '点击复制',
         message: '复制到clipborad的内容',
         code: `<Clipboard><input type="text"></Clipboard>`,
         parms: [
