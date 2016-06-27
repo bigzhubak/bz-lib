@@ -2,11 +2,11 @@
 </style>
 
 <template>
-  <div class="ui left action input inline field">
-    <button class="ui teal icon button clipboard" @mouseenter="copyEnter" @mouseleave="copyLeave" data-content="" >
+  <div class="ui left action input field">
+    <button class="ui icon button clipboard" @mouseenter="copyEnter" @mouseleave="copyLeave" data-content="" >
       <i class="copy icon"></i>
     </button>
-    <slot></slot>
+    <input class="clipboard-input-bz" readonly="true" type="text" @focus="selectAll" v-model="content">
   </div>
 </template>
 
@@ -14,7 +14,12 @@
   import $ from 'jquery'
   import ZeroClipboard from 'zeroclipboard'
   export default {
-    props: [],
+    props: {
+      content: {
+        required: true,
+        type: String
+      }
+    },
     components: {
     },
     data: function () {
@@ -24,13 +29,16 @@
       ZeroClipboard.config({swfPath: '/static/ZeroClipboard.swf'})
     },
     methods: {
+      selectAll: function (event) {
+        $(event.target).select()
+      },
       copyEnter: function (event) {
-        $('.button.clipboard').popup({position: 'left center', content: 'Copy to clipboard'})
+        $('.button.clipboard').popup({position: 'left center', content: '点击复制内容'})
         let client = new ZeroClipboard($(event.target))
         client.on('copy', function (event) {
           let content = $(event.target).next().val()
           event.clipboardData.setData('text/plain', content)
-          $('.button.clipboard').popup({content: 'Copied', position: 'left center', on: 'click'})
+          $('.button.clipboard').popup({content: '已复制', position: 'left center', on: 'click'})
         })
       },
       copyLeave: function () {

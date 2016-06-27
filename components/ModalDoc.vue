@@ -5,7 +5,8 @@
   <div class="ui segment">
     <h1>Modal</h1>
     <p>
-      用来弹出semantic-ui的 modal 窗口
+      
+    <p>{{desc}}</p>
     </p>
     <table class="ui celled table">
       <thead>
@@ -26,13 +27,13 @@
       运行
     </button>
     <modal :show_close="true">
-      <div slot="header">
+      <div class="header">
         这是标题
       </div>
-      <div slot="content">
+      <div class="content">
         这是内容
       </div>
-      <div slot="actions">
+      <div class="actions">
         这是操作
       </div>
     </modal>
@@ -47,24 +48,22 @@
     },
     data: function () {
       return {
+        desc: '用来弹出semantic-ui的 modal 窗口',
         parms: [
-          {parm: 'show_close', desc: '是否显示关闭按钮'},
-          {parm: 'header', desc: 'solt'},
-          {parm: 'content', desc: 'solt'},
-          {parm: 'actions', desc: 'solt'}
+          {parm: 'show_close', desc: '是否显示关闭按钮'}
         ],
         code: `
-            <modal>
-             <div slot="header">
-               这是标题
-             </div>
-             <div slot="content">
-               这是内容
-             </div>
-             <div slot="actions">
-               这是操作
-             </div>
-            </modal>
+          <modal :show_close="true">
+            <div class="header">
+              这是标题
+            </div>
+            <div class="content">
+              这是内容
+            </div>
+            <div class="actions">
+              这是操作
+            </div>
+          </modal>
         `
       }
     },
