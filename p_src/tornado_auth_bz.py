@@ -106,7 +106,7 @@ class QQAuth2Minix(OAuth2Mixin):
         url = self._OAUTH_OPEND_API + path
         http = self.get_auth_http_client()
         if "POST" == method:
-            response = yield gen.Task(http.fetch, url, method=method, body=urllib.urlencode(params))
+            response = yield gen.Task(http.fetch, url, method=method, body=urllib.urlencode(params), timeout=60)
             self._on_qq_request(callback, response)
         else:
             url = url_concat(url, params)
