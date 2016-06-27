@@ -2,11 +2,11 @@
 </style>
 
 <template>
-  <div class="ui left action input inline field">
-    <button class="ui teal icon button clipboard" @mouseenter="copyEnter" @mouseleave="copyLeave" data-content="" >
+  <div class="ui left action input field">
+    <button class="ui icon button clipboard" @mouseenter="copyEnter" @mouseleave="copyLeave" data-content="" >
       <i class="copy icon"></i>
     </button>
-    <input readonly="true" type="text" @focus="selectAll" v-model="content">
+    <input class="clipboard-input-bz" readonly="true" type="text" @focus="selectAll" v-model="content">
   </div>
 </template>
 
