@@ -62,7 +62,7 @@ class QQAuth2Minix(OAuth2Mixin):
                 "grant_type": "authorization_code"
             }
         }
-        response = yield gen.Task(http.fetch, self._oauth_request_token_url(**args), timeout=100)
+        response = yield gen.Task(http.fetch, self._oauth_request_token_url(**args))
         self._on_access_token(redirect_uri, client_id,
                               client_secret, callback, response)
 
