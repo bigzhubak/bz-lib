@@ -62,7 +62,7 @@ class QQAuth2Minix(OAuth2Mixin):
                 "grant_type": "authorization_code"
             }
         }
-        response = yield gen.Task(http.fetch, self._oauth_request_token_url(**args))
+        response = yield gen.Task(http.fetch, self._oauth_request_token_url(**args), timeout=100)
         self._on_access_token(redirect_uri, client_id,
                               client_secret, callback, response)
 
@@ -79,7 +79,7 @@ class QQAuth2Minix(OAuth2Mixin):
             "expires": args.get("expires_in")[0]
         }
         http = self.get_auth_http_client()
-        response = yield gen.Task(http.fetch, url_concat(self._OAUTH_OPEND_ID_URL, {"access_token": session["access_token"]}))
+        response = yield gen.Task(http.fetch, url_concat(self._OAUTH_OPEND_ID_URL, {"access_token": session["access_token"]}), timeout=100)
         self._on_open_id(redirect_uri, client_id,
                          client_secret, callback, session, response)
 
@@ -106,11 +106,11 @@ class QQAuth2Minix(OAuth2Mixin):
         url = self._OAUTH_OPEND_API + path
         http = self.get_auth_http_client()
         if "POST" == method:
-            response = yield gen.Task(http.fetch, url, method=method, body=urllib.urlencode(params), timeout=60)
+            response = yield gen.Task(http.fetch, url, method=method, body=urllib.urlencode(params), timeout=100)
             self._on_qq_request(callback, response)
         else:
             url = url_concat(url, params)
-            response = yield gen.Task(http.fetch, url)
+            response = yield gen.Task(http.fetch, url, timeout=100)
             self._on_qq_request(callback, response)
 
     def _on_qq_request(self, callback, response):
