@@ -57,7 +57,6 @@
         this.durationValue,
         this.options
       )
-      console.log('run start' + this.endValue)
       this.count_up.start()
     }
   }
