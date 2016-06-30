@@ -1,5 +1,4 @@
 import Confirm from './components/Confirm'
-import MenuUserInfo from './components/MenuUserInfo'
 import CountUp from './components/CountUp'
 import Signup from './components/Signup'
 import Login from './components/Login'
@@ -35,6 +34,5 @@ module.exports = {
   Login,
   Signup,
   CountUp,
-  MenuUserInfo,
   Confirm
 }
