@@ -1,12 +1,23 @@
 {
   "name": "lib_bz",
-  "version": "1.0.0",
-  "description": "公用库",
+  "version": "1.0.5",
+  "description": "bigzhu's vue lib lib bigzhu",
+  "main": "dist/lib_bz.js",
+  "keywords": [
+    "bigzhu",
+    "very",
+    "big",
+    "vue",
+    "vue components"
+  ],
   "author": "bigzhu <vermiliondun@gmail.com>",
-  "private": true,
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
+    "lib": "node build/build_lib.js",
     "unit": "karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
@@ -18,11 +29,10 @@
     "jquery": "^3.0.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
-    "semantic-ui": "^2.1.8",
     "swiper": "^3.3.1",
     "toastr": "^2.1.2",
     "vue": "^1.0.24",
-    "vue-hot-reload-api": "^2.0.0",
+    "vue-hot-reload-api": "^1.3.3",
     "vue-resource": "^0.7.4",
     "vue-router": "^0.7.13",
     "vuex": "^0.6.3",
