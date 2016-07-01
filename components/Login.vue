@@ -11,27 +11,24 @@
         </div>
         <div v-bind:class="{ 'error': password_error }" class="field">
           <label>密码</label>
-          <input v-model="password" @keyup.enter="login" @focus="cleanError" placeholder="请输入密码"  type="password">
+          <input v-model="password" @keyup.enter="check" @focus="cleanError" placeholder="请输入密码"  type="password">
         </div>
-        <a @click="login" class="ui blue submit button">登录</a>
+        <a @click="check" class="ui blue submit button">登录</a>
       </form>
     </div>
   </div>
 </template>
 
 <script>
-  import store from '../store'
-  import {login} from '../store/actions'
-
   import toastr from 'toastr'
   export default {
-    store,
-    vuex: {
-      actions: {
-        aLogin: login
+    props: {
+      login: {
+        required: true
+      },
+      call_back: {
       }
     },
-    props: ['call_back'],
     components: {
     },
     data: function () {
@@ -45,7 +42,7 @@
     ready () {
     },
     methods: {
-      login: function () {
+      check: function () {
         if (!this.user_name) {
           this.user_name_error = true
           toastr.error('请输入用户名')
@@ -60,7 +57,7 @@
           user_name: this.user_name,
           password: this.password
         }
-        this.aLogin(parm, this.call_back)
+        this.login(parm, this.call_back)
       },
       cleanError: function () {
         this.user_name_error = false

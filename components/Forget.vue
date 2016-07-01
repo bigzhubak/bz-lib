@@ -9,30 +9,29 @@
     <form class="ui form fluid ">
       <div class="field">
         <label>邮箱</label>
-        <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址" @keyup.enter="forget">
+        <input type="text" v-model="email" class="form-control" placeholder="请输入邮箱地址" @keyup.enter="check">
       </div>
-      <a @click="forget" class="ui blue submit button">发送邮件</a>
+      <a @click="check" class="ui blue submit button">发送邮件</a>
     </form>
   </div>
 </template>
 
 <script>
-  import store from '../store'
-  import {forget} from '../store/actions'
   import toastr from 'toastr'
   export default {
-    store,
-    vuex: {
-      actions: {
-        aforget: forget
-      }
-    },
     directives: {
     },
     created: function () {
     },
+    props: {
+      forget: {
+        required: true
+      },
+      call_back: {
+      }
+    },
     methods: {
-      forget: function () {
+      check: function () {
         if (!this.email) {
           toastr.error('请输入邮箱')
           return
@@ -44,7 +43,7 @@
         //     return
         //   }
         // }
-        this.aforget(this.email)
+        this.aforget(this.email, this.call_back)
       }
     }
   }
