@@ -20,7 +20,6 @@
       <div class="weui_toast_content"><slot></slot></div>
     </div>
   </div>
-
 </template>
 
 <script>
