@@ -8,12 +8,28 @@ export const state = {
   user_info: {
     user_name: '',
     picture: ''
-  }
+  },
+  loading: false,
+  error_info: ''
 }
 // mutations
 export const mutations = {
   SET_USER_INFO (state, user_info) {
     state.user_info = user_info
+  },
+  SET_LOADING (state, loading) {
+    state.loading = loading
+  },
+  SET_ERROR_INFO (state, error_info) {
+    state.error_info = error_info
+  },
+  SET_SHORT_LIFE_ERROR_INFO (state, error_info, time = 1000) {
+    state.error_info = error_info
+    setTimeout(
+      () => {
+        state.error_info = ''
+      }, time
+    )
   }
 }
 // actions
