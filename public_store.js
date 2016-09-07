@@ -41,6 +41,7 @@ export const login = (store, user_name, password, done = null, error = null) => 
   api_login.save(parm).then(
     (response) => {
       if (response.data.error !== '0') {
+        console.log(response.data)
         if (error) error(response)
         throw new Error(response.data.error)
       }
@@ -60,17 +61,18 @@ export const signup = (store, user_name, password, email, done = null, error = n
   parm.password = password
   parm.email = email
   api_signup.save(parm).then(
-    (response) => {
+    function (response) {
       if (response.data.error !== '0') {
         if (error) error(response)
-        throw new Error(response.data.error)
+        // throw new Error(response.data.error)
       }
+      console.log(done)
       if (done) {
         done(response)
       }
     },
     (response) => {
-      if (error) error(response)
+      // if (error) error(response)
     }
   )
 }
@@ -82,6 +84,7 @@ export const queryUserInfo = (store, done = null, error = null) => {
         if (error) error(response)
         throw new Error(response.data.error)
       }
+      console.log(response.data.user_info)
       store.dispatch('SET_USER_INFO', response.data.user_info)
       if (done) {
         done(response)
