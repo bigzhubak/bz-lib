@@ -3,8 +3,10 @@ import Vue from 'vue'
 var api_login = Vue.resource('/api_login{/parm}')
 var api_signup = Vue.resource('/api_signup{/parm}')
 var api_user_info = Vue.resource('/api_user_info{/parm}')
+var api_rich_text = Vue.resource('/api_rich_text{/parm}')
 // state
 export const state = {
+  rich_list: [],
   user_info: {
     user_name: '',
     picture: ''
@@ -14,6 +16,9 @@ export const state = {
 }
 // mutations
 export const mutations = {
+  SET_RICH_LIST (state, rich_list) {
+    state.rich_list = rich_list
+  },
   SET_USER_INFO (state, user_info) {
     state.user_info = user_info
   },
@@ -92,6 +97,21 @@ export const queryUserInfo = (store, done = null, error = null) => {
     },
     (response) => {
       if (error) error(response)
+    }
+  )
+}
+export const queryRichList = (store, done = null) => {
+  api_rich_text.query().then(
+    (response) => {
+      if (response.data.error !== '0') {
+        throw new Error(response.data.error)
+      }
+      store.dispatch('SET_RICH_LIST', response.data.rich_list)
+      if (done) {
+        done(response)
+      }
+    },
+    (response) => {
     }
   )
 }
