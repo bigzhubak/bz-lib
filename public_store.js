@@ -7,6 +7,7 @@ var api_rich_text = Vue.resource('/api_rich_text{/parm}')
 // state
 export const state = {
   rich_list: [],
+  rich_text: {},
   user_info: {
     user_name: '',
     picture: ''
@@ -16,6 +17,12 @@ export const state = {
 }
 // mutations
 export const mutations = {
+  CLEAN_RICH_TEXT (state, rich_text) {
+    state.rich_text = {}
+  },
+  SET_RICH_TEXT (state, rich_text) {
+    state.rich_text = rich_text
+  },
   SET_RICH_LIST (state, rich_list) {
     state.rich_list = rich_list
   },
@@ -101,12 +108,31 @@ export const queryUserInfo = (store, done = null, error = null) => {
   )
 }
 export const queryRichList = (store, done = null) => {
-  api_rich_text.query().then(
+  let parm = {'all': 1}
+  parm = {parm: JSON.stringify(parm)}
+  api_rich_text.query(parm).then(
     (response) => {
       if (response.data.error !== '0') {
         throw new Error(response.data.error)
       }
-      store.dispatch('SET_RICH_LIST', response.data.rich_list)
+      store.dispatch('SET_RICH_LIST', response.data.rich_text)
+      if (done) {
+        done(response)
+      }
+    },
+    (response) => {
+    }
+  )
+}
+export const queryRichText = (store, id, done = null) => {
+  let parm = {id: id}
+  parm = {parm: JSON.stringify(parm)}
+  api_rich_text.query(parm).then(
+    (response) => {
+      if (response.data.error !== '0') {
+        throw new Error(response.data.error)
+      }
+      store.dispatch('SET_RICH_TEXT', response.data.rich_text[0])
       if (done) {
         done(response)
       }
