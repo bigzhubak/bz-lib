@@ -13,10 +13,22 @@ export const state = {
     picture: ''
   },
   loading: false,
-  error_info: ''
+  error_info: '',
+  info: ''
 }
 // mutations
 export const mutations = {
+  SET_INFO (state, info) {
+    state.info = info
+  },
+  SET_SHORT_LIFE_INFO (state, info, time = 1000) {
+    state.info = info
+    setTimeout(
+      () => {
+        state.info = ''
+      }, time
+    )
+  },
   CLEAN_RICH_TEXT (state, rich_text) {
     state.rich_text = {}
   },
