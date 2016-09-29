@@ -1,6 +1,6 @@
 {
   "name": "lib_bz",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "bigzhu's vue lib lib bigzhu",
   "main": "dist/lib_bz.js",
   "keywords": [
@@ -24,6 +24,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "bz-oauth2-button": "^1.0.3",
     "countup.js": "^1.7.1",
     "jquery": "^3.0.0",
     "swiper": "^3.3.1",
@@ -32,7 +33,7 @@
     "zeroclipboard": "^2.2.0"
   },
   "devDependencies": {
-    "vue": "^1.0.24",
+    "vue": "^1.0.26",
     "vue-router": "^0.7.13",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",

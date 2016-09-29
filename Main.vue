@@ -47,6 +47,17 @@
 </template>
 
 <script>
+  import 'semantic-ui/dist/components/site.css'
+  import 'semantic-ui/dist/components/header.css'
+  import 'semantic-ui/dist/components/container.css'
+  import 'semantic-ui/dist/components/grid.css'
+  import 'semantic-ui/dist/components/segment.css'
+  import 'semantic-ui/dist/components/menu.css'
+  import 'semantic-ui/dist/components/input.css'
+  import 'semantic-ui/dist/components/item.css'
+  import 'semantic-ui/dist/components/reset.css'
+  import 'semantic-ui/dist/components/table.css'
+
   import $ from 'jquery'
   import _ from 'underscore'
   import router_conf from './router_conf.js'

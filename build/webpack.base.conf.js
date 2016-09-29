@@ -83,6 +83,7 @@ module.exports = {
     loaders: utils.cssLoaders()
   },
   externals: {
-    jquery: 'jQuery'
+    jquery: 'jQuery',
+    '_': 'underscore'
   }
 }

@@ -40,6 +40,9 @@ export function dateFormat (timestamp, mask) {
     'y+': function (len) {
       return preZero(date.getFullYear(), len)
     },
+    'Y+': function (len) {
+      return preZero(date.getFullYear(), len)
+    },
     'M+': function (len) {
       return preZero(date.getMonth() + 1, len)
     },
