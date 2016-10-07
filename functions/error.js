@@ -8,13 +8,6 @@ export function errorHandlePromise (error, promise) {
 }
 
 export function initErrorHandle () {
-  window.addEventListener('unhandledrejection',
-    function (error, promise) {
-      toastr.error(error.message)
-    }
-  )
-  window.onerror = function (message, source, lineno, colno, error) {
-    toastr.error(error.message)
-    return false
-  }
+  window.addEventListener('unhandledrejection', errorHandlePromise)
+  window.onerror = errorHandle
 }

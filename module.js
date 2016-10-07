@@ -1,5 +1,7 @@
 // store 的module
 import Vue from 'vue'
+var VueResource = require('vue-resource')
+Vue.use(VueResource)
 var api_login = Vue.resource('/api_login{/parm}')
 var api_signup = Vue.resource('/api_signup{/parm}')
 var api_user_info = Vue.resource('/api_user_info{/parm}')
@@ -135,7 +137,7 @@ export const actions = {
       }
     )
   },
-  queryRichText ({ state, commit }, id, done = null) => {
+  queryRichText ({ state, commit }, id, done = null) {
     let parm = {id: id}
     parm = {parm: JSON.stringify(parm)}
     api_rich_text.query(parm).then(
@@ -153,7 +155,7 @@ export const actions = {
     )
   }
 }
-//getters
+// getters
 export const getters = {
 }
 
