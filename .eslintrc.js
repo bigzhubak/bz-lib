@@ -1,6 +1,8 @@
 module.exports = {
-  esversion: 6,
   root: true,
+  parserOptions: {
+    sourceType: 'module'
+  },
   // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
   extends: 'standard',
   // required to lint *.vue files
@@ -17,3 +19,5 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
 }
+
+

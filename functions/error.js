@@ -8,6 +8,7 @@ export function errorHandlePromise (error, promise) {
 }
 
 export function initErrorHandle () {
+  console.log('initErrorHandle works')
   window.addEventListener('unhandledrejection', errorHandlePromise)
   window.onerror = errorHandle
 }
