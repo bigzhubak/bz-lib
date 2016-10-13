@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import Oauth2 from './Oauth2.vue'
+  import Oauth2 from 'bz-oauth2-button'
   export default {
     components: {
       Oauth2

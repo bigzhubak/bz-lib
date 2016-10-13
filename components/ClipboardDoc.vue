@@ -12,8 +12,8 @@
         <tr><th>参数</th><th>说明</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td colspan="2"></td>
+        <tr v-show="parm_desc">
+          <td colspan="2" v-html="parm_desc"></td>
         </tr>
         <tr v-for="parm in parms"> <td class="single line"> {{parm.parm}} </td> <td> {{parm.desc}} </td></tr>
       </tbody>
@@ -36,6 +36,7 @@
       return {
         title: 'Clipboard',
         desc: '点击复制',
+        parm_desc: `注意，要把ZeroClipboard.swf 放到 /static/ZeroClipboard.swf 才能使用`,
         message: '复制到clipborad的内容',
         code: `<Clipboard><input type="text"></Clipboard>`,
         parms: [

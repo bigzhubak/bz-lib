@@ -36,6 +36,7 @@
 </template>
 
 <script>
+  import 'semantic-ui/dist/components/card.css'
   import BottomLoader from './BottomLoader.vue'
   export default {
     components: {

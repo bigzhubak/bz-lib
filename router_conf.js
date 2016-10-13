@@ -1,5 +1,4 @@
 import Confirm from './components/ConfirmDoc'
-import MenuUserInfo from './components/MenuUserInfoDoc'
 import CountUp from './components/CountUpDoc'
 import Signup from './components/SignupDoc'
 import Login from './components/LoginDoc'
@@ -35,7 +34,6 @@ export default {
   '/Login': {name: 'Login', component: Login, desc: '登录'},
   '/Signup': {name: 'Signup', component: Signup, desc: '用户注册'},
   '/CountUp': {name: 'CountUp', component: CountUp, desc: '数字递增递减动画效果'},
-  '/MenuUserInfo': {name: 'MenuUserInfo', component: MenuUserInfo, desc: 'Menu上显示用户信息'},
   '/Confirm': {name: 'Confirm', component: Confirm, desc: '确认提示框'},
   '/': { component: BottomLoader }
 }

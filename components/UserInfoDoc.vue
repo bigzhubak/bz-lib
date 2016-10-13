@@ -27,21 +27,25 @@
 
 <script>
   import UserInfo from './UserInfo.vue'
-  import store from '../store'
   export default {
     components: {
       UserInfo
     },
     computed: {
-      user_info: function () {
-        return store.state.user_info
-      }
     },
     ready: function () {
-      store.actions.queryUserInfo()
     },
     data: function () {
       return {
+        user_info: {
+          name: '',
+          avatar: '',
+          bio: '',
+          github: '',
+          twitter: '',
+          instagram: '',
+          tumblr: ''
+        },
         parms: [
           {parm: 'user_info', desc: '用户信息'}
         ],

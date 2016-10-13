@@ -78,19 +78,10 @@
 </template>
 
 <script>
-  var toastr = require('toastr')
-  var $ = require('jquery')
+  import toastr from 'toastr'
+  import $ from 'jquery'
 
-  import store from '../store'
-  import {queryUserInfo, updateOrInsertUser} from '../store/actions'
   export default {
-    store,
-    vuex: {
-      actions: {
-        queryUserInfo,
-        updateOrInsertUser
-      }
-    },
     components: {
     },
     directives: {
@@ -109,6 +100,11 @@
             tumblr: ''
           }
         }
+      },
+      update_user_info: {
+        required: true
+      },
+      call_back: {
       }
     },
     computed: {
@@ -122,7 +118,6 @@
       }
     },
     ready: function () {
-      this.queryUserInfo()
       $(this.$el).find('.button').popup(
         {
           inline: true
@@ -215,7 +210,7 @@
             slogan: this.user_info.bio,
             picture: this.user_info.avatar
           }
-          this.updateOrInsertUser(user)
+          this.update_user_info(user, this.call_back)
         }
       }
     }

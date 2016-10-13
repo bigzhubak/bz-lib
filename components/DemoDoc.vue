@@ -35,7 +35,7 @@
     },
     data: function () {
       return {
-        title: 'Demo',
+        name: 'Demo',
         desc: '就是个demo用来做模板',
         parm_desc: `注意，触发弹出窗口使用 <code>this.$broadcast('confirm')</code>`,
         parms: [
