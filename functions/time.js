@@ -66,6 +66,5 @@ export function dateFormat (timestamp, mask) {
       mask = mask.replace(matched_array[0], res)
     }
   }
-  console.log(mask)
   return mask
 }
