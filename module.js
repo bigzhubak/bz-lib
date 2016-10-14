@@ -1,11 +1,6 @@
 // store 的module
-import Vue from 'vue'
-var VueResource = require('vue-resource')
-Vue.use(VueResource)
-var api_login = Vue.resource('/api_login{/parm}')
-var api_signup = Vue.resource('/api_signup{/parm}')
-var api_user_info = Vue.resource('/api_user_info{/parm}')
-var api_rich_text = Vue.resource('/api_rich_text{/parm}')
+import 'whatwg-fetch'
+
 // state
 export const state = {
   rich_list: [],
@@ -64,97 +59,133 @@ export const actions = {
     let parm = {}
     parm.user_name = user_name
     parm.password = password
-
-    api_login.save(parm).then(
-      (response) => {
-        if (response.data.error !== '0') {
-          console.log(response.data)
-          if (error) error(response)
-          throw new Error(response.data.error)
+    window.fetch('/api_login', {
+      credentials: 'same-origin',
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(parm)})
+      .then(function (response) {
+        return response
+      }).then(function (response) {
+        return response.json()
+      }).then(function (data) {
+        if (data.error !== '0') {
+          throw new Error(data.error)
         }
         if (done) {
-          done(response)
+          done(data)
         }
-      },
-      (response) => {
-        if (error) error(response)
-      }
-    )
+      })
   },
   signup ({ state, commit }, user_name, password, email, done = null, error = null) {
     let parm = {}
     parm.user_name = user_name
     parm.password = password
     parm.email = email
-    api_signup.save(parm).then(
-      function (response) {
-        if (response.data.error !== '0') {
-          if (error) error(response)
-          // throw new Error(response.data.error)
-        }
-        console.log(done)
-        if (done) {
-          done(response)
-        }
+
+    window.fetch('/api_signup', {
+      credentials: 'same-origin',
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
-      (response) => {
-        // if (error) error(response)
-      }
-    )
+      body: JSON.stringify(parm)})
+      .then(function (response) {
+        return response
+      }).then(function (response) {
+        return response.json()
+      }).then(function (data) {
+        if (data.error !== '0') {
+          throw new Error(data.error)
+        }
+        if (done) {
+          done(data)
+        }
+      })
   },
   queryUserInfo ({ state, commit }, done = null, error = null) {
-    api_user_info.query().then(
-      (response) => {
-        if (response.data.error !== '0') {
-          if (error) error(response)
-          throw new Error(response.data.error)
-        }
-        console.log(response.data.user_info)
-        commit('SET_USER_INFO', response.data.user_info)
-        if (done) {
-          done(response)
-        }
+    window.fetch('/api_user_info', {
+      credentials: 'same-origin',
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
-      (response) => {
-        if (error) error(response)
+      body: JSON.stringify()})
+    .then(function (response) {
+      return response
+    }).then(function (response) {
+      return response.json()
+    }).then(function (data) {
+      if (data.error !== '0') {
+        throw new Error(data.error)
       }
-    )
+      console.log(data.user_info)
+      commit('SET_USER_INFO', data.user_info)
+      if (done) {
+        done(data)
+      }
+    })
   },
+
   queryRichList ({ state, commit }, done = null) {
     let parm = {'all': 1}
     parm = {parm: JSON.stringify(parm)}
-    api_rich_text.query(parm).then(
-      (response) => {
-        if (response.data.error !== '0') {
-          throw new Error(response.data.error)
-        }
-        commit('SET_RICH_LIST', response.data.rich_text)
-        if (done) {
-          done(response)
-        }
+    window.fetch('/api_rich_text', {
+      credentials: 'same-origin',
+      method: 'get',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
-      (response) => {
+      body: JSON.stringify(parm)})
+    .then(function (response) {
+      return response
+    }).then(function (response) {
+      return response.json()
+    }).then(function (data) {
+      if (data.error !== '0') {
+        throw new Error(data.error)
       }
-    )
+      console.log(data.rich_text)
+      commit('SET_RICH_LIST', data.rich_text)
+      if (done) {
+        done(data)
+      }
+    })
   },
   queryRichText ({ state, commit }, id, done = null) {
     let parm = {id: id}
     parm = {parm: JSON.stringify(parm)}
-    api_rich_text.query(parm).then(
-      (response) => {
-        if (response.data.error !== '0') {
-          throw new Error(response.data.error)
-        }
-        commit('SET_RICH_TEXT', response.data.rich_text[0])
-        if (done) {
-          done(response)
-        }
+    window.fetch('/api_rich_text', {
+      credentials: 'same-origin',
+      method: 'get',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
-      (response) => {
+      body: JSON.stringify(parm)})
+    .then(function (response) {
+      return response
+    }).then(function (response) {
+      return response.json()
+    }).then(function (data) {
+      if (data.error !== '0') {
+        throw new Error(data.error)
       }
-    )
+      console.log(data.rich_text[0])
+      commit('SET_RICH_TEXT', data.rich_text[0])
+      if (done) {
+        done(data)
+      }
+    })
   }
 }
+
 // getters
 export const getters = {
 }
