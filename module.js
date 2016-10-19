@@ -55,6 +55,100 @@ export const mutations = {
 }
 // actions
 export const actions = {
+  get ({ state, commit }, url) {
+    commit('SET_LOADING', true)
+    return window.fetch(url, {
+      credentials: 'same-origin',
+      method: 'get',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      commit('SET_LOADING', false)
+      return response
+    }).then(function (response) {
+      return response.json()
+    }).then(function (data) {
+      if (data.error !== '0') {
+        commit('SET_ERROR_INFO', data.error)
+        console.log(url + ' error: ' + data.error)
+      }
+      return data
+    })
+  },
+  post ({ state, commit }, {url, body}) {
+    commit('SET_LOADING', true)
+    return window.fetch(url, {
+      credentials: 'same-origin',
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    .then(function (response) {
+      commit('SET_LOADING', false)
+      return response
+    }).then(function (response) {
+      return response.json()
+    }).then(function (data) {
+      if (data.error !== '0') {
+        commit('SET_ERROR_INFO', data.error)
+        console.log(url + ' error: ' + data.error)
+      }
+      return data
+    })
+  },
+  delete ({ state, commit }, url) {
+    commit('SET_LOADING', true)
+    return window.fetch(url, {
+      credentials: 'same-origin',
+      method: 'delete',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      commit('SET_LOADING', false)
+      return response
+    }).then(function (response) {
+      return response.json()
+    }).then(function (data) {
+      if (data.error !== '0') {
+        commit('SET_ERROR_INFO', data.error)
+        console.log(url + ' error: ' + data.error)
+      }
+      return data
+    })
+  },
+  put ({ state, commit }, {url, body}) {
+    commit('SET_LOADING', true)
+    return window.fetch(url, {
+      credentials: 'same-origin',
+      method: 'put',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    .then(function (response) {
+      commit('SET_LOADING', false)
+      return response
+    }).then(function (response) {
+      return response.json()
+    }).then(function (data) {
+      if (data.error !== '0') {
+        commit('SET_ERROR_INFO', data.error)
+        console.log(url + ' error: ' + data.error)
+      }
+      return data
+    })
+  },
   login ({ state, commit }, user_name, password, done = null, error = null) {
     let parm = {}
     parm.user_name = user_name
@@ -116,22 +210,21 @@ export const actions = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify()})
-    .then(function (response) {
-      return response
-    }).then(function (response) {
-      return response.json()
-    }).then(function (data) {
-      if (data.error !== '0') {
-        throw new Error(data.error)
-      }
-      console.log(data.user_info)
-      commit('SET_USER_INFO', data.user_info)
-      if (done) {
-        done(data)
-      }
-    })
+      .then(function (response) {
+        return response
+      }).then(function (response) {
+        return response.json()
+      }).then(function (data) {
+        if (data.error !== '0') {
+          throw new Error(data.error)
+        }
+        console.log(data.user_info)
+        commit('SET_USER_INFO', data.user_info)
+        if (done) {
+          done(data)
+        }
+      })
   },
-
   queryRichList ({ state, commit }, done = null) {
     let parm = {'all': 1}
     parm = {parm: JSON.stringify(parm)}
@@ -143,20 +236,20 @@ export const actions = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(parm)})
-    .then(function (response) {
-      return response
-    }).then(function (response) {
-      return response.json()
-    }).then(function (data) {
-      if (data.error !== '0') {
-        throw new Error(data.error)
-      }
-      console.log(data.rich_text)
-      commit('SET_RICH_LIST', data.rich_text)
-      if (done) {
-        done(data)
-      }
-    })
+      .then(function (response) {
+        return response
+      }).then(function (response) {
+        return response.json()
+      }).then(function (data) {
+        if (data.error !== '0') {
+          throw new Error(data.error)
+        }
+        console.log(data.rich_text)
+        commit('SET_RICH_LIST', data.rich_text)
+        if (done) {
+          done(data)
+        }
+      })
   },
   queryRichText ({ state, commit }, id, done = null) {
     let parm = {id: id}
@@ -169,20 +262,20 @@ export const actions = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(parm)})
-    .then(function (response) {
-      return response
-    }).then(function (response) {
-      return response.json()
-    }).then(function (data) {
-      if (data.error !== '0') {
-        throw new Error(data.error)
-      }
-      console.log(data.rich_text[0])
-      commit('SET_RICH_TEXT', data.rich_text[0])
-      if (done) {
-        done(data)
-      }
-    })
+      .then(function (response) {
+        return response
+      }).then(function (response) {
+        return response.json()
+      }).then(function (data) {
+        if (data.error !== '0') {
+          throw new Error(data.error)
+        }
+        console.log(data.rich_text[0])
+        commit('SET_RICH_TEXT', data.rich_text[0])
+        if (done) {
+          done(data)
+        }
+      })
   }
 }
 
