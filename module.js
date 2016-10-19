@@ -42,6 +42,7 @@ export const mutations = {
     state.loading = loading
   },
   SET_ERROR_INFO (state, error_info) {
+    console.log(error_info)
     state.error_info = error_info
   },
   SET_SHORT_LIFE_ERROR_INFO (state, error_info, time = 1000) {
@@ -218,7 +219,6 @@ export const actions = {
         if (data.error !== '0') {
           throw new Error(data.error)
         }
-        console.log(data.user_info)
         commit('SET_USER_INFO', data.user_info)
         if (done) {
           done(data)
@@ -244,7 +244,6 @@ export const actions = {
         if (data.error !== '0') {
           throw new Error(data.error)
         }
-        console.log(data.rich_text)
         commit('SET_RICH_LIST', data.rich_text)
         if (done) {
           done(data)
@@ -270,7 +269,6 @@ export const actions = {
         if (data.error !== '0') {
           throw new Error(data.error)
         }
-        console.log(data.rich_text[0])
         commit('SET_RICH_TEXT', data.rich_text[0])
         if (done) {
           done(data)
