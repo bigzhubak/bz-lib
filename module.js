@@ -75,6 +75,7 @@ export const actions = {
       if (data.error !== '0') {
         commit('SET_ERROR_INFO', data.error)
         console.log(url + ' error: ' + data.error)
+        throw new Error(data.error)
       }
       return data
     })
@@ -202,28 +203,10 @@ export const actions = {
         }
       })
   },
-  queryUserInfo ({ state, commit }, done = null, error = null) {
-    window.fetch('/api_user_info', {
-      credentials: 'same-origin',
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify()})
-      .then(function (response) {
-        return response
-      }).then(function (response) {
-        return response.json()
-      }).then(function (data) {
-        if (data.error !== '0') {
-          throw new Error(data.error)
-        }
-        commit('SET_USER_INFO', data.user_info)
-        if (done) {
-          done(data)
-        }
-      })
+  getUserInfo ({ state, commit, dispatch }) {
+    return dispatch('get', '/api_user_info').then(function (data) {
+      commit('SET_USER_INFO', data.datas)
+    })
   },
   queryRichList ({ state, commit }, done = null) {
     let parm = {'all': 1}
