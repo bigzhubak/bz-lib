@@ -55,7 +55,15 @@ export const mutations = {
 }
 // actions
 export const actions = {
-  get ({ state, commit }, url) {
+  get ({ state, commit }, val) {
+    let url = ''
+    if (typeof val === 'string') {
+      url = val
+    } else {
+      url = val.url + '/' + JSON.stringify(val.body)
+    }
+    console.log(url)
+
     commit('SET_LOADING', true)
     return window.fetch(url, {
       credentials: 'same-origin',
