@@ -42,7 +42,6 @@ export const mutations = {
     state.loading = loading
   },
   SET_ERROR_INFO (state, error_info) {
-    console.log(error_info)
     state.error_info = error_info
   },
   SET_SHORT_LIFE_ERROR_INFO (state, error_info, time = 1000) {
@@ -100,6 +99,7 @@ export const actions = {
       if (data.error !== '0') {
         commit('SET_ERROR_INFO', data.error)
         console.log(url + ' error: ' + data.error)
+        throw new Error(data.error)
       }
       return data
     })
@@ -147,34 +147,16 @@ export const actions = {
       if (data.error !== '0') {
         commit('SET_ERROR_INFO', data.error)
         console.log(url + ' error: ' + data.error)
+        throw new Error(data.error)
       }
       return data
     })
   },
-  login ({ state, commit }, user_name, password, done = null, error = null) {
+  login ({ state, commit, dispatch }, user_name, password) {
     let parm = {}
     parm.user_name = user_name
     parm.password = password
-    window.fetch('/api_login', {
-      credentials: 'same-origin',
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(parm)})
-      .then(function (response) {
-        return response
-      }).then(function (response) {
-        return response.json()
-      }).then(function (data) {
-        if (data.error !== '0') {
-          throw new Error(data.error)
-        }
-        if (done) {
-          done(data)
-        }
-      })
+    return dispatch('post', {url: '/api_login', body: parm})
   },
   signup ({ state, commit }, user_name, password, email, done = null, error = null) {
     let parm = {}
