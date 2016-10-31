@@ -152,10 +152,11 @@ export const actions = {
       return data
     })
   },
-  login ({ state, commit, dispatch }, user_name, password) {
+  login ({ state, commit, dispatch }, {user_name, password}) {
     let parm = {}
     parm.user_name = user_name
     parm.password = password
+    console.log(parm)
     return dispatch('post', {url: '/api_login', body: parm})
   },
   signup ({ state, commit }, user_name, password, email, done = null, error = null) {
@@ -187,7 +188,7 @@ export const actions = {
   },
   getUserInfo ({ state, commit, dispatch }) {
     return dispatch('get', '/api_user_info').then(function (data) {
-      commit('SET_USER_INFO', data.datas)
+      commit('SET_USER_INFO', data.user_info)
     })
   },
   queryRichList ({ state, commit }, done = null) {
