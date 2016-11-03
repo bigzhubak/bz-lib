@@ -11,6 +11,7 @@ export const state = {
     picture: ''
   },
   loading: false,
+  loading_count: 0,
   error_info: '',
   info: ''
 }
@@ -41,7 +42,17 @@ export const mutations = {
     state.user_info = user_info
   },
   SET_LOADING (state, loading) {
-    state.loading = loading
+    // 加入计数器
+    if (loading) {
+      state.loading_count += 1
+      state.loading = true
+    } else state.loading_count -= 1
+
+    if (state.loading_count < 1) {
+      state.loading_count = 0
+      state.loading = false
+    }
+    console.log('set loading ' + state.loading_count)
   },
   SET_ERROR_INFO (state, error_info) {
     state.error_info = error_info
@@ -137,8 +148,8 @@ export const actions = {
       return data
     })
   },
-  put ({ state, commit }, {url, body}) {
-    commit('SET_LOADING', true)
+  put ({ state, commit }, {url, body, loading}) {
+    if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return window.fetch(url, {
       credentials: 'same-origin',
       method: 'put',
@@ -149,7 +160,7 @@ export const actions = {
       body: JSON.stringify(body)
     })
     .then(function (response) {
-      commit('SET_LOADING', false)
+      if (loading === true || loading === undefined) commit('SET_LOADING', false)
       return response
     }).then(function (response) {
       return response.json()
@@ -166,7 +177,6 @@ export const actions = {
     let parm = {}
     parm.user_name = user_name
     parm.password = password
-    console.log(parm)
     return dispatch('post', {url: '/api_login', body: parm})
   },
   signup ({ state, commit }, user_name, password, email, done = null, error = null) {
