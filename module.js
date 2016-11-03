@@ -1,5 +1,6 @@
 // store 的module
 import 'whatwg-fetch'
+import _ from 'lodash'
 
 // state
 export const state = {
@@ -33,7 +34,8 @@ export const mutations = {
     state.rich_text = rich_text
   },
   SET_RICH_LIST (state, rich_list) {
-    state.rich_list = rich_list
+    state.rich_list = _.unionBy(state.rich_list, rich_list, 'id')
+    // state.rich_list = rich_list
   },
   SET_USER_INFO (state, user_info) {
     state.user_info = user_info
@@ -199,55 +201,19 @@ export const actions = {
       commit('SET_USER_INFO', data.user_info)
     })
   },
-  queryRichList ({ state, commit }, done = null) {
+  getRichList ({ state, commit, dispatch }) {
     let parm = {'all': 1}
-    parm = {parm: JSON.stringify(parm)}
-    window.fetch('/api_rich_text', {
-      credentials: 'same-origin',
-      method: 'get',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(parm)})
-      .then(function (response) {
-        return response
-      }).then(function (response) {
-        return response.json()
-      }).then(function (data) {
-        if (data.error !== '0') {
-          throw new Error(data.error)
-        }
-        commit('SET_RICH_LIST', data.rich_text)
-        if (done) {
-          done(data)
-        }
-      })
+    return dispatch('get', {url: '/api_rich_text', body: parm}).then(function (data) {
+      commit('SET_RICH_LIST', data.rich_text)
+      return data
+    })
   },
-  queryRichText ({ state, commit }, id, done = null) {
-    let parm = {id: id}
-    parm = {parm: JSON.stringify(parm)}
-    window.fetch('/api_rich_text', {
-      credentials: 'same-origin',
-      method: 'get',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(parm)})
-      .then(function (response) {
-        return response
-      }).then(function (response) {
-        return response.json()
-      }).then(function (data) {
-        if (data.error !== '0') {
-          throw new Error(data.error)
-        }
-        commit('SET_RICH_TEXT', data.rich_text[0])
-        if (done) {
-          done(data)
-        }
-      })
+  getRichText ({ state, commit, dispatch }, parm) {
+    // id or key
+    return dispatch('get', {url: '/api_rich_text', body: parm}).then(function (data) {
+      commit('SET_RICH_TEXT', data.rich_text[0])
+      return data
+    })
   }
 }
 
