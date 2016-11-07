@@ -70,14 +70,16 @@ export const mutations = {
 export const actions = {
   get ({ state, commit }, val) {
     let url = ''
+    let loading = false
     if (typeof val === 'string') {
       url = val
     } else {
       url = val.url + '/' + JSON.stringify(val.body)
+      loading = val.loading
     }
     console.log(url)
 
-    commit('SET_LOADING', true)
+    if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return window.fetch(url, {
       credentials: 'same-origin',
       method: 'get',
@@ -87,7 +89,7 @@ export const actions = {
       }
     })
     .then(function (response) {
-      commit('SET_LOADING', false)
+      if (loading === true || loading === undefined) commit('SET_LOADING', false)
       return response
     }).then(function (response) {
       return response.json()
@@ -100,7 +102,7 @@ export const actions = {
       return data
     })
   },
-  post ({ state, commit }, {url, body}) {
+  post ({ state, commit }, {url, body, no_throw}) {
     commit('SET_LOADING', true)
     return window.fetch(url, {
       credentials: 'same-origin',
@@ -117,7 +119,7 @@ export const actions = {
     }).then(function (response) {
       return response.json()
     }).then(function (data) {
-      if (data.error !== '0') {
+      if (data.error !== '0' && !no_throw) {
         commit('SET_ERROR_INFO', data.error)
         console.log(url + ' error: ' + data.error)
         throw new Error(data.error)
