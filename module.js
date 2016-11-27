@@ -103,7 +103,6 @@ export const actions = {
     })
   },
   post ({ state, commit }, {url, body, no_throw, loading}) {
-    commit('SET_LOADING', true)
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return window.fetch(url, {
       credentials: 'same-origin',
