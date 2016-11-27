@@ -77,7 +77,7 @@ export const actions = {
       url = val.url + '/' + JSON.stringify(val.body)
       loading = val.loading
     }
-    console.log(url)
+    // console.log(url)
 
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return window.fetch(url, {
@@ -102,8 +102,9 @@ export const actions = {
       return data
     })
   },
-  post ({ state, commit }, {url, body, no_throw}) {
+  post ({ state, commit }, {url, body, no_throw, loading}) {
     commit('SET_LOADING', true)
+    if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return window.fetch(url, {
       credentials: 'same-origin',
       method: 'post',
@@ -114,7 +115,7 @@ export const actions = {
       body: JSON.stringify(body)
     })
     .then(function (response) {
-      commit('SET_LOADING', false)
+      if (loading === true || loading === undefined) commit('SET_LOADING', false)
       return response
     }).then(function (response) {
       return response.json()
