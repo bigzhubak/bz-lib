@@ -70,14 +70,15 @@ export const mutations = {
 export const actions = {
   get ({ state, commit }, val) {
     let url = ''
-    let loading = false
+    let loading = true
     if (typeof val === 'string') {
       url = val
     } else {
       url = val.url + '/' + JSON.stringify(val.body)
       loading = val.loading
     }
-    // console.log(url)
+    console.log(url)
+    console.log(loading)
 
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return window.fetch(url, {
