@@ -2,6 +2,13 @@
 import 'whatwg-fetch'
 import _ from 'lodash'
 
+var fetch
+if (global.window) {
+  fetch = global.window.fetch
+} else {
+  fetch = require('node-fetch')
+}
+
 // state
 export const state = {
   rich_list: [],
@@ -81,7 +88,7 @@ export const actions = {
     console.log(loading)
 
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
-    return window.fetch(url, {
+    return fetch(url, {
       credentials: 'same-origin',
       method: 'get',
       headers: {
@@ -105,7 +112,7 @@ export const actions = {
   },
   post ({ state, commit }, {url, body, no_throw, loading}) {
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
-    return window.fetch(url, {
+    return fetch(url, {
       credentials: 'same-origin',
       method: 'post',
       headers: {
@@ -130,7 +137,7 @@ export const actions = {
   },
   delete ({ state, commit }, url) {
     commit('SET_LOADING', true)
-    return window.fetch(url, {
+    return fetch(url, {
       credentials: 'same-origin',
       method: 'delete',
       headers: {
@@ -153,7 +160,7 @@ export const actions = {
   },
   put ({ state, commit }, {url, body, loading}) {
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
-    return window.fetch(url, {
+    return fetch(url, {
       credentials: 'same-origin',
       method: 'put',
       headers: {
@@ -188,7 +195,7 @@ export const actions = {
     parm.password = password
     parm.email = email
 
-    window.fetch('/api_signup', {
+    fetch('/api_signup', {
       credentials: 'same-origin',
       method: 'post',
       headers: {
