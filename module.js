@@ -3,10 +3,13 @@ import 'whatwg-fetch'
 import _ from 'lodash'
 
 var fetch
+var site
 if (global.window) {
   fetch = global.window.fetch
+  site = ''
 } else {
   fetch = require('node-fetch')
+  site = global.site
 }
 
 // state
@@ -78,15 +81,18 @@ export const actions = {
   get ({ state, commit }, val) {
     let url = ''
     let loading = true
+    let hide_error = false
     if (typeof val === 'string') {
       url = val
     } else {
       url = val.url + '/' + JSON.stringify(val.body)
       loading = val.loading
+      hide_error = val.hide_error
     }
-    console.log(url)
-    console.log(loading)
+    // console.log(url)
+    // console.log(loading)
 
+    url = site + url
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return fetch(url, {
       credentials: 'same-origin',
@@ -102,7 +108,7 @@ export const actions = {
     }).then(function (response) {
       return response.json()
     }).then(function (data) {
-      if (data.error !== '0') {
+      if (data.error !== '0' && !hide_error) {
         commit('SET_ERROR_INFO', data.error)
         console.log(url + ' error: ' + data.error)
         throw new Error(data.error)
