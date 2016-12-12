@@ -224,7 +224,9 @@ export const actions = {
   },
   getUserInfo ({ state, commit, dispatch }) {
     return dispatch('get', {url: '/api_user_info', hide_error: true}).then(function (data) {
-      commit('SET_USER_INFO', data.user_info)
+      if (data.user_info) {
+        commit('SET_USER_INFO', data.user_info)
+      }
     })
   },
   getRichList ({ state, commit, dispatch }) {
