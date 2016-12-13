@@ -85,11 +85,15 @@ export const actions = {
     if (typeof val === 'string') {
       url = val
     } else {
-      url = val.url + '/' + JSON.stringify(val.body)
+      if (val.body) {
+        url = val.url + '/' + JSON.stringify(val.body)
+      } else {
+        url = val.url
+      }
       loading = val.loading
       hide_error = val.hide_error
     }
-    // console.log(url)
+    console.log(url)
     // console.log(loading)
 
     url = site + url
