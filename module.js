@@ -3,17 +3,15 @@ import 'whatwg-fetch'
 import _ from 'lodash'
 
 var fetch
-var site
 if (global.window) {
   fetch = global.window.fetch
-  site = ''
 } else {
   fetch = require('node-fetch')
-  site = global.site
 }
 
 // state
 export const state = {
+  site: null, // 在ssr的时候，用来定义网站。
   rich_list: [],
   rich_text: {},
   user_info: {
@@ -27,6 +25,9 @@ export const state = {
 }
 // mutations
 export const mutations = {
+  SET_SITE (state, site) {
+    state.site = site
+  },
   SET_INFO (state, info) {
     state.info = info
   },
@@ -96,7 +97,6 @@ export const actions = {
     console.log(url)
     // console.log(loading)
 
-    url = site + url
     if (loading === true || loading === undefined) commit('SET_LOADING', true)
     return fetch(url, {
       credentials: 'same-origin',
@@ -233,9 +233,12 @@ export const actions = {
       }
     })
   },
-  getRichList ({ state, commit, dispatch }) {
+  getRichList ({ state, commit, dispatch }, full_url) {
     let parm = {'all': 1}
-    return dispatch('get', {url: '/api_rich_text', body: parm}).then(function (data) {
+    let url = '/api_rich_text'
+    if (state.site) url = state.site + url
+
+    return dispatch('get', {url: url, body: parm}).then(function (data) {
       commit('SET_RICH_LIST', data.rich_text)
       return data
     })
