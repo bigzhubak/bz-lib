@@ -94,6 +94,8 @@ export const actions = {
       loading = val.loading
       hide_error = val.hide_error
     }
+
+    if (state.site) url = state.site + url
     console.log(url)
     // console.log(loading)
 
@@ -236,7 +238,6 @@ export const actions = {
   getRichList ({ state, commit, dispatch }, full_url) {
     let parm = {'all': 1}
     let url = '/api_rich_text'
-    if (state.site) url = state.site + url
 
     return dispatch('get', {url: url, body: parm}).then(function (data) {
       commit('SET_RICH_LIST', data.rich_text)
@@ -245,7 +246,8 @@ export const actions = {
   },
   getRichText ({ state, commit, dispatch }, parm) {
     // id or key
-    return dispatch('get', {url: '/api_rich_text', body: parm}).then(function (data) {
+    let url = '/api_rich_text'
+    return dispatch('get', {url: url, body: parm}).then(function (data) {
       commit('SET_RICH_TEXT', data.rich_text[0])
       return data
     })
