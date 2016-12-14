@@ -32,6 +32,7 @@
     "bz-semantic-ui-reset": "latest",
     "bz-semantic-ui-site": "latest",
     "bz-semantic-ui-table": "latest",
+    "node-fetch": "^1.6.3",
     "toastr": "latest"
   },
   "devDependencies": {
