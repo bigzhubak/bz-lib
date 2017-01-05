@@ -1,6 +1,7 @@
 // store 的module
 import 'whatwg-fetch'
 import _ from 'lodash'
+import checkLogin from './functions/checkLogin'
 
 var fetch
 if (global.window) {
@@ -11,6 +12,7 @@ if (global.window) {
 
 // state
 export const state = {
+  is_login: false,
   site: null, // 在ssr的时候，用来定义网站。
   rich_list: [],
   rich_text: {},
@@ -25,6 +27,10 @@ export const state = {
 }
 // mutations
 export const mutations = {
+  CHECK_LOGIN (state) {
+    state.is_login = checkLogin()
+    return state.is_login
+  },
   SET_SITE (state, site) {
     state.site = site
   },
