@@ -45,8 +45,10 @@ export const mutations = {
       }, time
     )
   },
-  CLEAN_RICH_TEXT (state, rich_text) {
+  CLEAN_RICH_TEXT (state) {
+    console.log(state)
     state.rich_text = {}
+    console.log(state)
   },
   SET_RICH_TEXT (state, rich_text) {
     state.rich_text = rich_text
