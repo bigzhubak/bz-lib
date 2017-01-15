@@ -71,7 +71,7 @@ export const mutations = {
       state.loading_count = 0
       state.loading = false
     }
-    console.log('set loading ' + state.loading_count)
+    // console.log('set loading ' + state.loading_count)
   },
   SET_ERROR_INFO (state, error_info) {
     state.error_info = error_info
