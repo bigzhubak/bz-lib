@@ -107,7 +107,7 @@ export const actions = {
     console.log(url)
     // console.log(loading)
 
-    if (loading === true || loading === undefined) commit('SET_LOADING', true)
+    if (loading === true || loading === undefined) { commit('SET_LOADING', true) }
     return fetch(url, {
       credentials: 'same-origin',
       method: 'get',
@@ -117,9 +117,12 @@ export const actions = {
       }
     })
     .then(function (response) {
-      if (loading === true || loading === undefined) commit('SET_LOADING', false)
+      if (loading === true || loading === undefined) { commit('SET_LOADING', false) }
       return response
     }).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(response.url + ' ' + response.status + ' ' + response.statusText)
+      }
       return response.json()
     }).then(function (data) {
       if (data.error !== '0' && !hide_error) {
@@ -131,7 +134,7 @@ export const actions = {
     })
   },
   post ({ state, commit }, {url, body, no_throw, loading}) {
-    if (loading === true || loading === undefined) commit('SET_LOADING', true)
+    if (loading === true || loading === undefined) { commit('SET_LOADING', true) }
     return fetch(url, {
       credentials: 'same-origin',
       method: 'post',
@@ -142,9 +145,12 @@ export const actions = {
       body: JSON.stringify(body)
     })
     .then(function (response) {
-      if (loading === true || loading === undefined) commit('SET_LOADING', false)
+      if (loading === true || loading === undefined) { commit('SET_LOADING', false) }
       return response
     }).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(response.url + ' ' + response.status + ' ' + response.statusText)
+      }
       return response.json()
     }).then(function (data) {
       if (data.error !== '0' && !no_throw) {
@@ -169,6 +175,9 @@ export const actions = {
       commit('SET_LOADING', false)
       return response
     }).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(response.url + ' ' + response.status + ' ' + response.statusText)
+      }
       return response.json()
     }).then(function (data) {
       if (data.error !== '0') {
@@ -179,7 +188,7 @@ export const actions = {
     })
   },
   put ({ state, commit }, {url, body, loading}) {
-    if (loading === true || loading === undefined) commit('SET_LOADING', true)
+    if (loading === true || loading === undefined) { commit('SET_LOADING', true) }
     return fetch(url, {
       credentials: 'same-origin',
       method: 'put',
@@ -190,9 +199,12 @@ export const actions = {
       body: JSON.stringify(body)
     })
     .then(function (response) {
-      if (loading === true || loading === undefined) commit('SET_LOADING', false)
+      if (loading === true || loading === undefined) { commit('SET_LOADING', false) }
       return response
     }).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(response.url + ' ' + response.status + ' ' + response.statusText)
+      }
       return response.json()
     }).then(function (data) {
       if (data.error !== '0') {
