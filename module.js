@@ -4,11 +4,12 @@ import _ from 'lodash'
 import checkLogin from './functions/checkLogin'
 
 var fetch
-if (global.window) {
-  fetch = global.window.fetch
-} else {
-  fetch = require('node-fetch')
-}
+fetch = global.window.fetch
+// if (global.window) {
+//   fetch = global.window.fetch
+// } else {
+//   fetch = require('node-fetch')
+// }
 
 // state
 export const state = {
@@ -87,6 +88,12 @@ export const mutations = {
 }
 // actions
 export const actions = {
+  getOper ({ state, commit, dispatch }, name) { // 根据名字来操作
+    return dispatch('get', '/api_' + name).then(function (data) {
+      state[name + 's'] = data.datas
+      return data
+    })
+  },
   get ({ state, commit }, val) {
     let url = ''
     let loading = true
