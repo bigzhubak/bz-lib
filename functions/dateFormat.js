@@ -3,7 +3,8 @@ import preZero from './preZero'
 export default function (timestamp, mask) {
   if (!timestamp) return ''
   var date, matched_array, o, regStr, res
-  date = new Date(timestamp)
+  let timestamp_standard = (typeof timestamp === 'string') ? timestamp.replace(/-/g, '/') : timestamp
+  date = new Date(timestamp_standard)
   o = {
     'y+': function (len) {
       return preZero(date.getFullYear(), len)
