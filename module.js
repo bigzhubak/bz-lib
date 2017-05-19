@@ -17,6 +17,9 @@ export const state = {
   site: null, // 在ssr的时候，用来定义网站。
   rich_list: [],
   rich_text: {},
+  oauth_info: {
+    name: ''
+  },
   user_info: {
     user_name: '',
     picture: ''
@@ -47,9 +50,7 @@ export const mutations = {
     )
   },
   CLEAN_RICH_TEXT (state) {
-    console.log(state)
     state.rich_text = {}
-    console.log(state)
   },
   SET_RICH_TEXT (state, rich_text) {
     state.rich_text = rich_text
@@ -72,7 +73,6 @@ export const mutations = {
       state.loading_count = 0
       state.loading = false
     }
-    // console.log('set loading ' + state.loading_count)
   },
   SET_ERROR_INFO (state, error_info) {
     state.error_info = error_info
@@ -111,14 +111,15 @@ export const actions = {
     }
 
     if (state.site) url = state.site + url
-    console.log(url)
-    // console.log(loading)
+    // console.log(url)
 
     if (loading === true || loading === undefined) { commit('SET_LOADING', true) }
     return fetch(url, {
       credentials: 'same-origin',
       method: 'get',
       headers: {
+        'pragma': 'no-cache',
+        'cache-control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }
@@ -254,6 +255,14 @@ export const actions = {
           done(data)
         }
       })
+  },
+  getOauthInfo ({ state, commit, dispatch }) {
+    return dispatch('get', {url: '/api_oauth_info', hide_error: true}).then(function (data) {
+      if (data.datas) {
+        state.oauth_info = data.datas
+      }
+      return data
+    })
   },
   getUserInfo ({ state, commit, dispatch }) {
     return dispatch('get', {url: '/api_user_info', hide_error: true}).then(function (data) {
