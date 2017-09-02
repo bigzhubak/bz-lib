@@ -33,7 +33,6 @@ export const state = {
 export const mutations = {
   CHECK_LOGIN (state) {
     state.is_login = checkLogin()
-    return state.is_login
   },
   SET_SITE (state, site) {
     state.site = site
